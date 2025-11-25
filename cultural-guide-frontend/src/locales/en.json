@@ -1,0 +1,30 @@
+{
+  "login_title": "Welcome back",
+  "login_subtitle": "Sign in to your account",
+  "login_email": "Email address",
+  "login_emailPlaceholder": "name@example.com",
+  "login_password": "Password",
+  "login_confirmPassword": "Confirm password",
+  "login_submit": "Sign in",
+  "login_forgotPassword": "Forgot password?",
+  "login_noAccount": "No account yet?",
+  "login_registerNow": "Register now",
+
+  "register_title": "Create a new account",
+  "register_name": "Name",
+  "register_agreeTerms": "I accept the terms of service and privacy policy",
+  "register_submit": "Create account",
+  "register_alreadyHaveAccount": "Already have an account?",
+  "register_loginNow": "Log in now",
+
+  "general_logout": "Log out",
+  "general_emailRequired": "Please fill out the email field",
+  "general_passwordRequired": "Please fill out the password field",
+
+  "dashboard_welcomeBack": "Welcome back",
+  "dashboard_accountInfo": "Account information",
+  "dashboard_verified": "Verified",
+  "dashboard_manageAccount": "Manage your account and settings",
+  "dashboard_verification_pending": "Email verification pending",
+  "dashboard_verify": "Please verify your email address to access all features."
+}

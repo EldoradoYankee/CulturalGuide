@@ -1,0 +1,31 @@
+{
+  "login_title": "Willkommen zurück",
+  "login_subtitle": "Melden Sie sich bei Ihrem Konto an",
+  "login_email": "E-Mail-Adresse",
+  "login_emailPlaceholder": "name@beispiel.de",
+  "login_password": "Passwort",
+  "login_confirmPassword": "Passwort bestätigen",
+  "login_submit": "Anmelden",
+  "login_forgotPassword": "Passwort vergessen?",
+  "login_noAccount": "Noch kein Konto?",
+  "login_registerNow": "Jetzt registrieren",
+
+  "register_title": "Registrieren Sie sich für ein neues Konto",
+  "register_name": "Name",
+  "register_agreeTerms": "Ich akzeptiere die Nutzungsbedingungen und Datenschutzerklärung",
+  "register_submit": "Konto erstellen",
+  "register_alreadyHaveAccount": "Bereits ein Konto?",
+  "register_loginNow": "Jetzt anmelden",
+
+  "general_logout": "Abmelden",
+  "general_emailRequired": "Bitte füllen Sie das Email Feld aus",
+  "general_passwordRequired": "Bitte füllen Sie das Passwort Feld aus",
+
+  "dashboard_welcomeBack": "Willkommen zurück",
+  "dashboard_accountInfo": "Kontoinformationen",
+  "dashboard_verified": "Verifiziert",
+  "dashboard_manageAccount": "Verwalten Sie Ihr Konto und Ihre Einstellungen",
+  "dashboard_verification_pending": "E-Mail-Verifizierung ausstehend",
+  "dashboard_verify": "Bitte verifizieren Sie Ihre E-Mail-Adresse, um alle Funktionen nutzen zu können.",
+  "dashboard_resendVerification": "Verifizierungs-E-Mail erneut senden"
+}

@@ -1,0 +1,30 @@
+{
+  "login_title": "Bentornato",
+  "login_subtitle": "Accedi al tuo account",
+  "login_email": "Indirizzo email",
+  "login_emailPlaceholder": "nome@esempio.com",
+  "login_password": "Password",
+  "login_confirmPassword": "Conferma password",
+  "login_submit": "Accedi",
+  "login_forgotPassword": "Password dimenticata?",
+  "login_noAccount": "Non hai ancora un account?",
+  "login_registerNow": "Registrati ora",
+
+  "register_title": "Crea un nuovo account",
+  "register_name": "Nome",
+  "register_agreeTerms": "Accetto i termini di servizio e l'informativa sulla privacy",
+  "register_submit": "Crea account",
+  "register_alreadyHaveAccount": "Hai già un account?",
+  "register_loginNow": "Accedi ora",
+
+  "general_logout": "Disconnetti",
+  "general_emailRequired": "Per favore compila il campo email",
+  "general_passwordRequired": "Per favore compila il campo password",
+
+  "dashboard_welcomeBack": "Bentornato",
+  "dashboard_accountInfo": "Informazioni account",
+  "dashboard_verified": "Verificato",
+  "dashboard_manageAccount": "Gestisci il tuo account e le impostazioni",
+  "dashboard_verification_pending": "Verifica email in sospeso",
+  "dashboard_verify": "Per favore verifica il tuo indirizzo email per accedere a tutte le funzionalità."
+}
