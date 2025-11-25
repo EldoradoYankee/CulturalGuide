@@ -106,6 +106,65 @@ public class AuthController : ControllerBase
         return Ok(new { token = jwt, user.Email, user.Name });
     }
 
+    [AllowAnonymous]
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest("Invalid data");
+
+        // Check email duplicates
+        var existingUser = _db.Users.FirstOrDefault(u => u.Email == request.Email);
+        if (existingUser != null)
+            return Conflict("Email already registered");
+
+        var user = new User
+        {
+            Name = request.Name,
+            Email = request.Email,
+            PasswordResetToken = null,
+            PasswordResetTokenExpires = null
+        };
+
+        // Hash password
+        user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
+
+        // Save user in DB
+        _db.Users.Add(user);
+        _db.SaveChanges();
+
+        // Create JWT
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]!);
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email)
+            }),
+            Expires = DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:ExpireMinutes"]!)),
+            Issuer = _config["Jwt:Issuer"],
+            Audience = _config["Jwt:Audience"],
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var jwt = tokenHandler.WriteToken(token);
+
+        Response.Cookies.Append("access_token", jwt, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:ExpireMinutes"]!))
+        });
+
+        return Ok(new { token = jwt, user.Email, user.Name });
+    }    
+    
+
     [HttpPost("logout")]
     public IActionResult Logout()
     {
