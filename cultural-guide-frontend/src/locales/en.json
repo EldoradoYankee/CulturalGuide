@@ -1,4 +1,7 @@
 {
+  "header_welcome": "Welcome",
+  "header_title": "Cultural Guide",
+
   "login_title": "Welcome back",
   "login_subtitle": "Sign in to your account",
   "login_email": "Email address",
@@ -9,6 +12,7 @@
   "login_forgotPassword": "Forgot password?",
   "login_noAccount": "No account yet?",
   "login_registerNow": "Register now",
+  "login_stayLoggedIn": "Stay logged in",
 
   "register_title": "Create a new account",
   "register_name": "Name",
@@ -16,6 +20,7 @@
   "register_submit": "Create account",
   "register_alreadyHaveAccount": "Already have an account?",
   "register_loginNow": "Log in now",
+  "register_getsCreated": "Creating...",
 
   "general_logout": "Log out",
   "general_emailRequired": "Please fill out the email field",
@@ -23,8 +28,25 @@
 
   "dashboard_welcomeBack": "Welcome back",
   "dashboard_accountInfo": "Account information",
+  "dashboard_transactions": "Transactions",
+  "dashboard_settings": "Settings",
+  "dashboard_support": "Support",
+  "dashboard_profile": "Profile",
+  "dashboard_balance": "Balance",
   "dashboard_verified": "Verified",
   "dashboard_manageAccount": "Manage your account and settings",
   "dashboard_verification_pending": "Email verification pending",
-  "dashboard_verify": "Please verify your email address to access all features."
+  "dashboard_verify": "Please verify your email address to access all features.",
+  "dashboard_resendVerification": "Resend verification email",
+  "dashboard_memberSince": "Member since",
+
+  "passwordRecovery_email": "Email address",
+  "passwordRecovery_emailSent": "Email sent",
+  "passwordRecovery_sentEmailTo": "We have sent you an email with instructions to reset your password to",
+  "passwordRecovery_checkSpam": "Please also check your spam folder if you can't find the email.",
+  "passwordRecovery_backToLogin": "Back to login",
+  "passwordRecovery_forgotPasswordQuestion": "Forgot your password?",
+  "passwordRecovery_forgotPassword": "No problem! Enter your email address and we will send you instructions to reset.",
+  "passwordRecovery_emailRecoverySend": "Send recovery email",
+  "passwordRecovery_getsSend": "Getting sent..."
 }

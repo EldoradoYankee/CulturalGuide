@@ -1,4 +1,7 @@
 {
+  "header_welcome": "Willkommen",
+  "header_title": "Kulturführer",
+  
   "login_title": "Willkommen zurück",
   "login_subtitle": "Melden Sie sich bei Ihrem Konto an",
   "login_email": "E-Mail-Adresse",
@@ -9,6 +12,7 @@
   "login_forgotPassword": "Passwort vergessen?",
   "login_noAccount": "Noch kein Konto?",
   "login_registerNow": "Jetzt registrieren",
+  "login_stayLoggedIn": "Eingeloggt bleiben",
 
   "register_title": "Registrieren Sie sich für ein neues Konto",
   "register_name": "Name",
@@ -16,6 +20,7 @@
   "register_submit": "Konto erstellen",
   "register_alreadyHaveAccount": "Bereits ein Konto?",
   "register_loginNow": "Jetzt anmelden",
+  "register_getsCreated": "Wird erstellt...",
 
   "general_logout": "Abmelden",
   "general_emailRequired": "Bitte füllen Sie das Email Feld aus",
@@ -23,9 +28,25 @@
 
   "dashboard_welcomeBack": "Willkommen zurück",
   "dashboard_accountInfo": "Kontoinformationen",
+  "dashboard_transactions": "Transaktionen",
+  "dashboard_settings": "Einstellungen",
+  "dashboard_support": "Support",
+  "dashboard_profile": "Profil",
+  "dashboard_balance": "Kontostand",
   "dashboard_verified": "Verifiziert",
   "dashboard_manageAccount": "Verwalten Sie Ihr Konto und Ihre Einstellungen",
   "dashboard_verification_pending": "E-Mail-Verifizierung ausstehend",
   "dashboard_verify": "Bitte verifizieren Sie Ihre E-Mail-Adresse, um alle Funktionen nutzen zu können.",
-  "dashboard_resendVerification": "Verifizierungs-E-Mail erneut senden"
+  "dashboard_resendVerification": "Verifizierungs-E-Mail erneut senden",
+  "dashboard_memberSince": "Mitglied seit",
+  
+  "passwordRecovery_email": "E-Mail Adresse",
+  "passwordRecovery_emailSent": "E-Mail gesendet",
+  "passwordRecovery_sentEmailTo": "Wir haben Ihnen eine E-Mail gesendet mit Anweisungen zum Zurücksetzen Ihres Passworts an",
+  "passwordRecovery_checkSpam": "Bitte überprüfen Sie auch Ihren Spam-Ordner, falls Sie die E-Mail nicht finden.",
+  "passwordRecovery_backToLogin": "Zurück zur Anmeldung",
+  "passwordRecovery_forgotPasswordQuestion": "Passwort vergessen?",
+  "passwordRecovery_forgotPassword": "Kein Problem! Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen Anweisungen zum Zurücksetzen.",
+  "passwordRecovery_emailRecoverySend": "Wiederherstellungs-E-Mail senden",
+  "passwordRecovery_getsSend": "Wird gesendet..."
 }
