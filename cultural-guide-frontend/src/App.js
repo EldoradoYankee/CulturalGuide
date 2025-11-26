@@ -1,5 +1,6 @@
 import { useState, useEffect, Suspense } from "react";
 import { LoginForm } from "./components/LoginForm";
+import { Start } from "./components/Start";
 import { RegisterForm } from "./components/RegisterForm";
 import { PasswordRecovery } from "./components/PasswordRecovery";
 import { Dashboard } from "./components/Dashboard";
@@ -11,6 +12,7 @@ import {Header} from "./components/Header";
 const AuthView = {
     LOGIN: "login",
     REGISTER: "register",
+    START: "start",
     RECOVERY: "recovery",
     DASHBOARD: "dashboard",
 };
@@ -29,12 +31,6 @@ function App() {
         }
     }, [i18n]);
 
-    const handleLanguageChange = (e) => {
-        const lang = e.target.value;
-        i18n.changeLanguage(lang);
-        localStorage.setItem("lang", lang);
-    };
-
 
     const handleLogin = (email) => {
         // Simulate user login
@@ -44,7 +40,7 @@ function App() {
             emailVerified: true,
         };
         setUser(mockUser);
-        setCurrentView("dashboard");
+        setCurrentView("start");
     };
 
     const handleRegister = (email, name) => {
@@ -55,7 +51,7 @@ function App() {
             emailVerified: false,
         };
         setUser(mockUser);
-        setCurrentView("dashboard");
+        setCurrentView("start");
     };
 
     const handleLogout = () => {
@@ -79,6 +75,9 @@ function App() {
                     onRegister={handleRegister}
                     onSwitchToLogin={() => setCurrentView("login")}
                 />
+            )}
+            {currentView === "start" && user && (
+                <Start onNavigate={(view) => setCurrentView(view)} />
             )}
             {currentView === "recovery" && (
                 <PasswordRecovery
