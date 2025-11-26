@@ -4,6 +4,7 @@ import { RegisterForm } from "./components/RegisterForm";
 import { PasswordRecovery } from "./components/PasswordRecovery";
 import { Dashboard } from "./components/Dashboard";
 import { useTranslation } from "react-i18next";
+import {Header} from "./components/Header";
 
 
 // You can keep the AuthView as a plain object/constant if needed
@@ -64,13 +65,7 @@ function App() {
 
     return (
         <Suspense fallback={<div>Loading...</div>}>
-            <div style={{ padding: "1rem", textAlign: "right" }}>
-                <select value={i18n.language} onChange={handleLanguageChange}>
-                    <option value="en">English</option>
-                    <option value="de">Deutsch</option>
-                    <option value="it">Italiano</option>
-                </select>
-            </div>
+            <Header/>
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
             {currentView === "login" && (
                 <LoginForm
