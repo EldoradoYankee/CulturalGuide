@@ -18,7 +18,7 @@ const AuthView = {
 function App() {
     const [currentView, setCurrentView] = useState(AuthView.LOGIN);
     const [user, setUser] = useState(null);
-    const { i18n, t } = useTranslation();
+    const { i18n } = useTranslation();
     
 
     // Restore saved language from localStorage

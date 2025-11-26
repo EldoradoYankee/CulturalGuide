@@ -2,7 +2,7 @@ import { LanguageSelector } from "./LanguageSelector";
 import { useTranslation } from "react-i18next";
 
 export function Header() {
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const handleLanguageChange = (lang) => {
         i18n.changeLanguage(lang);
@@ -15,12 +15,12 @@ export function Header() {
 
                 {/* LEFT COLUMN */}
                 <div className="text-left font-semibold text-gray-700">
-                    Cultural Guide
+                    {t("header_title")}
                 </div>
 
                 {/* CENTER COLUMN */}
                 <div className="text-center font-medium text-gray-500">
-                    Welcome
+                    {t("header_welcome")}
                 </div>
 
                 {/* RIGHT COLUMN */}

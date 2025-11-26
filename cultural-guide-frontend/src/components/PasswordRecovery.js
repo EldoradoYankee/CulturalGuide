@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Mail, ArrowLeft, KeyRound } from 'lucide-react';
 import { toast } from 'sonner';
+import {useTranslation} from "react-i18next";
 
 
 export function PasswordRecovery({ onBackToLogin }) {
@@ -8,6 +9,8 @@ export function PasswordRecovery({ onBackToLogin }) {
     const [isLoading, setIsLoading] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
 
+    const { t } = useTranslation();
+    
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -40,19 +43,21 @@ export function PasswordRecovery({ onBackToLogin }) {
                             <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
                                 <Mail className="w-8 h-8 text-green-600" />
                             </div>
-                            <h1 className="text-gray-900 mb-2">E-Mail gesendet!</h1>
+                            <h1 className="text-gray-900 mb-2">
+                                {t("passwordRecovery_emailSent")}
+                            </h1>
                             <p className="text-gray-600 mb-6">
-                                Wir haben Ihnen eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts an{' '}
-                                <span className="text-gray-900">{email}</span> gesendet.
+                                {t("passwordRecovery_sentEmailTo")}{' '}.
+                                <span className="text-gray-900">{email}</span>
                             </p>
                             <p className="text-gray-600 mb-8">
-                                Bitte überprüfen Sie auch Ihren Spam-Ordner, falls Sie die E-Mail nicht finden.
+                                {t("passwordRecovery_checkSpam")}
                             </p>
                             <button
                                 onClick={onBackToLogin}
                                 className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors"
                             >
-                                Zurück zur Anmeldung
+                                {t("paswordRecovery_backToLogin")}
                             </button>
                         </div>
                     </div>
@@ -70,23 +75,25 @@ export function PasswordRecovery({ onBackToLogin }) {
                         className="flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-6"
                     >
                         <ArrowLeft className="w-5 h-5 mr-2" />
-                        Zurück zur Anmeldung
+                        {t("passwordRecovery_backToLogin")}
                     </button>
 
                     <div className="text-center mb-8">
                         <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
                             <KeyRound className="w-8 h-8 text-indigo-600" />
                         </div>
-                        <h1 className="text-gray-900 mb-2">Passwort vergessen?</h1>
+                        <h1 className="text-gray-900 mb-2">
+                            {t("passwordRecovery_forgotPasswordQuestion")}
+                        </h1>
                         <p className="text-gray-600">
-                            Kein Problem! Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen Anweisungen zum Zurücksetzen.
+                            {t("passwordRecovery_forgotPassword")}
                         </p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
                             <label htmlFor="email" className="block text-gray-700 mb-2">
-                                E-Mail-Adresse
+                                {t("passwordRecovery_email")}
                             </label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -106,7 +113,7 @@ export function PasswordRecovery({ onBackToLogin }) {
                             disabled={isLoading}
                             className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {isLoading ? 'Wird gesendet...' : 'Wiederherstellungs-E-Mail senden'}
+                            {isLoading ? t("passwordRecovery_getsSend") : t("passwordRecovery_emailRecoverySend")}
                         </button>
                     </form>
                 </div>

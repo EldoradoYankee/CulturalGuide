@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Mail, Lock, User, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from "react-i18next";
 
 
 export function RegisterForm({ onRegister, onSwitchToLogin }) {
@@ -9,6 +10,8 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    
+    const {t } = useTranslation();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -51,14 +54,18 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
                         <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
                             <UserPlus className="w-8 h-8 text-indigo-600" />
                         </div>
-                        <h1 className="text-gray-900 mb-2">Konto erstellen</h1>
-                        <p className="text-gray-600">Registrieren Sie sich für ein neues Konto</p>
+                        <h1 className="text-gray-900 mb-2">
+                            {t("register_submit")}
+                        </h1>
+                        <p className="text-gray-600">
+                            {t("register_title")}
+                        </p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
                             <label htmlFor="name" className="block text-gray-700 mb-2">
-                                Name
+                                {t("register_name")}
                             </label>
                             <div className="relative">
                                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -75,7 +82,7 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
 
                         <div>
                             <label htmlFor="email" className="block text-gray-700 mb-2">
-                                E-Mail-Adresse
+                                {t("register_email")}
                             </label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -92,7 +99,7 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
 
                         <div>
                             <label htmlFor="password" className="block text-gray-700 mb-2">
-                                Passwort
+                                {t("register_password")}
                             </label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -141,18 +148,18 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
                             disabled={isLoading}
                             className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {isLoading ? 'Wird erstellt...' : 'Konto erstellen'}
+                            {isLoading ? t("register_getsCreated") : t("register_submit")}                        
                         </button>
                     </form>
 
                     <div className="mt-6 text-center">
                         <p className="text-gray-600">
-                            Bereits ein Konto?{' '}
+                            {t("register_alreadyHaveAccount")}{' '}
                             <button
                                 onClick={onSwitchToLogin}
                                 className="text-indigo-600 hover:text-indigo-700 transition-colors"
                             >
-                                Jetzt anmelden
+                                {t("register_loginNow")}
                             </button>
                         </p>
                     </div>
