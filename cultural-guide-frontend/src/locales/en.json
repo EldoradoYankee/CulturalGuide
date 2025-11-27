@@ -49,6 +49,7 @@
   "passwordRecovery_forgotPassword": "No problem! Enter your email address and we will send you instructions to reset.",
   "passwordRecovery_emailRecoverySend": "Send recovery email",
   "passwordRecovery_getsSend": "Getting sent...",
+  "passwordRecovery_emailPlaceholder": "name@example.com",
 
   "email_registration_salutation": "Hello",
   "email_registration_subject": "Thank you for registering with Kulturführer!",

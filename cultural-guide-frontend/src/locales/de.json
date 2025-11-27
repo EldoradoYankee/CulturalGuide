@@ -50,6 +50,7 @@
   "passwordRecovery_forgotPassword": "Kein Problem! Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen Anweisungen zum Zurücksetzen.",
   "passwordRecovery_emailRecoverySend": "Wiederherstellungs-E-Mail senden",
   "passwordRecovery_getsSend": "Wird gesendet...",
+  "passwordRecovery_emailPlaceholder": "name@beispiel.de",
   
   "email_registration_salutation": "Hallo",
   "email_registration_subject": "Vielen Dank für Ihre Registrierung beim Kulturführer!",
