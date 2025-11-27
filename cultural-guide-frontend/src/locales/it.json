@@ -48,5 +48,16 @@
   "passwordRecovery_forgotPasswordQuestion": "Hai dimenticato la password?",
   "passwordRecovery_forgotPassword": "Nessun problema! Inserisci il tuo indirizzo email e ti invieremo le istruzioni per reimpostarla.",
   "passwordRecovery_emailRecoverySend": "Invia email di recupero",
-  "passwordRecovery_getsSend": "In fase di invio..."
+  "passwordRecovery_getsSend": "In fase di invio...",
+
+  "email_registration_salutation": "Ciao",
+  "email_registration_subject": "Grazie per esserti registrato a Kulturführer!",
+  "email_registration_link": "Per favore, clicca sul seguente link per verificare il tuo indirizzo email:",
+  "email_registration_verifyMail": "Verifica Email",
+  "email_registration_ignoreMessage": "Se non ti sei registrato, ignora questa email.",
+
+  "email_passwordRecovery_salutation": "Ciao",
+  "email_passwordRecovery_subject": "Hai richiesto un reset della password.",
+  "email_passwordRecovery_link": "Reimposta Password",
+  "email_passwordRecovery_ignoreMessage": "Se non hai fatto questa richiesta, puoi ignorare questo messaggio."
 }

@@ -16,6 +16,7 @@
 
   "register_title": "Registrieren Sie sich für ein neues Konto",
   "register_name": "Name",
+  "register_confirmPassword": "Passwort bestätigen",
   "register_agreeTerms": "Ich akzeptiere die Nutzungsbedingungen und Datenschutzerklärung",
   "register_submit": "Konto erstellen",
   "register_alreadyHaveAccount": "Bereits ein Konto?",
@@ -48,5 +49,16 @@
   "passwordRecovery_forgotPasswordQuestion": "Passwort vergessen?",
   "passwordRecovery_forgotPassword": "Kein Problem! Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen Anweisungen zum Zurücksetzen.",
   "passwordRecovery_emailRecoverySend": "Wiederherstellungs-E-Mail senden",
-  "passwordRecovery_getsSend": "Wird gesendet..."
+  "passwordRecovery_getsSend": "Wird gesendet...",
+  
+  "email_registration_salutation": "Hallo",
+  "email_registration_subject": "Vielen Dank für Ihre Registrierung beim Kulturführer!",
+  "email_registration_link": "Bitte klicken Sie auf den folgenden Link, um Ihre E-Mail-Adresse zu verifizieren:",
+  "email_registration_verifyMail": "E-Mail verifizieren",
+  "email_registration_ignoreMessage": "Wenn Sie sich nicht registriert haben, ignorieren Sie diese E-Mail.",
+  
+  "email_passwordRecovery_salutation": "Hallo",
+  "email_passwordRecovery_subject": "Sie haben ein Zurücksetzen des Passworts angefordert.",
+  "email_passwordRecovery_link": "Passwort zurücksetzen",
+  "email_passwordRecovery_ignoreMessage": "Wenn Sie diese Anfrage nicht gestellt haben, können Sie diese Nachricht ignorieren."
 }

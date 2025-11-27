@@ -48,5 +48,16 @@
   "passwordRecovery_forgotPasswordQuestion": "Forgot your password?",
   "passwordRecovery_forgotPassword": "No problem! Enter your email address and we will send you instructions to reset.",
   "passwordRecovery_emailRecoverySend": "Send recovery email",
-  "passwordRecovery_getsSend": "Getting sent..."
+  "passwordRecovery_getsSend": "Getting sent...",
+
+  "email_registration_salutation": "Hello",
+  "email_registration_subject": "Thank you for registering with Kulturführer!",
+  "email_registration_link": "Please click the following link to verify your email address:",
+  "email_registration_verifyMail": "Verify Email",
+  "email_registration_ignoreMessage": "If you did not register, please ignore this email.",
+
+  "email_passwordRecovery_salutation": "Hello",
+  "email_passwordRecovery_subject": "You requested a password reset.",
+  "email_passwordRecovery_link": "Reset Password",
+  "email_passwordRecovery_ignoreMessage": "If you did not make this request, you may ignore this message."
 }
