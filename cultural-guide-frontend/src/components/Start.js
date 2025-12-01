@@ -37,12 +37,6 @@ export function Start({ onNavigate }) {
         <div className="min-h-screen p-4 md:p-8">
             <div className="max-w-6xl mx-auto">
 
-                {/* Page Header */}
-                <div className="text-center mb-12">
-                    <h1 className="text-gray-900 mb-4">Was möchten Sie tun?</h1>
-                    <p className="text-gray-600">Wählen Sie eine Option, um zu beginnen</p>
-                </div>
-
                 {/* Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {menuItems.map((item) => {
