@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Mail, ArrowLeft, KeyRound } from 'lucide-react';
 import { toast } from 'sonner';
-import {useTranslation} from "react-i18next";
-
+import { useTranslation } from "react-i18next";
 
 export function PasswordRecovery({ onBackToLogin }) {
     const [email, setEmail] = useState('');
@@ -10,30 +9,51 @@ export function PasswordRecovery({ onBackToLogin }) {
     const [emailSent, setEmailSent] = useState(false);
 
     const { t } = useTranslation();
-    
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!email) {
-            toast.error('Bitte geben Sie Ihre E-Mail-Adresse ein');
+            toast.error('Please fill in the email field');
             return;
         }
 
         if (!email.includes('@')) {
-            toast.error('Bitte geben Sie eine gültige E-Mail-Adresse ein');
+            toast.error('Please enter a valid email address');
             return;
         }
 
         setIsLoading(true);
 
-        // Simulate API call
-        setTimeout(() => {
+        try {
+            const response = await fetch("http://localhost:5203/api/auth/password-recovery", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ email })
+            });
+
+            const body = await response.json().catch(() => null);
+
+            if (!response.ok) {
+                toast.error(body?.message || "Error, could not send recovery email");
+                return;
+            }
+
             setEmailSent(true);
-            toast.success('Wiederherstellungs-E-Mail wurde gesendet!');
+            toast.success(t("passwordRecovery_emailSent"));
+
+        } catch (error) {
+            console.error(error);
+            toast.error(t("passwordRecovery_networkError"));
+        } finally {
             setIsLoading(false);
-        }, 1000);
+        }
     };
 
+    // -------------------------------
+    // Success screen
+    // -------------------------------
     if (emailSent) {
         return (
             <div className="min-h-screen flex items-center justify-center p-4">
@@ -47,7 +67,7 @@ export function PasswordRecovery({ onBackToLogin }) {
                                 {t("passwordRecovery_emailSent")}
                             </h1>
                             <p className="text-gray-600 mb-6">
-                                {t("passwordRecovery_sentEmailTo")}{' '}.
+                                {t("passwordRecovery_sentEmailTo")}{" "}
                                 <span className="text-gray-900">{email}</span>
                             </p>
                             <p className="text-gray-600 mb-8">
@@ -57,7 +77,7 @@ export function PasswordRecovery({ onBackToLogin }) {
                                 onClick={onBackToLogin}
                                 className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors"
                             >
-                                {t("paswordRecovery_backToLogin")}
+                                {t("passwordRecovery_backToLogin")}
                             </button>
                         </div>
                     </div>
@@ -66,6 +86,9 @@ export function PasswordRecovery({ onBackToLogin }) {
         );
     }
 
+    // -------------------------------
+    // Input form
+    // -------------------------------
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
             <div className="w-full max-w-md">
@@ -102,8 +125,9 @@ export function PasswordRecovery({ onBackToLogin }) {
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="name@beispiel.de"
-                                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    placeholder={t("login_emailPlaceholder")}
+                                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg
+                                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 />
                             </div>
                         </div>
