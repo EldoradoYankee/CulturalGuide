@@ -19,7 +19,7 @@
   "register_namePlaceholder": "Mario Rossi",
   "register_email": "Indirizzo email",
   "register_emailPlaceholder": "nome@esempio.com",
-  "register_password": "Password",
+  "register_password": "Parola d'accesso",
   "register_passwordPlaceholder": "Almeno 8 caratteri",
   "register_passwordRepeatPlaceholder": "Ripeti password",
   "register_confirmPassword": "Conferma parola d'accesso",
