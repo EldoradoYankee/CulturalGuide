@@ -61,7 +61,10 @@ function App() {
 
     return (
         <Suspense fallback={<div>Loading...</div>}>
-            <Header/>
+            <Header
+                navigateToStart={() => setCurrentView("start")}
+                navigateToLogin={() => setCurrentView("login")} 
+            />
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
             {currentView === "login" && (
                 <LoginForm
