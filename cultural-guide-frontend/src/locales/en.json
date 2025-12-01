@@ -16,6 +16,13 @@
 
   "register_title": "Create a new account",
   "register_name": "Name",
+  "register_namePlaceholder": "John Doe",
+  "register_email": "Email address",
+  "register_emailPlaceholder": "name@example.com",
+  "register_password": "Password",
+  "register_passwordPlaceholder": "At least 8 characters",
+  "register_passwordRepeatPlaceholder": "Repeat password",
+  "register_confirmPassword": "Confirm password",
   "register_agreeTerms": "I accept the terms of service and privacy policy",
   "register_submit": "Create account",
   "register_alreadyHaveAccount": "Already have an account?",

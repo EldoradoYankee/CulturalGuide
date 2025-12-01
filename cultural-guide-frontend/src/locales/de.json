@@ -16,6 +16,12 @@
 
   "register_title": "Registrieren Sie sich für ein neues Konto",
   "register_name": "Name",
+  "register_namePlaceholder": "Max Mustermann",
+  "register_email": "E-Mail-Adresse",
+  "register_emailPlaceholder": "name@beispiel.de",
+  "register_password": "Passwort",
+  "register_passwordPlaceholder": "Mindestens 8 Zeichen",
+  "register_passwordRepeatPlaceholder": "Passwort wiederholen",
   "register_confirmPassword": "Passwort bestätigen",
   "register_agreeTerms": "Ich akzeptiere die Nutzungsbedingungen und Datenschutzerklärung",
   "register_submit": "Konto erstellen",

@@ -16,6 +16,13 @@
 
   "register_title": "Crea un nuovo account",
   "register_name": "Nome",
+  "register_namePlaceholder": "Mario Rossi",
+  "register_email": "Indirizzo email",
+  "register_emailPlaceholder": "nome@esempio.com",
+  "register_password": "Password",
+  "register_passwordPlaceholder": "Almeno 8 caratteri",
+  "register_passwordRepeatPlaceholder": "Ripeti password",
+  "register_confirmPassword": "Conferma parola d'accesso",
   "register_agreeTerms": "Accetto i termini di servizio e l'informativa sulla privacy",
   "register_submit": "Crea account",
   "register_alreadyHaveAccount": "Hai già un account?",

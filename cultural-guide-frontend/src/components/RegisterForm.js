@@ -107,7 +107,7 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    placeholder="Max Mustermann"
+                                    placeholder={t('register_confirmPassword')}
                                     className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 />
                             </div>
@@ -124,7 +124,7 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="name@beispiel.de"
+                                    placeholder={t('register_emailPlaceholder')}
                                     className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 />
                             </div>
@@ -141,7 +141,7 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Mindestens 8 Zeichen"
+                                    placeholder={t('register_passwordPlaceholder')}
                                     className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 />
                             </div>
@@ -158,7 +158,7 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
                                     type="password"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
-                                    placeholder="Passwort wiederholen"
+                                    placeholder={t('register_passwordRepeatPlaceholder')}
                                     className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 />
                             </div>
