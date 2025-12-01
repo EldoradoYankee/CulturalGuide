@@ -13,34 +13,67 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
     
     const {t } = useTranslation();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!name || !email || !password || !confirmPassword) {
-            toast.error('Bitte füllen Sie alle Felder aus');
+            toast.error('please fill in all fields');
             return;
         }
 
         if (!email.includes('@')) {
-            toast.error('Bitte geben Sie eine gültige E-Mail-Adresse ein');
+            toast.error('please enter a valid email address');
             return;
         }
 
         if (password.length < 8) {
-            toast.error('Das Passwort muss mindestens 8 Zeichen lang sein');
+            toast.error('the password must be at least 8 characters long');
             return;
         }
 
         if (password !== confirmPassword) {
-            toast.error('Die Passwörter stimmen nicht überein');
+            toast.error('the passwords do not match');
             return;
         }
 
         setIsLoading(true);
 
+        try {
+            const response = await fetch("http://localhost:5203/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ email, password, name })
+            });
+
+            const body = await response.json().catch(() => null);
+
+            if (!response.ok) {
+                toast.error(body?.message || "error while registering");
+                return;
+            }
+
+            // SUCCESS
+            toast.success("registration successful");
+
+            // store jwt
+            if (body?.token) {
+                localStorage.setItem("jwt", body.token);
+            }
+
+            // notify app
+            onRegister(email, name);
+
+        } catch (error) {
+            console.error(error);
+            toast.error("Network error. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+        
         // Simulate API call
         setTimeout(() => {
-            toast.success('Konto erfolgreich erstellt! Bitte überprüfen Sie Ihre E-Mail zur Verifizierung.');
+            toast.success('Registration successful! Please check your email to verify your account.');
             onRegister(email, name);
             setIsLoading(false);
         }, 1000);
@@ -116,7 +149,7 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
 
                         <div>
                             <label htmlFor="confirmPassword" className="block text-gray-700 mb-2">
-                                Passwort bestätigen
+                                {t("register_confirmPassword")}
                             </label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -139,7 +172,7 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
                                 className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 mt-1"
                             />
                             <label htmlFor="terms" className="ml-2 text-gray-600">
-                                Ich akzeptiere die Nutzungsbedingungen und Datenschutzerklärung
+                                {t("register_agreeTerms")}                            
                             </label>
                         </div>
 
