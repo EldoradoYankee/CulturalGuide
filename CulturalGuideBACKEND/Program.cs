@@ -1,5 +1,6 @@
 using CulturalGuideBACKEND.Data;
 using CulturalGuideBACKEND.Models;
+using CulturalGuideBACKEND.Services.Email;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -35,7 +36,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// JWT Auth
+// JWT Auth Service
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var key = jwtSection.GetValue<string>("Key")!;
 var issuer = jwtSection.GetValue<string>("Issuer")!;
@@ -56,6 +57,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Email service
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+// Fluent Email
+//builder.Services.AddFluentEmail("no-reply@yourapp.com")
+//    .AddSmtpSender("smtp.server.com", 587, "smtp-user", "smtp-password");
+
+// use builder.Services instead of services
+builder.Services.AddScoped<CulturalGuideBACKEND.Services.Email.IEmailService, CulturalGuideBACKEND.Services.Email.EmailService>();
 
 
 // ------------------------------------------------------
