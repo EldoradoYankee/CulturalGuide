@@ -64,9 +64,6 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 //builder.Services.AddFluentEmail("no-reply@yourapp.com")
 //    .AddSmtpSender("smtp.server.com", 587, "smtp-user", "smtp-password");
 
-// use builder.Services instead of services
-builder.Services.AddScoped<CulturalGuideBACKEND.Services.Email.IEmailService, CulturalGuideBACKEND.Services.Email.EmailService>();
-
 
 // ------------------------------------------------------
 // 2) BUILD (after this point, no more AddServices!)
