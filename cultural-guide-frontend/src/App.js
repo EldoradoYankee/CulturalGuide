@@ -65,7 +65,8 @@ function App() {
                 navigateToStart={() => setCurrentView("start")}
                 navigateToLogin={() => setCurrentView("login")} 
             />
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+            <!-- style attribute helps the content not to go under the header -->
+        <div style={{ paddingTop: 96 }} className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
             {currentView === "login" && (
                 <LoginForm
                     onLogin={handleLogin}
