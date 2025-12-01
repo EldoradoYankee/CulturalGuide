@@ -54,6 +54,7 @@ export function LoginForm({ onLogin, onSwitchToRegister, onSwitchToRecovery }) {
 
             // Success
             onLogin(body?.email || email);
+            localStorage.setItem("jwt", body.token);
 
         } catch (error) {
             console.error(error);
