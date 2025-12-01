@@ -40,6 +40,15 @@
   "dashboard_resendVerification": "Rinvia email di verifica",
   "dashboard_memberSince": "Membro dal",
 
+  "menuItems_profile_title": "Profilo",
+  "menuItems_profile_description": "Gestisci le tue informazioni personali",
+  "menuItems_chatbot_title": "Chatbot",
+  "menuItems_chatbot_description": "Chatta con il nostro assistente AI",
+  "menuItems_preferences_title": "Impostazioni categorie",
+  "menuItems_preferences_description": "Personalizza le tue preferenze",
+  "menuItems_recommendations_title": "Raccomandazioni della città",
+  "menuItems_recommendations_description": "Scopri la tua prossima destinazione",
+  
   "passwordRecovery_email": "Indirizzo email",
   "passwordRecovery_emailSent": "Email inviata",
   "passwordRecovery_sentEmailTo": "Ti abbiamo inviato un'email con le istruzioni per reimpostare la tua parola d'accesso a",

@@ -40,6 +40,15 @@
   "dashboard_verify": "Bitte verifizieren Sie Ihre E-Mail-Adresse, um alle Funktionen nutzen zu können.",
   "dashboard_resendVerification": "Verifizierungs-E-Mail erneut senden",
   "dashboard_memberSince": "Mitglied seit",
+
+  "menuItems_profile_title": "Profil",
+  "menuItems_profile_description": "Verwalten Sie Ihre persönlichen Informationen",
+  "menuItems_chatbot_title": "Chatbot",
+  "menuItems_chatbot_description": "Chatten Sie mit unserem KI-Assistenten",
+  "menuItems_preferences_title": "Kategorie-Einstellungen",
+  "menuItems_preferences_description": "Passen Sie Ihre Präferenzen an",
+  "menuItems_recommendations_title": "Stadt-Empfehlungen",
+  "menuItems_recommendations_description": "Entdecken Sie Ihre nächste Destination",
   
   "passwordRecovery_email": "E-Mail Adresse",
   "passwordRecovery_emailSent": "E-Mail gesendet",

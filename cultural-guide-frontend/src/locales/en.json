@@ -40,6 +40,15 @@
   "dashboard_resendVerification": "Resend verification email",
   "dashboard_memberSince": "Member since",
 
+  "menuItems_profile_title": "Profile",
+  "menuItems_profile_description": "Manage your personal information",
+  "menuItems_chatbot_title": "Chatbot",
+  "menuItems_chatbot_description": "Chat with our AI assistant",
+  "menuItems_preferences_title": "Category Settings",
+  "menuItems_preferences_description": "Customize your preferences",
+  "menuItems_recommendations_title": "City Recommendations",
+  "menuItems_recommendations_description": "Discover your next destination",
+  
   "passwordRecovery_email": "Email address",
   "passwordRecovery_emailSent": "Email sent",
   "passwordRecovery_sentEmailTo": "We have sent you an email with instructions to reset your password to",
