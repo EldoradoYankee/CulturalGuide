@@ -1,37 +1,41 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { User, MessageSquare, Settings, MapPin, ArrowRight } from "lucide-react";
 
 export function Start({ onNavigate }) {
+    const { t } = useTranslation();
+
     const menuItems = [
         {
             id: "profile",
-            title: "Profil",
-            description: "Verwalten Sie Ihre persönlichen Informationen",
+            title: t("menuItems_profile_title"),
+            description: t("menuItems_profile_description"),
             icon: User,
             gradient: "from-blue-500 to-indigo-600",
         },
         {
             id: "chatbot",
-            title: "Chatbot",
-            description: "Chatten Sie mit unserem KI-Assistenten",
+            title: t("menuItems_chatbot_title"),
+            description: t("menuItems_chatbot_description"),
             icon: MessageSquare,
             gradient: "from-purple-500 to-pink-600",
         },
         {
             id: "preferences",
-            title: "Kategorie-Einstellungen",
-            description: "Passen Sie Ihre Präferenzen an",
+            title: t("menuItems_preferences_title"),
+            description: t("menuItems_preferences_description"),
             icon: Settings,
             gradient: "from-green-500 to-teal-600",
         },
         {
             id: "recommendations",
-            title: "Stadt-Empfehlungen",
-            description: "Entdecken Sie Ihre nächste Destination",
+            title: t("menuItems_recommendations_title"),
+            description: t("menuItems_recommendations_description"),
             icon: MapPin,
             gradient: "from-orange-500 to-red-600",
         },
     ];
+
 
     return (
         <div className="min-h-screen p-4 md:p-8">
