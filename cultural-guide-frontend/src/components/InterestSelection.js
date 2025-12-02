@@ -65,7 +65,7 @@ function InterestCard({ interest, onToggle }) {
 
 // --- Main Component ---
 
-export function InterestsSelection({ user, city = 'Barcelona', onContinue }) {
+export function InterestSelection({ user, city = 'Barcelona', onContinue }) {
     const [interests, setInterests] = useState(AVAILABLE_INTERESTS);
 
     const toggleInterest = (id) => {

@@ -1,10 +1,33 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { User, MessageSquare, Settings, MapPin, ArrowRight } from "lucide-react";
+import { InterestSelection } from "./InterestSelection";
 
 export function Start({ onNavigate }) {
+    const [showInterestSelection, setShowInterests] = React.useState(false);
     const { t } = useTranslation();
 
+    const handleNavigate = (id) => {
+        if (id === "recommendations") {
+            setShowInterests(true);
+        } else {
+            onNavigate(id);
+        }
+    };
+
+    if (showInterestSelection) {
+        // Render the InterestSelection page
+        return (
+            <InterestSelection
+                user={{ name: "Traveler" }} // You can pass dynamic user data
+                onContinue={(selectedInterests) => {
+                    console.log("Selected Interests:", selectedInterests);
+                    setShowInterests(false); // go back to start after continue
+                }}
+            />
+        );
+    }
+    
     const menuItems = [
         {
             id: "profile",
@@ -49,7 +72,7 @@ export function Start({ onNavigate }) {
                         return (
                             <button
                                 key={item.id}
-                                onClick={() => onNavigate(item.id)}
+                                onClick={() => handleNavigate(item.id)}
                                 className="group bg-white rounded-2xl shadow-xl p-8 text-left hover:shadow-2xl transition-all hover:scale-105"
                             >
                                 {/* Icon */}
