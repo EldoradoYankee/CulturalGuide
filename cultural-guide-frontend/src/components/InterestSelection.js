@@ -1,72 +1,18 @@
-﻿import { useState } from 'react';
-import {
-    Landmark, TreePine, Utensils, Palette, Music,
-    Sparkles, ShoppingBag, Waves, Check
-} from 'lucide-react';
-
-// --- Constants ---
-const AVAILABLE_INTERESTS = [
-    { id: 'history', title: 'History & Culture', icon: Landmark, selected: false },
-    { id: 'nature', title: 'Nature & Adventure', icon: TreePine, selected: false },
-    { id: 'food', title: 'Food & Wine', icon: Utensils, selected: false },
-    { id: 'art', title: 'Art & Museums', icon: Palette, selected: false },
-    { id: 'nightlife', title: 'Night Life', icon: Music, selected: false },
-    { id: 'wellness', title: 'Wellness & Relaxation', icon: Sparkles, selected: false },
-    { id: 'shopping', title: 'Shopping', icon: ShoppingBag, selected: false },
-    { id: 'beach', title: 'Beach & Sea', icon: Waves, selected: false },
-];
-
-// --- Sub-Components ---
-
-function InterestCard({ interest, onToggle }) {
-    const Icon = interest.icon;
-    const isSelected = interest.selected;
-
-    return (
-        <button
-            onClick={() => onToggle(interest.id)}
-            aria-pressed={isSelected}
-            className={`
-        p-6 rounded-xl border-2 transition-all text-left w-full
-        ${isSelected
-                ? 'border-indigo-600 bg-indigo-50 shadow-sm'
-                : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
-            }
-      `}
-        >
-            <div className="flex items-center gap-4">
-
-                {/* Icon */}
-                <div className={`
-          w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors
-          ${isSelected ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600'}
-        `}>
-                    <Icon className="w-7 h-7" />
-                </div>
-
-                {/* Title */}
-                <div className="flex-1">
-                    <h3 className={`font-medium ${isSelected ? 'text-indigo-900' : 'text-gray-900'}`}>
-                        {interest.title}
-                    </h3>
-                </div>
-
-                {/* Checkbox */}
-                <div className={`
-          w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors
-          ${isSelected ? 'border-indigo-600 bg-indigo-600' : 'border-gray-300'}
-        `}>
-                    {isSelected && <Check className="w-4 h-4 text-white" />}
-                </div>
-            </div>
-        </button>
-    );
-}
-
-// --- Main Component ---
+﻿import { useState } from "react";
+import { Landmark, Music, Palette, ShoppingBag, Sparkles, TreePine, Utensils, Waves } from "lucide-react";
+import { InterestCard } from "./InterestCard";
 
 export function InterestSelection({ user, city = 'Barcelona', onContinue }) {
-    const [interests, setInterests] = useState(AVAILABLE_INTERESTS);
+    const [interests, setInterests] = useState([
+        { id: 'history', title: 'History & Culture', icon: Landmark, selected: false },
+        { id: 'nature', title: 'Nature & Adventure', icon: TreePine, selected: false },
+        { id: 'food', title: 'Food & Wine', icon: Utensils, selected: false },
+        { id: 'art', title: 'Art & Museums', icon: Palette, selected: false },
+        { id: 'nightlife', title: 'Night Life', icon: Music, selected: false },
+        { id: 'wellness', title: 'Wellness & Relaxation', icon: Sparkles, selected: false },
+        { id: 'shopping', title: 'Shopping', icon: ShoppingBag, selected: false },
+        { id: 'beach', title: 'Beach & Sea', icon: Waves, selected: false },
+    ]);
 
     const toggleInterest = (id) => {
         setInterests((prev) =>
@@ -77,11 +23,11 @@ export function InterestSelection({ user, city = 'Barcelona', onContinue }) {
     };
 
     const handleContinue = () => {
-        const selectedIds = interests.filter((i) => i.selected).map((i) => i.id);
-        onContinue(selectedIds);
+        const selectedIds = interests.filter(i => i.selected).map(i => i.id);
+        onContinue(selectedIds); // App.js will decide what happens next
     };
 
-    const selectedCount = interests.filter((i) => i.selected).length;
+    const selectedCount = interests.filter(i => i.selected).length;
 
     return (
         <div className="min-h-screen bg-gray-50 p-4 md:p-8 flex items-center justify-center">
@@ -104,10 +50,10 @@ export function InterestSelection({ user, city = 'Barcelona', onContinue }) {
                         </h2>
                     </div>
 
-                    {/* Grid */}
+                    {/* Interests Grid */}
                     <div className="max-h-[500px] overflow-y-auto pr-2 mb-8 custom-scrollbar">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {interests.map((interest) => (
+                            {interests.map(interest => (
                                 <InterestCard
                                     key={interest.id}
                                     interest={interest}

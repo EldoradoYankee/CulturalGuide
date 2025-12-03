@@ -69,10 +69,11 @@ export function Start({ onNavigate }) {
                     {menuItems.map((item) => {
                         const Icon = item.icon;
 
+                        // TODO : onNavigate is forcing the redirect to interests
                         return (
                             <button
                                 key={item.id}
-                                onClick={() => handleNavigate(item.id)}
+                                onClick={() => onNavigate("interests")}
                                 className="group bg-white rounded-2xl shadow-xl p-8 text-left hover:shadow-2xl transition-all hover:scale-105"
                             >
                                 {/* Icon */}

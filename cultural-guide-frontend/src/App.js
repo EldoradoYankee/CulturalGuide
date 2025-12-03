@@ -4,8 +4,10 @@ import { Start } from "./components/Start";
 import { RegisterForm } from "./components/RegisterForm";
 import { PasswordRecovery } from "./components/PasswordRecovery";
 import { Dashboard } from "./components/Dashboard";
+import { InterestSelection } from "./components/InterestSelection";
+import { SwipeCarousel }  from "./components/SwipeCarousel";
 import { useTranslation } from "react-i18next";
-import {Header} from "./components/Header";
+import { Header } from "./components/Header";
 
 
 // You can keep the AuthView as a plain object/constant if needed
@@ -15,6 +17,8 @@ const AuthView = {
     START: "start",
     RECOVERY: "recovery",
     DASHBOARD: "dashboard",
+    INTERESTS: "interests",
+    SWIPECAROUSEL: "swipecarousel",
 };
 
 function App() {
@@ -40,7 +44,7 @@ function App() {
             emailVerified: true,
         };
         setUser(mockUser);
-        setCurrentView("start");
+        setCurrentView(AuthView.START);
     };
 
     const handleRegister = (email, name) => {
@@ -51,12 +55,17 @@ function App() {
             emailVerified: false,
         };
         setUser(mockUser);
-        setCurrentView("start");
+        setCurrentView(AuthView.START);
     };
 
     const handleLogout = () => {
         setUser(null);
-        setCurrentView("login");
+        setCurrentView(AuthView.LOGIN);
+    };
+
+    const handleInterestContinue = (selectedInterests) => {
+        console.log("Selected Interests:", selectedInterests);
+        setCurrentView(AuthView.SWIPECAROUSEL);
     };
 
     return (
@@ -79,7 +88,7 @@ function App() {
                     onSwitchToLogin={() => setCurrentView("login")}
                 />
             )}
-            {currentView === "start" && user && (
+            {currentView === AuthView.START && user && (
                 <Start onNavigate={(view) => setCurrentView(view)} />
             )}
             {currentView === "recovery" && (
@@ -89,6 +98,25 @@ function App() {
             )}
             {currentView === "dashboard" && user && (
                 <Dashboard user={user} onLogout={handleLogout} />
+            )}
+
+            {currentView === AuthView.INTERESTS && user && (
+                <InterestSelection
+                    user={user}
+                    onContinue={(selectedInterests) => {
+                        // If "history" selected, show carousel
+                        if (selectedInterests.includes("history")) {
+                            setCurrentView(AuthView.SWIPECAROUSEL);
+                        } else {
+                            // Otherwise maybe go back to START or somewhere else
+                            setCurrentView(AuthView.START);
+                        }
+                    }}
+                />
+            )}
+
+            {currentView === AuthView.SWIPECAROUSEL && (
+                <SwipeCarousel />
             )}
         </div>
         </Suspense>
