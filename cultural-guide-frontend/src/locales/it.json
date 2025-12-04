@@ -13,6 +13,12 @@
   "login_noAccount": "Non hai ancora un account?",
   "login_registerNow": "Registrati ora",
   "login_stayLoggedIn": "Rimani connesso",
+  "login_error_invalidCredentials": "E-mail o password errata",
+  "login_error_generalError": "Errore durante il login",
+  "login_network_error": "Errore di rete. Per favore riprova",
+  "login_error_validEmail": "Per favore inserisci un indirizzo e-mail valido",
+  "login_fillInEmailField": "Per favore compila il campo e-mail",
+  "login_fillInPasswordField": "Per favore compila il campo password",
 
   "register_title": "Crea un nuovo account",
   "register_name": "Nome",

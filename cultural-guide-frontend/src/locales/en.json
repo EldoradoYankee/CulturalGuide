@@ -13,6 +13,12 @@
   "login_noAccount": "No account yet?",
   "login_registerNow": "Register now",
   "login_stayLoggedIn": "Stay logged in",
+  "login_error_invalidCredentials": "Email or password is incorrect",
+  "login_error_generalError": "Error logging in",
+  "login_network_error": "Network error. Please try again",
+  "login_error_validEmail": "Please enter a valid email address",
+  "login_fillInEmailField": "Please fill in the email field",
+  "login_fillInPasswordField": "Please fill in the password field",
 
   "register_title": "Create a new account",
   "register_name": "Name",

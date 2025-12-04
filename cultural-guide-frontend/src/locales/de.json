@@ -13,6 +13,12 @@
   "login_noAccount": "Noch kein Konto?",
   "login_registerNow": "Jetzt registrieren",
   "login_stayLoggedIn": "Eingeloggt bleiben",
+  "login_error_invalidCredentials": "E-Mail oder Passwort ist falsch",
+  "login_error_generalError": "Fehler beim Anmelden",
+  "login_network_error": "Netzwerkfehler. Bitte versuchen Sie es erneut",
+  "login_error_validEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+  "login_fillInEmailField": "Bitte füllen Sie das Email Feld aus",
+  "login_fillInPasswordField": "Bitte füllen Sie das Passwort Feld aus",
 
   "register_title": "Registrieren Sie sich für ein neues Konto",
   "register_name": "Name",

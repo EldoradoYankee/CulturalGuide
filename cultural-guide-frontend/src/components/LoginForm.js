@@ -16,15 +16,17 @@ export function LoginForm({ onLogin, onSwitchToRegister, onSwitchToRecovery }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const { t } = useTranslation();
+
         setEmailError('');
         setPasswordError('');
 
-        if (!email) setEmailError('Bitte füllen Sie das Email Feld aus');
-        if (!password) setPasswordError('Bitte füllen Sie das Passwort Feld aus');
+        if (!email) setEmailError(t('login_fillInEmailField'));
+        if (!password) setPasswordError(t('Bitte füllen Sie das Passwort Feld aus'));
         if (!email || !password) return;
 
         if (!email.includes('@')) {
-            setEmailError("Bitte geben Sie eine gültige E-Mail-Adresse ein");
+            setEmailError(t('login_error_invalidEmail'));
             return;
         }
 
@@ -45,9 +47,9 @@ export function LoginForm({ onLogin, onSwitchToRegister, onSwitchToRecovery }) {
                 if (response.status === 401) {
                     // Email or password wrong
                     setEmailError(' ');
-                    setPasswordError('E-Mail oder Passwort ist falsch');
+                    setPasswordError(t("login_error_invalidCredentials"));
                 } else {
-                    setEmailError('Fehler beim Anmelden');
+                    setEmailError(t("login_error_generalError"));
                 }
                 return;
             }
@@ -58,7 +60,7 @@ export function LoginForm({ onLogin, onSwitchToRegister, onSwitchToRecovery }) {
 
         } catch (error) {
             console.error(error);
-            setEmailError('Netzwerkfehler. Bitte versuchen Sie es erneut');
+            setEmailError(t('login_network_error'));
         } finally {
             setIsLoading(false);
         }
