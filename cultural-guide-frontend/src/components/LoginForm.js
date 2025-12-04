@@ -10,8 +10,6 @@ export function LoginForm({ onLogin, onSwitchToRegister, onSwitchToRecovery }) {
     // error states for inputs
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
-
-    const { t } = useTranslation();
     
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -22,7 +20,7 @@ export function LoginForm({ onLogin, onSwitchToRegister, onSwitchToRecovery }) {
         setPasswordError('');
 
         if (!email) setEmailError(t('login_fillInEmailField'));
-        if (!password) setPasswordError(t('Bitte füllen Sie das Passwort Feld aus'));
+        if (!password) setPasswordError(t('login_fillInPasswordField'));
         if (!email || !password) return;
 
         if (!email.includes('@')) {
