@@ -62,7 +62,7 @@ const PrevArrow = ({ onClick }) => (
 // -----------------------------
 // SwipeCarousel Component
 // -----------------------------
-export function SwipeCarousel({ language = 'de', onViewDetails }) {
+export function SwipeCarousel({ language = 'de', onViewDetails, onBack }) {
     const [currentSlide, setCurrentSlide] = useState(0);
 
     const settings = {
@@ -124,6 +124,16 @@ export function SwipeCarousel({ language = 'de', onViewDetails }) {
 
     return (
         <div className="w-full py-8 px-4">
+            {/* Bottone Indietro */}
+            {onBack && (
+                <button
+                    onClick={onBack}
+                    className="mb-6 flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition"
+                >
+                    <ChevronLeft className="w-5 h-5" />
+                    {language === 'de' ? 'Zurück' : language === 'en' ? 'Back' : 'Indietro'}
+                </button>
+            )}
             <style>
                 {`
           .slick-dots li button:before {
