@@ -17,6 +17,25 @@ namespace CulturalGuideBACKEND.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.10");
 
+            modelBuilder.Entity("CulturalGuideBACKEND.Models.Municipality", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LegalName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Municipalities");
+                });
+
             modelBuilder.Entity("CulturalGuideBACKEND.Models.User", b =>
                 {
                     b.Property<int>("Id")

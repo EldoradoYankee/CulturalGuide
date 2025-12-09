@@ -15,7 +15,8 @@ namespace CulturalGuideBACKEND.Controllers
         private readonly string _swaggerEppoiBaseUrl;
         private readonly string _swaggerEppoiApiKey;
 
-        public EppoiApiController(ISwaggerEppoiApiService swaggerEppoiService, IConfiguration config)
+        public EppoiApiController(
+            ISwaggerEppoiApiService swaggerEppoiService, IConfiguration config)
         {
             _swaggerEppoiService = swaggerEppoiService;
             _swaggerEppoiBaseUrl = config["SwaggerEppoiApi:BaseUrl"]!;

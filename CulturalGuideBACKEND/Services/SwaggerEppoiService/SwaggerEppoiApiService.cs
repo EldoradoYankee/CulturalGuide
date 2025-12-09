@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using CulturalGuideBACKEND.Services.SwaggerEppoiService;
 using CulturalGuideBACKEND.DTO.SwaggerEppoiDTO;
 using CulturalGuideBACKEND.Models;
+using CulturalGuideBACKEND.Data;
 using System.Net.Http.Headers;
 
 namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
@@ -16,8 +17,9 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _config;
         private readonly ILogger<SwaggerEppoiApiService> _logger;
+		private readonly AppDbContext _db;
 
-        public SwaggerEppoiApiService(IHttpClientFactory httpClientFactory, IConfiguration config, ILogger<SwaggerEppoiApiService> logger)
+        public SwaggerEppoiApiService(IHttpClientFactory httpClientFactory, IConfiguration config, ILogger<SwaggerEppoiApiService> logger, AppDbContext db)
         {
             _httpClient = httpClientFactory.CreateClient();
             _config = config;
@@ -25,6 +27,7 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
 
             // Base URL for the API
             _httpClient.BaseAddress = new Uri(_config["SwaggerEppoiApi:BaseUrl"]);
+			_db = db;
         }
 
         // =====================
@@ -89,7 +92,7 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
             }
 
             response.EnsureSuccessStatusCode();
-			Console.WriteLine($"Eppoi GetCategoriesAsync response status: {response.StatusCode}");
+			_logger.LogInformation($"Eppoi GetCategoriesAsync response status: {response.StatusCode}");
 
             return resultCategories ?? Array.Empty<EppoiCategoriesDTO>();
         }
@@ -101,11 +104,36 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
             var url = "/api/organizations/municipalities";
         
             var response = await _httpClient.GetAsync(url);
+			_logger.LogInformation($"Eppoi GetMunicipalitiesAsync BaseUrl: {url}");
+			_logger.LogInformation($"Eppoi GetMunicipalitiesAsync response status: {response.StatusCode}");
             response.EnsureSuccessStatusCode();
         
             // Deserialize JSON response into DTOs
             var result = await response.Content.ReadFromJsonAsync<IEnumerable<EppoiMunicipalitiesDTO>>();
         
+			// save to database			
+			int addedCount = 0;
+
+            foreach (var m in result)
+            {
+                bool exists = _db.Municipalities.Any(x => x.LegalName == m.LegalName);
+
+                if (!exists)
+                {
+                    _db.Municipalities.Add(new Municipality
+                    {
+                        LegalName = m.LegalName,
+                        ImagePath = m.ImagePath
+                    });
+
+                    addedCount++;
+                }
+            }
+
+            if (addedCount > 0)
+                await _db.SaveChangesAsync();
+
             return result ?? Array.Empty<EppoiMunicipalitiesDTO>();
         }
+	}
 }

@@ -11,5 +11,6 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
         Task<object> GetPoiDetailsAsync(string id);
         Task<object> SearchExperiencesAsync(SwaggerEppoiRequest request);
         Task<IEnumerable<EppoiCategoriesDTO>> GetCategoriesAsync(string municipality, string language);
+		Task<IEnumerable<EppoiMunicipalitiesDTO>> GetMunicipalitiesAsync();
     }
 }
