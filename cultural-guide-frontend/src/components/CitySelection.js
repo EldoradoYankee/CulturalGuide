@@ -1,5 +1,5 @@
-﻿import { useState } from 'react';
-import { MapPin, Search } from 'lucide-react';
+﻿import { useState, useEffect } from 'react';
+import {LogIn, MapPin, Search} from 'lucide-react';
 import {useTranslation} from "react-i18next";
 
 
@@ -32,6 +32,41 @@ export function CitySelection({ onCitySelect, onBack }) {
             onCitySelect(selectedCity);
         }
     };
+
+    const [municipalities, setMunicipalities] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    // example GET
+    useEffect(() => {
+        const fetchMunicipalities = async () => {
+            setLoading(true);
+            setError("");
+
+            try {
+                const response = await fetch("http://localhost:5203/api/eppoiapi/municipalities", {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                });
+
+                if (!response.ok) {
+                    setError(`Error fetching municipalities: ${response.status}`);
+                    return;
+                }
+
+                const data = await response.json().catch(() => []);
+                setMunicipalities(data);
+
+            } catch (err) {
+                console.error(err);
+                setError("Network error while fetching municipalities");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchMunicipalities();
+    }, []);
 
     return (
         <div className="min-h-screen p-4 md:p-8 flex items-center justify-center">
