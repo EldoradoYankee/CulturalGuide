@@ -79,6 +79,19 @@ namespace CulturalGuideBACKEND.Controllers
             return Ok(categories);
         }
 
+        
+        // ===============================
+        //  EXAMPLE ENDPOINT #5
+        //  municipalities
+        //  Maps to:
+        //  https://apispm.eppoi.io/api/organizations/municipalities
+        // ===============================
+        [HttpGet("categories")]
+        public async Task<IActionResult> GetMunicipalities()
+        {
+            var municipalities = await _swaggerEppoiService.GetMunicipalitiesAsync();
+            return Ok(municipalities);
+        }
 
         // ===============================
         //  EXAMPLE ENDPOINT #3

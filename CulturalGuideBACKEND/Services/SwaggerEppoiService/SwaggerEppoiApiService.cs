@@ -93,5 +93,19 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
 
             return resultCategories ?? Array.Empty<EppoiCategoriesDTO>();
         }
-    }
+
+		public async Task<IEnumerable<EppoiMunicipalitiesDTO>> GetMunicipalitiesAsync()
+        {
+            await EnsureAuthenticatedAsync();
+        
+            var url = "/api/organizations/municipalities";
+        
+            var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+        
+            // Deserialize JSON response into DTOs
+            var result = await response.Content.ReadFromJsonAsync<IEnumerable<EppoiMunicipalitiesDTO>>();
+        
+            return result ?? Array.Empty<EppoiMunicipalitiesDTO>();
+        }
 }
