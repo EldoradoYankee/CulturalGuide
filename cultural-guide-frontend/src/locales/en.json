@@ -82,5 +82,16 @@
   "email_passwordRecovery_salutation": "Hello",
   "email_passwordRecovery_subject": "You requested a password reset.",
   "email_passwordRecovery_link": "Reset Password",
-  "email_passwordRecovery_ignoreMessage": "If you did not make this request, you may ignore this message."
+  "email_passwordRecovery_ignoreMessage": "If you did not make this request, you may ignore this message.",
+
+  "citySelection_chooseCity": "Select your city",
+  "citySelection_searchACitySubtitle": "Find a city or search from the list below",
+  "citySelection_searchACityTitle": "Find a city",
+  "citySelection_Lens": "Insert a city...",
+  "citySelection_noCitiesFound": "No city was found",
+  "citySelection_selectFromList": "Or select it from the list",
+  "citySelection_dropDownMenu": "Select a city",
+  "citySelection_selectCity": "City selected:",
+  "citySelection_Continue": "Continue",
+  "citySelection_goBack": "Go back"
 }

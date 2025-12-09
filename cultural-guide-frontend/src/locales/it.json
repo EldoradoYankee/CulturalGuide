@@ -82,5 +82,16 @@
   "email_passwordRecovery_salutation": "Ciao",
   "email_passwordRecovery_subject": "Hai richiesto un reset della parola d'accesso.",
   "email_passwordRecovery_link": "Reimposta parola d'accesso",
-  "email_passwordRecovery_ignoreMessage": "Se non hai fatto questa richiesta, puoi ignorare questo messaggio."
+  "email_passwordRecovery_ignoreMessage": "Se non hai fatto questa richiesta, puoi ignorare questo messaggio.",
+
+  "citySelection_chooseCity": "Seleziona la tua città",
+  "citySelection_searchACitySubtitle": "Cerca una città o seleziona dalla lista",
+  "citySelection_searchACityTitle": "Cerca città",
+  "citySelection_Lens": "Inserisci città...",
+  "citySelection_noCitiesFound": "Nessuna città trovata",
+  "citySelection_selectFromList": "Seleziona una città dalla lista",
+  "citySelection_dropDownMenu": "Seleziona una città",
+  "citySelection_selectCity": "Città selezionata:",
+  "citySelection_Continue": "Continua",
+  "citySelection_goBack": "Torna indietro"
 }
