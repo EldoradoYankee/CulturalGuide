@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
-import {LogIn, MapPin, Search} from 'lucide-react';
+import { MapPin, Search} from 'lucide-react';
 import {useTranslation} from "react-i18next";
 
 
@@ -10,22 +10,24 @@ const cities = [
 ];
 
 export function CitySelection({ onCitySelect, onBack }) {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCity, setSelectedCity] = useState('');
+    
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     // i18n translations
     const { t } = useTranslation();
 
-    const filteredCities = cities.filter((city) =>
-        city.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Municipality selection
+    const [searchTerm, setSearchTerm] = useState("");
+    const [municipalities, setMunicipalities] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    // State
+    const [selectedCity, setSelectedCity] = useState("");
 
-    const handleCityClick = (city) => {
-        setSelectedCity(city.name);
-        setSearchTerm('');
-        setIsDropdownOpen(false);
-    };
+
+    const filteredCities = municipalities.filter((m) =>
+        (m.legalName ?? "").toLowerCase().includes((searchTerm ?? "").toLowerCase())
+    );
 
     const handleContinue = () => {
         if (selectedCity) {
@@ -33,10 +35,26 @@ export function CitySelection({ onCitySelect, onBack }) {
         }
     };
 
-    const [municipalities, setMunicipalities] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    // IGNORE error - dont change JS language to Flow
+    // When user types
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
+        setIsDropdownOpen(true);
+    };
 
+    // When user clicks on a city in search results
+    const handleMunicipalityClick = (municipalityName) => {
+        setSelectedCity(municipalityName);  // update dropdown value
+        setSearchTerm(municipalityName);    // update text input
+        setIsDropdownOpen(false);
+    };
+
+    // When user selects from <select> dropdown
+    const handleSelectChange = (e) => {
+        setSelectedCity(e.target.value);  // update dropdown
+        setSearchTerm(e.target.value);    // update text input
+    };
+    
     // example GET
     useEffect(() => {
         const fetchMunicipalities = async () => {
@@ -64,8 +82,8 @@ export function CitySelection({ onCitySelect, onBack }) {
             } finally {
                 setLoading(false);
             }
-        };
-        fetchMunicipalities();
+        };  
+        fetchMunicipalities().then(r => {});
     }, []);
 
     return (
@@ -95,6 +113,7 @@ export function CitySelection({ onCitySelect, onBack }) {
                                 onChange={(e) => {
                                     setSearchTerm(e.target.value);
                                     setIsDropdownOpen(true);
+                                    handleSearchChange(e);
                                 }}
                                 onFocus={() => setIsDropdownOpen(true)}
                                 placeholder={t("citySelection_Lens")}
@@ -106,14 +125,14 @@ export function CitySelection({ onCitySelect, onBack }) {
                         {isDropdownOpen && searchTerm && (
                             <div className="mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                                 {filteredCities.length > 0 ? (
-                                    filteredCities.map((city) => (
+                                    filteredCities.map((municipality) => (
                                         <button
-                                            key={city.id}
-                                            onClick={() => handleCityClick(city)}
+                                            key={municipality.legalName}
+                                            onClick={() => handleMunicipalityClick(municipality.legalName)}
                                             className="w-full text-left px-4 py-3 hover:bg-indigo-50 transition-colors flex items-center gap-3"
                                         >
                                             <MapPin className="w-5 h-5 text-indigo-600" />
-                                            <span className="text-gray-900">{city.name}</span>
+                                            <span className="text-gray-900">{municipality.legalName}</span>
                                         </button>
                                     ))
                                 ) : (
