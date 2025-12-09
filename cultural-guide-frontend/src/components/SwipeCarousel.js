@@ -12,24 +12,30 @@ const mockPointsOfInterest = [
     {
         id: '1',
         type: 'restaurant',
-        image:
-            'https://images.unsplash.com/photo-1657593088889-5105c637f2a8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwaW50ZXJpb3IlMjBkaW5pbmd8ZW58MXx8fHwxNzY0NjkxMzg4fDA&ixlib=rb-4.1.0&q=80&w=1080',
-        title: {
-            de: 'La Terrazza',
-            en: 'La Terrazza',
-            es: 'La Terrazza',
-            fr: 'La Terrazza',
-        },
-        description: {
-            de: 'Exquisite mediterrane Küche...',
-            en: 'Exquisite Mediterranean cuisine...',
-            es: 'Exquisita cocina mediterránea...',
-            fr: 'Cuisine méditerranéenne exquise...',
-        },
+        image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1080&q=80',
+        title: { de: 'La Terrazza', en: 'La Terrazza' },
+        description: { de: 'Exquisite Küche...', en: 'Exquisite cuisine...' },
         location: 'Passeig de Gràcia 43',
         openingHours: '12:00 - 23:00',
     },
-    // ... (rest of the POIs stay exactly the same)
+    {
+        id: '2',
+        type: 'museum',
+        image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1080&q=80',
+        title: { de: 'Museo Storico', en: 'History Museum' },
+        description: { de: 'Scopri la storia...', en: 'Discover history...' },
+        location: 'Via Roma 10',
+        openingHours: '09:00 - 18:00',
+    },
+    {
+        id: '3',
+        type: 'park',
+        image: 'https://images.unsplash.com/photo-1496417263034-38ec4f0d6b21?w=1080&q=80',
+        title: { de: 'Central Park', en: 'Central Park' },
+        description: { de: 'Natura nel centro...', en: 'Nature in the center...' },
+        location: 'Plaza Mayor',
+        openingHours: 'Open 24h',
+    }
 ];
 
 // -----------------------------
@@ -57,7 +63,7 @@ const PrevArrow = ({ onClick }) => (
 // SwipeCarousel Component
 // -----------------------------
 export function SwipeCarousel({ language = 'de', onViewDetails }) {
-    const [setCurrentSlide] = useState(0);
+    const [currentSlide, setCurrentSlide] = useState(0);
 
     const settings = {
         dots: true,
