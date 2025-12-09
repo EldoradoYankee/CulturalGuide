@@ -93,5 +93,21 @@
   "citySelection_dropDownMenu": "Seleziona una città",
   "citySelection_selectCity": "Città selezionata:",
   "citySelection_Continue": "Continua",
-  "citySelection_goBack": "Torna indietro"
+  "citySelection_goBack": "Torna indietro",
+
+  "interestSelection_history": "Storia e Cultura",
+  "interestSelection_nature": "Natura e Avventura",
+  "interestSelection_food": "Cibo e Vino",
+  "interestSelection_art": "Arte e Musei",
+  "interestSelection_nightlife": "Vita Notturna",
+  "interestSelection_wellness": "Benessere e Relax",
+  "interestSelection_shopping": "Shopping",
+  "interestSelection_beach": "Spiaggia e Mare",
+  "interestSelection_greetings": "Ciao",
+  "interestSelection_subtitle": "Personalizza la tua esperienza turistica rispondendo a poche domande.",
+  "interestSelection_destination": "📍 Destinazione:",
+  "interestSelection_selectionQuestion": "Quali sono i tuoi interessi?",
+  "interestSelection_continue": "Continua",
+  "interestSelection_selected": "interesse selezionato",
+  "interestSelection_selectAtLeastOne": "Seleziona almeno un interesse per continuare"
 }

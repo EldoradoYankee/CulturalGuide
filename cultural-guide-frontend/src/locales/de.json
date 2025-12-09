@@ -91,5 +91,22 @@
   "citySelection_noCitiesFound": "Keine Städte gefunden",
   "citySelection_selectFromList": "Oder wählen Sie aus der Liste",
   "citySelection_dropDownMenu": "Bitte wählen Sie eine Stadt",
-  "citySelection_selectCity": "Ausgewählte Stadt:"
+  "citySelection_selectCity": "Ausgewählte Stadt:",
+
+  "interestSelection_history": "Geschichte & Kultur",
+  "interestSelection_nature": "Natur & Abenteuer",
+  "interestSelection_food": "Essen & Wein",
+  "interestSelection_art": "Kunst & Museen",
+  "interestSelection_nightlife": "Nachtleben",
+  "interestSelection_wellness": "Wellness & Entspannung",
+  "interestSelection_shopping": "Shopping",
+  "interestSelection_beach": "Strand & Meer",
+  "interestSelection_greetings": "Hallo",
+  "interestSelection_subtitle": "Personalisieren Sie Ihr Touristenerlebnis, indem Sie ein paar Fragen beantworten.",
+  "interestSelection_destination": "📍 Ziel:",
+  "interestSelection_selectionQuestion": "Was sind Ihre Interessen?",
+  "interestSelection_continue": "Fortfahren",
+  "interestSelection_selected": "Interesse ausgewählt",
+  "interestSelection_selectAtLeastOne": "Wählen Sie mindestens ein Interesse, um fortzufahren"
+
 }
