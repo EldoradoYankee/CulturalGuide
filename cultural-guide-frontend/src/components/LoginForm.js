@@ -10,11 +10,11 @@ export function LoginForm({ onLogin, onSwitchToRegister, onSwitchToRecovery }) {
     // error states for inputs
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
-    
+
+    const { t } = useTranslation();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const { t } = useTranslation();
 
         setEmailError('');
         setPasswordError('');

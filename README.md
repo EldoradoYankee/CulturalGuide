@@ -13,7 +13,7 @@ Make sure the following are installed on your machine:
 - [Git](https://git-scm.com/)
 - Optional: Visual Studio Code or JetBrains Rider
 
----
+```bash
 Project Structure Back-End & Front-End
 CulturalGuide/
 ├─ CulturalGuideBACKEND/       # .NET 9 Web API backend
@@ -30,8 +30,8 @@ CulturalGuide/
 │  │  └─ App.js
 │  └─ package.json
 └─ README.md
+```
 
----
 
 ## Backend Setup (.NET 9)
 
@@ -53,12 +53,13 @@ dotnet build
 
 dotnet run
 
-
 cd CulturalGuide/cultural-guide-frontend
 
 npm install
-
+npm run
+OPTIONAL
 npm run dev
+npm start
 
 cd CulturalGuide/CulturalGuideBACKEND
 dotnet run
