@@ -78,9 +78,7 @@ export function CitySelection({ onCitySelect, onBack }) {
                             <MapPin className="w-8 h-8 text-indigo-600" />
                         </div>
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">{t("citySelection_chooseCity")}</h1>
-                        <p className="text-gray-600">
-                            {t("citySelection_searchACitySubtitle")}
-                        </p>
+                        <p className="text-gray-600">{t("citySelection_searchACitySubtitle")}</p>
                     </div>
 
                     {/* Search Bar */}
@@ -141,25 +139,12 @@ export function CitySelection({ onCitySelect, onBack }) {
                                 className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent appearance-none bg-white cursor-pointer text-gray-900"
                             >
                                 <option value="" disabled hidden className="text-gray-400">{t("citySelection_dropDownMenu")}</option>
-                                {cities.map((city) => (
-                                    <option key={city.id} value={city.name}>
-                                        {city.name}
+                                {municipalities.map((m) => (
+                                    <option key={m.legalName} value={m.legalName}>
+                                        {m.legalName}
                                     </option>
                                 ))}
                             </select>
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                <svg
-                                    className="w-5 h-5 text-gray-400"
-                                    fill="none"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </div>
                         </div>
                     </div>
 
