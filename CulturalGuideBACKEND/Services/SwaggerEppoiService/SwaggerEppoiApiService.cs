@@ -1,14 +1,17 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using CulturalGuideBACKEND.Services.SwaggerEppoiService;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using CulturalGuideBACKEND.DTO.SwaggerEppoiDTO;
 using CulturalGuideBACKEND.Models;
 using CulturalGuideBACKEND.Data;
-using System.Net.Http.Headers;
 
 namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
 {
@@ -97,7 +100,22 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
             return resultCategories ?? Array.Empty<EppoiCategoriesDTO>();
         }
 
+		// GET municipalities from local DB table for frontend use
 		public async Task<IEnumerable<EppoiMunicipalitiesDTO>> GetMunicipalitiesAsync()
+        {
+            var municipalities = await _db.Municipalities
+                .Select(m => new EppoiMunicipalitiesDTO
+                {
+                    LegalName = m.LegalName,
+                    ImagePath = m.ImagePath
+                })
+                .ToListAsync();
+
+            return municipalities;
+        }
+
+		// GET municipalities from Eppoi API and save into local DB table if not already present
+		public async Task<IEnumerable<EppoiMunicipalitiesDTO>> GetMunicipalitiesIntoDbAsync()
         {
             await EnsureAuthenticatedAsync();
         

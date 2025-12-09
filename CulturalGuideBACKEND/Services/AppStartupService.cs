@@ -29,10 +29,11 @@ namespace CulturalGuideBACKEND.Services
             {
                 // Create scope because ISwaggerEppoiApiService is scoped
                 using var scope = _services.CreateScope();
-                var eppoiService = scope.ServiceProvider.GetRequiredService<ISwaggerEppoiApiService>();
 
                 string municipality = "Massignano";
                 string language = "it";
+
+                var eppoiService = scope.ServiceProvider.GetRequiredService<ISwaggerEppoiApiService>();
 
                 _logger.LogInformation(">>> Calling GetCategoriesAsync on startup...");
 
@@ -48,6 +49,18 @@ namespace CulturalGuideBACKEND.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, ">>> Error calling GetCategoriesAsync on startup");
+            }
+
+            // invoke GetMunicipalitiesAsync at every startup to warm up the db
+            try
+            {
+                using var scope = _services.CreateScope();
+                var eppoiService = scope.ServiceProvider.GetRequiredService<ISwaggerEppoiApiService>();
+                await eppoiService.GetMunicipalitiesIntoDbAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ">>> Error calling GetMunicipalitiesAsync on startup");
             }
 
             _logger.LogInformation(">>> Startup service finished.");

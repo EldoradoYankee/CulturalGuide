@@ -8,19 +8,21 @@ namespace CulturalGuideBACKEND.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // Frontend must be authenticated to access this
+    [AllowAnonymous]
     public class EppoiApiController : ControllerBase
     {
         private readonly ISwaggerEppoiApiService _swaggerEppoiService;
         private readonly string _swaggerEppoiBaseUrl;
         private readonly string _swaggerEppoiApiKey;
+        private readonly ILogger<EppoiApiController> _logger;
 
         public EppoiApiController(
-            ISwaggerEppoiApiService swaggerEppoiService, IConfiguration config)
+            ISwaggerEppoiApiService swaggerEppoiService, IConfiguration config, ILogger<EppoiApiController> logger)
         {
             _swaggerEppoiService = swaggerEppoiService;
             _swaggerEppoiBaseUrl = config["SwaggerEppoiApi:BaseUrl"]!;
             _swaggerEppoiApiKey = config["SwaggerEppoiApi:ApiKey"]!;
+            _logger = logger;
         }
 
         // --------------------------------------------------------------------
@@ -64,6 +66,17 @@ namespace CulturalGuideBACKEND.Controllers
             var result = await _swaggerEppoiService.GetPoiDetailsAsync(id);
             return Ok(result);
         }
+
+        // ===============================
+        //  EXAMPLE ENDPOINT #3
+        //  Search for experiences based on interests
+        // ===============================
+        [HttpPost("search")]
+        public async Task<IActionResult> SearchExperiences([FromBody] SwaggerEppoiRequest request)
+        {
+            var result = await _swaggerEppoiService.SearchExperiencesAsync(request);
+            return Ok(result);
+        }
         
         // ===============================
         //  EXAMPLE ENDPOINT #4
@@ -79,30 +92,19 @@ namespace CulturalGuideBACKEND.Controllers
             var categories = await _swaggerEppoiService.GetCategoriesAsync(municipality, language);
             return Ok(categories);
         }
-
         
         // ===============================
         //  EXAMPLE ENDPOINT #5
         //  municipalities
-        //  Maps to:
-        //  https://apispm.eppoi.io/api/organizations/municipalities
+        //  Maps to: https://apispm.eppoi.io/api/organizations/municipalities
         // ===============================
-        [HttpGet("categories")]
+        [HttpGet("municipalities")]
         public async Task<IActionResult> GetMunicipalities()
         {
+            // print log
+            _logger.LogInformation("Fetching municipalities from EppoiApiController...");
             var municipalities = await _swaggerEppoiService.GetMunicipalitiesAsync();
             return Ok(municipalities);
-        }
-
-        // ===============================
-        //  EXAMPLE ENDPOINT #3
-        //  Search for experiences based on interests
-        // ===============================
-        [HttpPost("search")]
-        public async Task<IActionResult> SearchExperiences([FromBody] SwaggerEppoiRequest request)
-        {
-            var result = await _swaggerEppoiService.SearchExperiencesAsync(request);
-            return Ok(result);
         }
     }
 }
