@@ -8,6 +8,7 @@ import { InterestSelection } from "./components/InterestSelection";
 import { SwipeCarousel }  from "./components/SwipeCarousel";
 import { useTranslation } from "react-i18next";
 import { Header } from "./components/Header";
+import { CitySelection } from "./components/CitySelection";
 
 
 // You can keep the AuthView as a plain object/constant if needed
@@ -19,11 +20,13 @@ const AuthView = {
     DASHBOARD: "dashboard",
     INTERESTS: "interests",
     SWIPECAROUSEL: "swipecarousel",
+    CITYSELECTION: "cityselection",
 };
 
 function App() {
     const [currentView, setCurrentView] = useState(AuthView.LOGIN);
     const [user, setUser] = useState(null);
+    const [selectedCity, setSelectedCity] = useState('');
     const { i18n } = useTranslation();
     
 
@@ -103,12 +106,11 @@ function App() {
             {currentView === AuthView.INTERESTS && user && (
                 <InterestSelection
                     user={user}
+                    city={selectedCity}
                     onContinue={(selectedInterests) => {
-                        // If "history" selected, show carousel
                         if (selectedInterests.includes("history")) {
                             setCurrentView(AuthView.SWIPECAROUSEL);
                         } else {
-                            // Otherwise maybe go back to START or somewhere else
                             setCurrentView(AuthView.START);
                         }
                     }}
@@ -118,6 +120,17 @@ function App() {
             {currentView === AuthView.SWIPECAROUSEL && (
                 <SwipeCarousel />
             )}
+
+            {currentView === AuthView.CITYSELECTION && user && (
+                <CitySelection
+                    onCitySelect={(city) => {
+                        setSelectedCity(city);
+                        setCurrentView(AuthView.INTERESTS);
+                    }}
+                    onBack={() => setCurrentView(AuthView.START)}
+                />
+            )}
+
         </div>
         </Suspense>
 

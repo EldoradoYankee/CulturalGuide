@@ -73,10 +73,19 @@ export function Start({ onNavigate }) {
                         return (
                             <button
                                 key={item.id}
-                                onClick={() => onNavigate("interests")}
+                                onClick={() => {
+                                    if (item.id === "preferences") {
+                                        onNavigate("cityselection");
+                                    } else if (item.id === "recommendations") {
+                                        handleNavigate("recommendations");
+                                    } else {
+                                        onNavigate(item.id);
+                                    }
+                                }}
                                 className="group bg-white rounded-2xl shadow-xl p-8 text-left hover:shadow-2xl transition-all hover:scale-105"
                             >
-                                {/* Icon */}
+
+                            {/* Icon */}
                                 <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center mb-6`}>
                                     <Icon className="w-8 h-8 text-white" />
                                 </div>
