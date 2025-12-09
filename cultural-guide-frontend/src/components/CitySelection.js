@@ -1,5 +1,7 @@
 ﻿import { useState } from 'react';
 import { MapPin, Search } from 'lucide-react';
+import {useTranslation} from "react-i18next";
+
 
 const cities = [
     { id: 'camerino', name: 'Camerino' },
@@ -11,6 +13,9 @@ export function CitySelection({ onCitySelect, onBack }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCity, setSelectedCity] = useState('');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    // i18n translations
+    const { t } = useTranslation();
 
     const filteredCities = cities.filter((city) =>
         city.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -37,7 +42,7 @@ export function CitySelection({ onCitySelect, onBack }) {
                         <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
                             <MapPin className="w-8 h-8 text-indigo-600" />
                         </div>
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">Wählen Sie Ihre Stadt</h1>
+                        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t("citySelection_chooseCity")}</h1>
                         <p className="text-gray-600">
                             Suchen Sie nach einer Stadt oder wählen Sie aus der Liste
                         </p>

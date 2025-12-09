@@ -82,5 +82,8 @@
   "email_passwordRecovery_salutation": "Hallo",
   "email_passwordRecovery_subject": "Sie haben ein Zurücksetzen des Passworts angefordert.",
   "email_passwordRecovery_link": "Passwort zurücksetzen",
-  "email_passwordRecovery_ignoreMessage": "Wenn Sie diese Anfrage nicht gestellt haben, können Sie diese Nachricht ignorieren."
+  "email_passwordRecovery_ignoreMessage": "Wenn Sie diese Anfrage nicht gestellt haben, können Sie diese Nachricht ignorieren.",
+  
+  "citySelection_chooseCity": "Wählen Sie Ihre Stadt",
+  
 }
