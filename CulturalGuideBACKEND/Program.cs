@@ -1,6 +1,8 @@
 using CulturalGuideBACKEND.Data;
 using CulturalGuideBACKEND.Models;
 using CulturalGuideBACKEND.Services.Email;
+using CulturalGuideBACKEND.Services.SwaggerEppoiService;
+using CulturalGuideBACKEND.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -21,7 +23,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ??
                       "Data Source=app.db"));
 
-// Password hasher
+// Password hasher scope
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 // CORS
@@ -59,6 +61,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Email service
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+// App Startup Service (testing purpose only)
+builder.Services.AddHostedService<AppStartupService>();
+
+// Required for IHttpClientFactory
+builder.Services.AddHttpClient();
+
+// Named Eppoi API client
+builder.Services.AddHttpClient("EppoiClient", client =>
+{
+	Console.WriteLine("BASE URL: " + builder.Configuration["SwaggerEppoiApi:BaseUrl"]);
+	Console.WriteLine("API KEY: " + builder.Configuration["SwaggerEppoiApi:ApiKey"]);
+
+	var config = builder.Configuration;
+    client.BaseAddress = new Uri("https://apispm.eppoi.io");
+});
+
+// Register the service
+builder.Services.AddScoped<ISwaggerEppoiApiService, SwaggerEppoiApiService>();
 
 // Fluent Email
 //builder.Services.AddFluentEmail("no-reply@yourapp.com")
