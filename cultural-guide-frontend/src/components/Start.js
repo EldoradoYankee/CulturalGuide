@@ -74,10 +74,8 @@ export function Start({ onNavigate }) {
                             <button
                                 key={item.id}
                                 onClick={() => {
-                                    if (item.id === "preferences") {
-                                        onNavigate("cityselection");
-                                    } else if (item.id === "recommendations") {
-                                        handleNavigate("recommendations");
+                                    if (item.id === "recommendations") {
+                                        onNavigate("cityselection"); // Changed from handleNavigate to onNavigate
                                     } else {
                                         onNavigate(item.id);
                                     }

@@ -1,18 +1,57 @@
-﻿import { useState } from "react";
+﻿import { useState, useEffect } from "react";
 import { Landmark, Music, Palette, ShoppingBag, Sparkles, TreePine, Utensils, Waves } from "lucide-react";
 import { InterestCard } from "./InterestCard";
+import { useTranslation } from "react-i18next";
 
+//New code for translating the buttons
 export function InterestSelection({ user, city = 'Barcelona', onContinue }) {
-    const [interests, setInterests] = useState([
-        { id: 'history', title: 'History & Culture', icon: Landmark, selected: false },
-        { id: 'nature', title: 'Nature & Adventure', icon: TreePine, selected: false },
-        { id: 'food', title: 'Food & Wine', icon: Utensils, selected: false },
-        { id: 'art', title: 'Art & Museums', icon: Palette, selected: false },
-        { id: 'nightlife', title: 'Night Life', icon: Music, selected: false },
-        { id: 'wellness', title: 'Wellness & Relaxation', icon: Sparkles, selected: false },
-        { id: 'shopping', title: 'Shopping', icon: ShoppingBag, selected: false },
-        { id: 'beach', title: 'Beach & Sea', icon: Waves, selected: false },
-    ]);
+
+    const { t, i18n } = useTranslation();
+
+    const getInterests = () => [
+        { id: 'history', title: t("interestSelection_history"), icon: Landmark, selected: false },
+        { id: 'nature', title: t("interestSelection_nature"), icon: TreePine, selected: false },
+        { id: 'food', title: t("interestSelection_food"), icon: Utensils, selected: false },
+        { id: 'art', title: t("interestSelection_art"), icon: Palette, selected: false },
+        { id: 'nightlife', title: t("interestSelection_nightlife"), icon: Music, selected: false },
+        { id: 'wellness', title: t("interestSelection_wellness"), icon: Sparkles, selected: false },
+        { id: 'shopping', title: t("interestSelection_shopping"), icon: ShoppingBag, selected: false },
+        { id: 'beach', title: t("interestSelection_beach"), icon: Waves, selected: false },
+    ];
+
+    const [interests, setInterests] = useState(getInterests());
+
+    useEffect(() => {
+        const currentSelected = interests.map(i => i.id).filter(id =>
+            interests.find(interest => interest.id === id && interest.selected)
+        );
+
+        const updatedInterests = getInterests();
+        setInterests(updatedInterests.map(interest => ({
+            ...interest,
+            selected: currentSelected.includes(interest.id)
+        })));
+    }, [i18n.language]);
+
+
+    //Old code in case something breaks
+/* export function InterestSelection({ user, city = 'Barcelona', onContinue }) {
+
+    const { t } = useTranslation();
+
+    // Added into an array to make the translation work
+    const getInterests = () => [
+        { id: 'history', title: t("interestSelection_history"), icon: Landmark, selected: false },
+        { id: 'nature', title: t("interestSelection_nature"), icon: TreePine, selected: false },
+        { id: 'food', title: t("interestSelection_food"), icon: Utensils, selected: false },
+        { id: 'art', title: t("interestSelection_art"), icon: Palette, selected: false },
+        { id: 'nightlife', title: t("interestSelection_nightlife"), icon: Music, selected: false },
+        { id: 'wellness', title: t("interestSelection_wellness"), icon: Sparkles, selected: false },
+        { id: 'shopping', title: t("interestSelection_shopping"), icon: ShoppingBag, selected: false },
+        { id: 'beach', title: t("interestSelection_beach"), icon: Waves, selected: false },
+    ];
+
+    const [interests, setInterests] = useState(getInterests()); */
 
     const toggleInterest = (id) => {
         setInterests((prev) =>
@@ -37,16 +76,16 @@ export function InterestSelection({ user, city = 'Barcelona', onContinue }) {
                     {/* Header */}
                     <div className="mb-8">
                         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-                            Hello, {user.name}!
+                            {t("interestSelection_greetings")}, {user.name}!
                         </h1>
                         <p className="text-gray-600 mb-4 text-lg">
-                            Customize your tourist experience by answering a few questions.
+                            {t("interestSelection_subtitle")}
                         </p>
                         <div className="inline-flex items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm mb-6">
-                            📍 Destination: {city}
+                            {t("interestSelection_destination")} {city}
                         </div>
                         <h2 className="text-xl font-semibold text-gray-900 border-b pb-2">
-                            What are your interests?
+                            {t("interestSelection_selectionQuestion")}
                         </h2>
                     </div>
 
@@ -67,15 +106,15 @@ export function InterestSelection({ user, city = 'Barcelona', onContinue }) {
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-100">
                         <p className={`font-medium ${selectedCount > 0 ? 'text-indigo-600' : 'text-gray-400'}`}>
                             {selectedCount > 0
-                                ? `${selectedCount} interest${selectedCount !== 1 ? 's' : ''} selected`
-                                : 'Select at least one interest to continue'}
+                                ? `${selectedCount} ${t("interestSelection_selected")}`
+                                : t("interestSelection_selectAtLeastOne")}
                         </p>
                         <button
                             onClick={handleContinue}
                             disabled={selectedCount === 0}
                             className="w-full sm:w-auto px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed active:scale-95"
                         >
-                            Continue
+                            {t("interestSelection_continue")}
                         </button>
                     </div>
 

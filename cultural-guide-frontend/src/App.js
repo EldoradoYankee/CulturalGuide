@@ -118,7 +118,9 @@ function App() {
             )}
 
             {currentView === AuthView.SWIPECAROUSEL && (
-                <SwipeCarousel />
+                <SwipeCarousel
+                    onBack={() => setCurrentView(AuthView.CITYSELECTION)}
+                />
             )}
 
             {currentView === AuthView.CITYSELECTION && user && (
