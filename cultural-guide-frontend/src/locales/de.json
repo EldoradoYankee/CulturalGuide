@@ -92,6 +92,8 @@
   "citySelection_selectFromList": "Oder wählen Sie aus der Liste",
   "citySelection_dropDownMenu": "Bitte wählen Sie eine Stadt",
   "citySelection_selectCity": "Ausgewählte Stadt:",
+  "citySelection_Continue": "Weiter",
+  "citySelection_goBack": "Zurück",
 
   "interestSelection_history": "Geschichte & Kultur",
   "interestSelection_nature": "Natur & Abenteuer",
