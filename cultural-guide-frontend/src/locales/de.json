@@ -82,5 +82,14 @@
   "email_passwordRecovery_salutation": "Hallo",
   "email_passwordRecovery_subject": "Sie haben ein Zurücksetzen des Passworts angefordert.",
   "email_passwordRecovery_link": "Passwort zurücksetzen",
-  "email_passwordRecovery_ignoreMessage": "Wenn Sie diese Anfrage nicht gestellt haben, können Sie diese Nachricht ignorieren."
+  "email_passwordRecovery_ignoreMessage": "Wenn Sie diese Anfrage nicht gestellt haben, können Sie diese Nachricht ignorieren.",
+  
+  "citySelection_chooseCity": "Wählen Sie Ihre Stadt",
+  "citySelection_searchACitySubtitle": "Suchen Sie nach einer Stadt oder wählen Sie aus der Liste",
+  "citySelection_searchACityTitle": "Stadt suchen",
+  "citySelection_Lens": "Stadt eingeben...",
+  "citySelection_noCitiesFound": "Keine Städte gefunden",
+  "citySelection_selectFromList": "Oder wählen Sie aus der Liste",
+  "citySelection_dropDownMenu": "Bitte wählen Sie eine Stadt",
+  "citySelection_selectCity": "Ausgewählte Stadt:"
 }

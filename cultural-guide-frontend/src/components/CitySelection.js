@@ -1,5 +1,7 @@
 ﻿import { useState } from 'react';
 import { MapPin, Search } from 'lucide-react';
+import {useTranslation} from "react-i18next";
+
 
 const cities = [
     { id: 'camerino', name: 'Camerino' },
@@ -11,6 +13,9 @@ export function CitySelection({ onCitySelect, onBack }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCity, setSelectedCity] = useState('');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    // i18n translations
+    const { t } = useTranslation();
 
     const filteredCities = cities.filter((city) =>
         city.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -37,16 +42,16 @@ export function CitySelection({ onCitySelect, onBack }) {
                         <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
                             <MapPin className="w-8 h-8 text-indigo-600" />
                         </div>
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">Wählen Sie Ihre Stadt</h1>
+                        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t("citySelection_chooseCity")}</h1>
                         <p className="text-gray-600">
-                            Suchen Sie nach einer Stadt oder wählen Sie aus der Liste
+                            {t("citySelection_searchACitySubtitle")}
                         </p>
                     </div>
 
                     {/* Search Bar */}
                     <div className="mb-6">
                         <label htmlFor="city-search" className="block text-gray-700 mb-2 font-medium">
-                            Stadt suchen
+                            {t("citySelection_searchACityTitle")}
                         </label>
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -59,7 +64,7 @@ export function CitySelection({ onCitySelect, onBack }) {
                                     setIsDropdownOpen(true);
                                 }}
                                 onFocus={() => setIsDropdownOpen(true)}
-                                placeholder="Stadt eingeben..."
+                                placeholder={t("citySelection_Lens")}
                                 className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             />
                         </div>
@@ -80,7 +85,7 @@ export function CitySelection({ onCitySelect, onBack }) {
                                     ))
                                 ) : (
                                     <div className="px-4 py-3 text-gray-500">
-                                        Keine Städte gefunden
+                                        {t("citySelection_noCitiesFound")}
                                     </div>
                                 )}
                             </div>
@@ -90,7 +95,7 @@ export function CitySelection({ onCitySelect, onBack }) {
                     {/* Dropdown Menu */}
                     <div className="mb-8">
                         <label htmlFor="city-dropdown" className="block text-gray-700 mb-2 font-medium">
-                            Oder wählen Sie aus der Liste
+                            {t("citySelection_selectFromList")}
                         </label>
                         <div className="relative">
                             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
@@ -98,9 +103,9 @@ export function CitySelection({ onCitySelect, onBack }) {
                                 id="city-dropdown"
                                 value={selectedCity}
                                 onChange={(e) => setSelectedCity(e.target.value)}
-                                className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent appearance-none bg-white cursor-pointer"
+                                className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent appearance-none bg-white cursor-pointer text-gray-900"
                             >
-                                <option value="">Bitte wählen Sie eine Stadt</option>
+                                <option value="" disabled hidden className="text-gray-400">{t("citySelection_dropDownMenu")}</option>
                                 {cities.map((city) => (
                                     <option key={city.id} value={city.name}>
                                         {city.name}
@@ -129,7 +134,7 @@ export function CitySelection({ onCitySelect, onBack }) {
                             <div className="flex items-center gap-3">
                                 <MapPin className="w-6 h-6 text-indigo-600" />
                                 <div>
-                                    <p className="text-gray-600">Ausgewählte Stadt:</p>
+                                    <p className="text-gray-600">{t("citySelection_selectCity")}</p>
                                     <p className="font-semibold text-indigo-900">{selectedCity}</p>
                                 </div>
                             </div>
@@ -143,7 +148,7 @@ export function CitySelection({ onCitySelect, onBack }) {
                                 onClick={onBack}
                                 className="w-full sm:w-auto px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                             >
-                                Zurück
+                                {t("citySelection_goBack")}
                             </button>
                         )}
                         <button
@@ -151,7 +156,7 @@ export function CitySelection({ onCitySelect, onBack }) {
                             disabled={!selectedCity}
                             className="w-full sm:flex-1 px-8 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
                         >
-                            Weiter
+                            {t("citySelection_Continue")}
                         </button>
                     </div>
                 </div>
