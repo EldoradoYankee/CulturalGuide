@@ -95,6 +95,12 @@
   "citySelection_Continue": "Continua",
   "citySelection_goBack": "Torna indietro",
 
+  "swipeCarousel_viewDetails": "Vedi Dettagli",
+  "swipeCarousel_location": "Posizione",
+  "swipeCarousel_hours": "Orari",
+  "swipeCarousel_detailsClicked": "Dettagli per",
+  "swipeCarousel_back": "Indietro",
+
   "interestSelection_history": "Storia e Cultura",
   "interestSelection_nature": "Natura e Avventura",
   "interestSelection_food": "Cibo e Vino",

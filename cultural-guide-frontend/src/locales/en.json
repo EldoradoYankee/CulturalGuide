@@ -95,6 +95,12 @@
   "citySelection_Continue": "Continue",
   "citySelection_goBack": "Go back",
 
+  "swipeCarousel_viewDetails": "View Details",
+  "swipeCarousel_location": "Location",
+  "swipeCarousel_hours": "Opening Hours",
+  "swipeCarousel_detailsClicked": "Details for",
+  "swipeCarousel_back": "Back",
+
   "interestSelection_history": "History & Culture",
   "interestSelection_nature": "Nature & Adventure",
   "interestSelection_food": "Food & Wine",
