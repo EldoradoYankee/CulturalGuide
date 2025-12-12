@@ -54,12 +54,49 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
             return new { message = "POI endpoint skeleton", city };
         }
 
-        public async Task<object> GetPoiDetailsAsync(string id)
+		// =====================
+        // EATANDDRINK BY MUNICIPALITY
+        // =====================
+        public async Task<IEnumerable<EppoiEatAndDrinksDTO>> GetEatAndDrinksAsync(string municipality, string language)
         {
             await EnsureAuthenticatedAsync();
-            return new { message = "POI details skeleton", id };
+
+			var url = $"/api/eat-and-drink/card-list?municipality={municipality}&language={language}";
+
+			_logger.LogInformation($"Eppoi GetEatAndDrinksAsync Base URL: {url}");
+            var response = await _httpClient.GetAsync(url);
+
+            response.EnsureSuccessStatusCode();
+
+			// Deserialize JSON response into DTOs
+            var result = await response.Content.ReadFromJsonAsync<IEnumerable<EppoiEatAndDrinksDTO>>();
+
+			_logger.LogInformation($"Eppoi GetEatAndDrinksAsync response: {result.Count()} items received for municipality: {municipality}");
+
+			// save to db if not already present
+			//foreach (var m in result)
+            //{
+            //    bool exists = _db.EatAndDrink.Any(x => x.EntityName == m.EntityName);
+
+            //    if (!exists)
+            //    {
+            //        _db.EatAndDrink.Add(new EatAndDrink
+            //        {
+            //            EntityName = m.EntityName,
+            //            ImagePath = m.ImagePath,
+			//			BadgeText = m.BadgeText,
+			//			Address = m.Address
+            //        });
+            //        await _db.SaveChangesAsync();	
+            //    }
+            //}
+
+            return result ?? Array.Empty<EppoiEatAndDrinksDTO>();
         }
 
+		// =====================
+        // SEARCH EXPERIENCES
+        // =====================
         public async Task<object> SearchExperiencesAsync(SwaggerEppoiRequest request)
         {
             await EnsureAuthenticatedAsync();
@@ -87,12 +124,6 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
     		_logger.LogInformation("Categories received from Eppoi API:");
 
 			var resultCategories = await response.Content.ReadFromJsonAsync<IEnumerable<EppoiCategoriesDTO>>();
-			
-			// Log each category
-    		foreach (var cat in resultCategories)
-    		{
-        		_logger.LogInformation($"Category: {cat.Category}, Label: {cat.Label}");
-            }
 
             response.EnsureSuccessStatusCode();
 			_logger.LogInformation($"Eppoi GetCategoriesAsync response status: {response.StatusCode}");
@@ -132,6 +163,7 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
 			// save to database			
 			int addedCount = 0;
 
+			// save to db if not already present
             foreach (var m in result)
             {
                 bool exists = _db.Municipalities.Any(x => x.LegalName == m.LegalName);

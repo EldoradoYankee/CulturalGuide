@@ -1,42 +1,14 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { ChevronLeft, ChevronRight, MapPin, Clock } from 'lucide-react';
 import { toast } from 'sonner';
- 
-// -----------------------------
-// Mock Data.
-// -----------------------------
-const mockPointsOfInterest = [
-    {
-        id: '1',
-        type: 'restaurant',
-        image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1080&q=80',
-        title: { de: 'La Terrazza', en: 'La Terrazza' },
-        description: { de: 'Exquisite Küche...', en: 'Exquisite cuisine...' },
-        location: 'Passeig de Gràcia 43',
-        openingHours: '12:00 - 23:00',
-    },
-    {
-        id: '2',
-        type: 'museum',
-        image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1080&q=80',
-        title: { de: 'Museo Storico', en: 'History Museum' },
-        description: { de: 'Scopri la storia...', en: 'Discover history...' },
-        location: 'Via Roma 10',
-        openingHours: '09:00 - 18:00',
-    },
-    {
-        id: '3',
-        type: 'park',
-        image: 'https://images.unsplash.com/photo-1496417263034-38ec4f0d6b21?w=1080&q=80',
-        title: { de: 'Central Park', en: 'Central Park' },
-        description: { de: 'Natura nel centro...', en: 'Nature in the center...' },
-        location: 'Plaza Mayor',
-        openingHours: 'Open 24h',
-    }
-];
+import { useTranslation } from 'react-i18next';
+
+
+
+
 
 // -----------------------------
 // Arrows
@@ -62,8 +34,18 @@ const PrevArrow = ({ onClick }) => (
 // -----------------------------
 // SwipeCarousel Component
 // -----------------------------
-export function SwipeCarousel({ language = 'de', onViewDetails, onBack }) {
+export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
+    // GET EatAndDrinks data from API
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
     const [currentSlide, setCurrentSlide] = useState(0);
+    const { t, i18n } = useTranslation();
+    const [eatAndDrinks, setEatAndDrinks] = useState([]);
+    const selectedCity = municipality;
+
+    // DEBUG municipality name
+    //console.log('municipality in carousel: ', municipality);
+
 
     const settings = {
         dots: true,
@@ -86,39 +68,79 @@ export function SwipeCarousel({ language = 'de', onViewDetails, onBack }) {
             },
         ],
     };
+    
+    // Fetch EatAndDrinks data when municipality or language changes and set EatAndDrinks into carousell
+    useEffect(() => {
+        if (!municipality) return; // nothing to fetch yet
+        
+        // DEBUG municipality name
+        //console.log('municipality in carousel: ', municipality);
+        const fetchEatAndDrinks = async () => {
+            setLoading(true);
+            setError("");
 
-    const translations = {
-        viewDetails: {
-            de: 'Details ansehen',
-            en: 'View Details',
-            es: 'Ver Detalles',
-            fr: 'Voir Détails',
-        },
-        location: {
-            de: 'Standort',
-            en: 'Location',
-            es: 'Ubicación',
-            fr: 'Emplacement',
-        },
-        hours: {
-            de: 'Öffnungszeiten',
-            en: 'Opening Hours',
-            es: 'Horario',
-            fr: 'Horaires',
-        },
-        detailsClicked: {
-            de: 'Details für',
-            en: 'Details for',
-            es: 'Detalles de',
-            fr: 'Détails pour',
-        },
-    };
+            try {
+                const municipality = selectedCity;
+                const language = i18n.language;
+
+                // DEBUG municipality name
+                //console.log('municipality in carousel: ', municipality);
+                
+                const response = await fetch(
+                    `http://localhost:5203/api/eppoiapi/eat-and-drinks?municipality=${encodeURIComponent(municipality)}&language=${encodeURIComponent(language)}`,
+                    {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                    }
+                );
+                
+                // DEBUG response status
+                //console.log("response from fetch with massignano: " + response.status);
+
+                if (!response.ok) {
+                    setError(`Error fetching eatAndDrinks: ${response.status}`);
+                    return;
+                }
+
+                // await response and parse JSON to array
+                const data = await response.json().catch(() => []);
+
+                // Transform backend data to the expected template
+                const transformed = data.map((eatAndDrinks) => ({
+                    id: eatAndDrinks.entityId,
+                    type: eatAndDrinks.badgeText, // or map your types properly
+                    image: eatAndDrinks.imagePath
+                        ? `https://apispm.eppoi.io${eatAndDrinks.imagePath}`
+                        : "../images/ImageWithFallback.jpg",                    
+                    title: eatAndDrinks.entityName,             // plain string without translations
+                    description: eatAndDrinks.badgeText || "",  // plain string without translations
+                    location: eatAndDrinks.address || "Unknown address",
+                    openingHours: "N/A", // you can extend backend to provide this if available
+                }));
+                
+                // DEBUG transformed data
+                console.log(transformed);
+
+                setEatAndDrinks(transformed);
+
+            } catch (err) {
+                console.error(err);
+                setError("Network error while fetching eatAndDrinks");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchEatAndDrinks();
+    }, [selectedCity, i18n.language]);
+
 
     const handleViewDetails = (poi) => {
         if (onViewDetails) {
             onViewDetails(poi);
         } else {
-            toast.success(`${translations.detailsClicked[language]} ${poi.title[language]}`);
+            toast.success(`${t('swipeCarousel_detailsClicked')} ${poi.title[i18n.language]}`);
         }
     };
 
@@ -131,7 +153,7 @@ export function SwipeCarousel({ language = 'de', onViewDetails, onBack }) {
                     className="mb-6 flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition"
                 >
                     <ChevronLeft className="w-5 h-5" />
-                    {language === 'de' ? 'Zurück' : language === 'en' ? 'Back' : 'Indietro'}
+                    {t('swipeCarousel_back')}
                 </button>
             )}
             <style>
@@ -154,46 +176,46 @@ export function SwipeCarousel({ language = 'de', onViewDetails, onBack }) {
             </style>
 
             <Slider {...settings}>
-                {mockPointsOfInterest.map((poi) => (
-                    <div key={poi.id} className="px-2">
+                {eatAndDrinks.map((eatAndDrink) => (
+                    <div key={eatAndDrink.id} className="px-2">
                         <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:shadow-2xl">
                             {/* Image */}
                             <div className="relative h-64 md:h-80 overflow-hidden">
                                 <img
-                                    alt={"alt text sample of a cultural activity"}
-                                    src={"../images/ImageWithFallback.jpg"}
+                                    alt={eatAndDrink.title[i18n.language]}
+                                    src={eatAndDrink.image}
                                     className="w-full h-full object-cover"
                                 />
                                 <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow-xl">
-                                    <span className="text-indigo-600 capitalize">{poi.type}</span>
+                                    <span className="text-indigo-600 capitalize">{eatAndDrink.type}</span>
                                 </div>
                             </div>
 
                             {/* Content */}
                             <div className="p-6">
-                                <h2 className="text-gray-900 mb-4">{poi.title[language]}</h2>
-
+                                <h2 className="text-gray-900 mb-4">{eatAndDrink.title}</h2>
+                                
                                 <p className="text-gray-600 mb-4 line-clamp-3">
-                                    {poi.description[language]}
+                                    {eatAndDrink.description[i18n.language]}
                                 </p>
 
                                 <div className="space-y-2 mb-6">
                                     <div className="flex items-center gap-2 text-gray-600">
                                         <MapPin className="w-4 h-4 text-indigo-600 flex-shrink-0" />
-                                        <span>{poi.location}</span>
+                                        <span>{eatAndDrink.location}</span>
                                     </div>
 
                                     <div className="flex items-center gap-2 text-gray-600">
                                         <Clock className="w-4 h-4 text-indigo-600 flex-shrink-0" />
-                                        <span>{poi.openingHours}</span>
+                                        <span>{eatAndDrink.openingHours}</span>
                                     </div>
                                 </div>
 
                                 <button
                                     className="w-full bg-indigo-600 text-white py-2 px-4 rounded-xl hover:bg-indigo-700 transition"
-                                    onClick={() => handleViewDetails(poi)}
+                                    onClick={() => handleViewDetails(eatAndDrink)}
                                 >
-                                    {translations.viewDetails[language]}
+                                    {t('swipeCarousel_viewDetails')}
                                 </button>
                             </div>
                         </div>

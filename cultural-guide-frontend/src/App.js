@@ -106,7 +106,7 @@ function App() {
             {currentView === AuthView.INTERESTS && user && (
                 <InterestSelection
                     user={user}
-                    city={selectedCity}
+                    city={selectedCity.trim().split(" ").pop()}
                     onContinue={(selectedInterests) => {
                         if (selectedInterests.includes("history")) {
                             setCurrentView(AuthView.SWIPECAROUSEL);
@@ -119,6 +119,7 @@ function App() {
 
             {currentView === AuthView.SWIPECAROUSEL && (
                 <SwipeCarousel
+                    municipality={selectedCity.trim().split(" ").pop()}
                     onBack={() => setCurrentView(AuthView.CITYSELECTION)}
                 />
             )}
@@ -126,7 +127,7 @@ function App() {
             {currentView === AuthView.CITYSELECTION && user && (
                 <CitySelection
                     onCitySelect={(city) => {
-                        setSelectedCity(city);
+                        setSelectedCity(city.trim().split(" ").pop());
                         setCurrentView(AuthView.INTERESTS);
                     }}
                     onBack={() => setCurrentView(AuthView.START)}
