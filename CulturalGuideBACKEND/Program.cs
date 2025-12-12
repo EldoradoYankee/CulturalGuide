@@ -4,6 +4,7 @@ using CulturalGuideBACKEND.Services.Email;
 using CulturalGuideBACKEND.Services.SwaggerEppoiService;
 using CulturalGuideBACKEND.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
@@ -81,6 +82,16 @@ builder.Services.AddHttpClient("EppoiClient", client =>
 // Register the service
 builder.Services.AddScoped<ISwaggerEppoiApiService, SwaggerEppoiApiService>();
 
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
+
 // Fluent Email
 //builder.Services.AddFluentEmail("no-reply@yourapp.com")
 //    .AddSmtpSender("smtp.server.com", 587, "smtp-user", "smtp-password");
@@ -100,6 +111,14 @@ app.UseCors("AllowReactDev"); // must come BEFORE Authentication/Authorization
 
 app.UseAuthentication();
 app.UseAuthorization(); // prevent No 'Access-Control-Allow-Origin' header is present error in client
+
+// Enable Swagger UI in Development
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 
 app.MapControllers();
 

@@ -58,12 +58,20 @@ namespace CulturalGuideBACKEND.Controllers
 
         // ===============================
         //  EXAMPLE ENDPOINT #2
-        //  Fetch details for a single POI
+        //  Fetch details for a EatAndDrink POI by municipality
         // ===============================
-        [HttpGet("poi/{id}")]
-        public async Task<IActionResult> GetPoiDetails([FromRoute] string id)
+		
+		/// <summary>
+		/// Retrieves the Eat And Drink (POIs) for a given city.
+		/// </summary>
+		/// <param name="city">Name of the municipality</param>
+		/// <returns>List of POIs</returns>
+		[HttpGet("eat-and-drinks")]
+        public async Task<IActionResult> GetEatAndDrinks(
+            [FromQuery] string municipality,
+            [FromQuery] string language)
         {
-            var result = await _swaggerEppoiService.GetPoiDetailsAsync(id);
+            var result = await _swaggerEppoiService.GetEatAndDrinksAsync(municipality, language);
             return Ok(result);
         }
 
@@ -71,6 +79,14 @@ namespace CulturalGuideBACKEND.Controllers
         //  EXAMPLE ENDPOINT #3
         //  Search for experiences based on interests
         // ===============================
+		/// <summary>
+		/// Returns all available categories available for a specific municipality from the external Eppoi API.
+		/// </summary>
+		/// <remarks>
+		/// Maps to: https://apispm.eppoi.io/api/categories
+		/// </remarks>
+		/// <response code="200">List of municipalities</response>
+		/// <response code="500">Server error fetching municipalities</response>
         [HttpPost("search")]
         public async Task<IActionResult> SearchExperiences([FromBody] SwaggerEppoiRequest request)
         {
@@ -84,6 +100,15 @@ namespace CulturalGuideBACKEND.Controllers
         //  Maps to:
         //  https://apispm.eppoi.io/api/categories?municipality=Massignano&language=it
         // ===============================
+		
+		/// <summary>
+		/// Returns all available categories available for a specific municipality from the external Eppoi API.
+		/// </summary>
+		/// <remarks>
+		/// Maps to: https://apispm.eppoi.io/api/categories
+		/// </remarks>
+		/// <response code="200">List of municipalities</response>
+		/// <response code="500">Server error fetching municipalities</response>
         [HttpGet("categories")]
         public async Task<IActionResult> GetCategories(
             [FromQuery] string municipality,
@@ -96,8 +121,16 @@ namespace CulturalGuideBACKEND.Controllers
         // ===============================
         //  EXAMPLE ENDPOINT #5
         //  municipalities
-        //  Maps to: https://apispm.eppoi.io/api/organizations/municipalities
+        //  Maps to: https://apispm.eppoi.io/api/municipalities
         // ===============================
+		/// <summary>
+		/// Returns all available municipalities from the external Eppoi API.
+		/// </summary>
+		/// <remarks>
+		/// Maps to: https://apispm.eppoi.io/api/organizations/municipalities
+		/// </remarks>
+		/// <response code="200">List of municipalities</response>
+		/// <response code="500">Server error fetching municipalities</response>
         [HttpGet("municipalities")]
         public async Task<IActionResult> GetMunicipalities()
         {
