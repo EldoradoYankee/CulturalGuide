@@ -17,7 +17,7 @@ import defaultImage from '../images/ImageWithFallback.jpg';
 const NextArrow = ({ onClick }) => (
     <button
         onClick={onClick}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-xl hover:shadow-2xl flex items-center justify-center transition-all hover:scale-110"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-xl hover:shadow-2xl flex items-center justify-center transition-all hover:scale-110 border-2 border-gray-200 hover:border-indigo-600"
     >
         <ChevronRight className="w-6 h-6 text-gray-700" />
     </button>
@@ -26,7 +26,7 @@ const NextArrow = ({ onClick }) => (
 const PrevArrow = ({ onClick }) => (
     <button
         onClick={onClick}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-xl hover:shadow-2xl flex items-center justify-center transition-all hover:scale-110"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-xl hover:shadow-2xl flex items-center justify-center transition-all hover:scale-110 border-2 border-gray-200 hover:border-indigo-600"
     >
         <ChevronLeft className="w-6 h-6 text-gray-700" />
     </button>
