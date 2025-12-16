@@ -195,7 +195,7 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
             <Slider {...settings}>
                 {eatAndDrinks.map((eatAndDrink) => (
                     <div key={eatAndDrink.id} className="px-2">
-                        <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:shadow-2xl">
+                        <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all hover:shadow-2xl border-2 border-transparent hover:border-indigo-600">
                             {/* Image */}
                             <div className="relative h-64 md:h-80 overflow-hidden">
                                 <img
