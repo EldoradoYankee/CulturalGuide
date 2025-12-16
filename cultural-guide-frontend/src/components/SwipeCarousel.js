@@ -61,7 +61,7 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
         slidesToShow: 1,
         slidesToScroll: 1,
         centerMode: true,
-        centerPadding: '60px',
+        centerPadding: '80px',
         nextArrow: <NextArrow />,
         prevArrow: <PrevArrow />,
         beforeChange: (_current, next) => setCurrentSlide(next),
@@ -69,7 +69,7 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
             {
                 breakpoint: 768,
                 settings: {
-                    centerPadding: '20px',
+                    centerPadding: '40px',
                     arrows: false,
                 },
             },
@@ -155,7 +155,7 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
     };
 
     return (
-        <div className="w-full py-8 px-4">
+        <div className="w-full py-8 px-4 overflow-hidden">
             {/* Bottone Indietro */}
             {onBack && (
                 <button
@@ -168,6 +168,10 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
             )}
             <style>
                 {`
+                
+          .slick-slider {
+            margin: 0 -80px;
+          }
           .slick-dots li button:before {
             font-size: 10px;
             color: #6366f1;
@@ -184,6 +188,9 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
           }
         `}
             </style>
+
+            {/* Carousel max width container */}
+            <div className="max-w-4xl mx-auto">
 
             <Slider {...settings}>
                 {eatAndDrinks.map((eatAndDrink) => (
@@ -237,6 +244,7 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
                     </div>
                 ))}
             </Slider>
+        </div>
         </div>
     );
 }
