@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { ChevronLeft, ChevronRight, MapPin, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import defaultImage from '../images/ImageWithFallback.jpg';
 
 
 
@@ -112,7 +113,7 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
                     type: eatAndDrinks.badgeText, // or map your types properly
                     image: eatAndDrinks.imagePath
                         ? `https://apispm.eppoi.io${eatAndDrinks.imagePath}`
-                        : "../images/ImageWithFallback.jpg",                    
+                        : defaultImage,
                     title: eatAndDrinks.entityName,             // plain string without translations
                     description: eatAndDrinks.badgeText || "",  // plain string without translations
                     location: eatAndDrinks.address || "Unknown address",
@@ -140,7 +141,7 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
         if (onViewDetails) {
             onViewDetails(poi);
         } else {
-            toast.success(`${t('swipeCarousel_detailsClicked')} ${poi.title[i18n.language]}`);
+            toast.success(`${t('swipeCarousel_detailsClicked')} ${poi.title}`);
         }
     };
 
@@ -182,9 +183,14 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
                             {/* Image */}
                             <div className="relative h-64 md:h-80 overflow-hidden">
                                 <img
-                                    alt={eatAndDrink.title[i18n.language]}
+                                    alt={eatAndDrink.title}
                                     src={eatAndDrink.image}
                                     className="w-full h-full object-cover"
+
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = defaultImage;
+                                    }}
                                 />
                                 <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow-xl">
                                     <span className="text-indigo-600 capitalize">{eatAndDrink.type}</span>
@@ -194,7 +200,7 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
                             {/* Content */}
                             <div className="p-6">
                                 <h2 className="text-gray-900 mb-4">{eatAndDrink.title}</h2>
-                                
+
                                 <p className="text-gray-600 mb-4 line-clamp-3">
                                     {eatAndDrink.description[i18n.language]}
                                 </p>
