@@ -106,6 +106,7 @@ var app = builder.Build();
 // 3) MIDDLEWARE
 // ---------------------------
 //app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseCors("AllowReactDev"); // must come BEFORE Authentication/Authorization
 

@@ -46,7 +46,13 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
 
     // DEBUG municipality name
     //console.log('municipality in carousel: ', municipality);
-
+    const localImages = [
+        "http://localhost:5203/images/img1Cossignani.jpg",
+        "http://localhost:5203/images/img2MassignanoCaffe.jpg",
+        "http://localhost:5203/images/img3.jpg",
+        "http://localhost:5203/images/img4.jpg",
+        "http://localhost:5203/images/img5.jpg"
+    ];
 
     const settings = {
         dots: true,
@@ -108,12 +114,15 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
                 const data = await response.json().catch(() => []);
 
                 // Transform backend data to the expected template
-                const transformed = data.map((eatAndDrinks) => ({
+                const transformed = data.map((eatAndDrinks,index) => ({
                     id: eatAndDrinks.entityId,
                     type: eatAndDrinks.badgeText, // or map your types properly
+                    /*
                     image: eatAndDrinks.imagePath
-                        ? `https://apispm.eppoi.io${eatAndDrinks.imagePath}`
+                        ? `http://localhost:5203${eatAndDrinks.imagePath}`
                         : defaultImage,
+                        */
+                    image: localImages[index % localImages.length],
                     title: eatAndDrinks.entityName,             // plain string without translations
                     description: eatAndDrinks.badgeText || "",  // plain string without translations
                     location: eatAndDrinks.address || "Unknown address",
