@@ -17,7 +17,7 @@ import defaultImage from '../images/ImageWithFallback.jpg';
 const NextArrow = ({ onClick }) => (
     <button
         onClick={onClick}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-xl hover:shadow-2xl flex items-center justify-center transition-all hover:scale-110 border-2 border-gray-200 hover:border-indigo-600"
+        className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-xl hover:shadow-2xl flex items-center justify-center transition-all hover:scale-110 border-2 border-gray-200 hover:border-indigo-600"
     >
         <ChevronRight className="w-6 h-6 text-gray-700" />
     </button>
@@ -26,7 +26,7 @@ const NextArrow = ({ onClick }) => (
 const PrevArrow = ({ onClick }) => (
     <button
         onClick={onClick}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-xl hover:shadow-2xl flex items-center justify-center transition-all hover:scale-110 border-2 border-gray-200 hover:border-indigo-600"
+        className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-xl hover:shadow-2xl flex items-center justify-center transition-all hover:scale-110 border-2 border-gray-200 hover:border-indigo-600"
     >
         <ChevronLeft className="w-6 h-6 text-gray-700" />
     </button>
@@ -116,13 +116,12 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
                 // Transform backend data to the expected template
                 const transformed = data.map((eatAndDrinks,index) => ({
                     id: eatAndDrinks.entityId,
-                    type: eatAndDrinks.badgeText, // or map your types properly
-                    /*
+                    type: eatAndDrinks.badgeText,
                     image: eatAndDrinks.imagePath
-                        ? `http://localhost:5203${eatAndDrinks.imagePath}`
+                        ? `https://eppoi.io${eatAndDrinks.imagePath}`
                         : defaultImage,
-                        */
-                    image: localImages[index % localImages.length],
+                        
+                    /*image: localImages[index % localImages.length],*/
                     title: eatAndDrinks.entityName,             // plain string without translations
                     description: eatAndDrinks.badgeText || "",  // plain string without translations
                     location: eatAndDrinks.address || "Unknown address",
@@ -190,7 +189,7 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
             </style>
 
             {/* Carousel max width container */}
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-2xl mx-auto">
 
             <Slider {...settings}>
                 {eatAndDrinks.map((eatAndDrink) => (
