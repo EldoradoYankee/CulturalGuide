@@ -106,14 +106,11 @@ function App() {
             {currentView === AuthView.INTERESTS && user && (
                 <InterestSelection
                     user={user}
-                    city={selectedCity.trim().split(" ").pop()}
+                    municipality={selectedCity.trim().split(" ").pop()}
                     onContinue={(selectedInterests) => {
-                        if (selectedInterests.includes("history")) {
                             setCurrentView(AuthView.SWIPECAROUSEL);
-                        } else {
-                            setCurrentView(AuthView.START);
-                        }
-                    }}
+                    }
+                }
                 />
             )}
 

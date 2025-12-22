@@ -34,7 +34,16 @@
   "register_alreadyHaveAccount": "Hai già un account?",
   "register_loginNow": "Accedi ora",
   "register_getsCreated": "Creazione in corso...",
-
+  "register_error_invalidCredentials": "Email o password non corretti",
+  "register_error_generalError": "Si è verificato un errore durante la registrazione",
+  "register_network_error": "Errore di rete. Per favore riprova",
+  "register_error_validName": "Inserisci un indirizzo nome valido",
+  "register_error_validEmail": "Inserisci un indirizzo email valido",
+  "register_error_fillInEmailField": "Per favore compila il campo email",
+  "register_error_fillInPasswordField": "Per favore compila il campo password",
+  "register_error_confirmPassword": "Inserisci la stessa password di sopra",
+  "register_error_agreeTerms": "Per favore accetta i termini di servizio",
+  
   "general_logout": "Disconnetti",
   "general_emailRequired": "Per favore compila il campo email",
   "general_passwordRequired": "Per favore compila il campo parola d'accesso",
@@ -115,5 +124,9 @@
   "interestSelection_selectionQuestion": "Quali sono i tuoi interessi?",
   "interestSelection_continue": "Continua",
   "interestSelection_selected": "interesse selezionato",
-  "interestSelection_selectAtLeastOne": "Seleziona almeno un interesse per continuare"
+  "interestSelection_selectAtLeastOne": "Seleziona almeno un interesse per continuare",
+
+  "loadingSpinner_loading": "Caricamento…",
+  "loadingSpinner_ariaLabel": "Contenuto in caricamento"
+  
 }

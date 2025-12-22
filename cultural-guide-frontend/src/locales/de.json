@@ -34,6 +34,15 @@
   "register_alreadyHaveAccount": "Bereits ein Konto?",
   "register_loginNow": "Jetzt anmelden",
   "register_getsCreated": "Wird erstellt...",
+  "register_error_invalidCredentials": "E-Mail oder Passwort ist falsch",
+  "register_error_generalError": "Fehler beim Anmelden",
+  "register_network_error": "Netzwerkfehler. Bitte versuchen Sie es erneut",
+  "register_error_validName": "Bitte geben Sie einen gültigen Namen ein",
+  "register_error_validEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+  "register_error_fillInEmailField": "Bitte füllen Sie das Email Feld aus",
+  "register_error_fillInPasswordField": "Bitte füllen Sie das Passwort Feld aus",
+  "register_error_confirmPassword": "Bitte füllen Sie das identische Passwort wie oben aus",
+  "register_error_agreeTerms": "Bitte aktzeptieren Sie die Nutzungsbedingungen",
 
   "general_logout": "Abmelden",
   "general_emailRequired": "Bitte füllen Sie das Email Feld aus",
@@ -115,6 +124,9 @@
   "interestSelection_selectionQuestion": "Was sind Ihre Interessen?",
   "interestSelection_continue": "Fortfahren",
   "interestSelection_selected": "Interesse ausgewählt",
-  "interestSelection_selectAtLeastOne": "Wählen Sie mindestens ein Interesse, um fortzufahren"
+  "interestSelection_selectAtLeastOne": "Wählen Sie mindestens ein Interesse, um fortzufahren",
+
+  "loadingSpinner_loading": "Lädt…",
+  "loadingSpinner_ariaLabel": "Inhalt wird geladen"
 
 }

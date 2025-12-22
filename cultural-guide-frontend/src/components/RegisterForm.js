@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Mail, Lock, User, UserPlus } from 'lucide-react';
-import { toast } from 'sonner';
 import { useTranslation } from "react-i18next";
+import {LoadingSpinner} from "./ui_components/Loading";
 
 
 export function RegisterForm({ onRegister, onSwitchToLogin }) {
@@ -9,6 +9,14 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [termsAndConditions, setTermsAndConditions] = useState(false);
+
+    const [nameError, setNameError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState('');
+    const [termsAndConditionsError, setTermsAndCOnditionsError] = useState('');
+    
     const [isLoading, setIsLoading] = useState(false);
     
     const {t } = useTranslation();
@@ -16,26 +24,59 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!name || !email || !password || !confirmPassword) {
-            toast.error('please fill in all fields');
-            return;
+        // reset previous errors
+        setNameError('');
+        setEmailError('');
+        setPasswordError('');
+        setConfirmPasswordError('');
+        setTermsAndCOnditionsError('');
+
+        let hasError = false;
+
+
+        // NAME
+        if (!name || name.trim().length < 5) {
+            setNameError(t('register_error_validName'));
+            hasError = true;
         }
 
-        if (!email.includes('@')) {
-            toast.error('please enter a valid email address');
-            return;
+        // EMAIL
+        if (!email) {
+            setEmailError(t('register_error_fillInEmailField'));
+            hasError = true;
+        } else if (!email.includes('@')) {
+            setEmailError(t('register_error_validEmail'));
+            hasError = true;
         }
 
-        if (password.length < 8) {
-            toast.error('the password must be at least 8 characters long');
-            return;
+        // PASSWORD
+        if (!password) {
+            setPasswordError(t('register_error_fillInPasswordField'));
+            hasError = true;
+        } else if (password.length < 8) {
+            setPasswordError(t('register_passwordPlaceholder'));
+            hasError = true;
         }
 
-        if (password !== confirmPassword) {
-            toast.error('the passwords do not match');
-            return;
+        // CONFIRM PASSWORD
+        if (!confirmPassword) {
+            setConfirmPasswordError(t('register_error_confirmPassword'));
+            hasError = true;
+        } else if (password !== confirmPassword) {
+            setConfirmPasswordError(t('register_error_confirmPassword'));
+            hasError = true;
         }
 
+        // TERMS AND CONDITIONS
+        if (!termsAndConditions) {
+            setTermsAndCOnditionsError(t('register_error_agreeTerms'));
+            hasError = true;
+        }
+        
+        if (hasError) return;
+        
+        
+        // VALIDATION DONE - proceed with registration API call
         setIsLoading(true);
 
         try {
@@ -49,12 +90,12 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
             const body = await response.json().catch(() => null);
 
             if (!response.ok) {
-                toast.error(body?.message || "error while registering");
+                console.log(body?.message || "error while registering");
                 return;
             }
 
             // SUCCESS
-            toast.success("registration successful");
+            console.log("registration successful");
 
             // store jwt
             if (body?.token) {
@@ -66,14 +107,14 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
 
         } catch (error) {
             console.error(error);
-            toast.error("Network error. Please try again.");
+            console.log("Network error. Please try again.");
         } finally {
             setIsLoading(false);
         }
         
         // Simulate API call
         setTimeout(() => {
-            toast.success('Registration successful! Please check your email to verify your account.');
+            console.log('Registration successful! Please check your email to verify your account.');
             onRegister(email, name);
             setIsLoading(false);
         }, 1000);
@@ -106,11 +147,16 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
                                     id="name"
                                     type="text"
                                     value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder={t('register_confirmPassword')}
+                                    onChange={(e) => {setName(e.target.value); setNameError('');}}
+                                    placeholder={t('register_namePlaceholder')}
                                     className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 />
                             </div>
+                            {nameError && (
+                                <p className="text-red-600 text-sm mt-1">
+                                    {nameError}
+                                </p>
+                            )}
                         </div>
 
                         <div>
@@ -121,13 +167,18 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                 <input
                                     id="email"
-                                    type="email"
                                     value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    onChange={(e) => {setEmail(e.target.value); setEmailError('');}}
                                     placeholder={t('register_emailPlaceholder')}
                                     className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 />
-                            </div>
+                                </div>
+                            {emailError && (
+                                <p className="text-red-600 text-sm mt-1">
+                                    {emailError}
+                                </p>
+                            )}
+
                         </div>
 
                         <div>
@@ -140,11 +191,16 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
                                     id="password"
                                     type="password"
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={(e) => {setPassword(e.target.value); setPasswordError('');}}
                                     placeholder={t('register_passwordPlaceholder')}
                                     className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 />
-                            </div>
+                                </div>
+                            {passwordError && (
+                                <p className="text-red-600 text-sm mt-1">
+                                    {passwordError}
+                                </p>
+                            )}
                         </div>
 
                         <div>
@@ -157,31 +213,44 @@ export function RegisterForm({ onRegister, onSwitchToLogin }) {
                                     id="confirmPassword"
                                     type="password"
                                     value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    onChange={(e) => {setConfirmPassword(e.target.value); setPasswordError('');}}
                                     placeholder={t('register_passwordRepeatPlaceholder')}
                                     className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 />
-                            </div>
+                                </div>
+                            {confirmPasswordError && (
+                                <p className="text-red-600 text-sm mt-1">
+                                    {confirmPasswordError}
+                                </p>
+                            )}
                         </div>
 
                         <div className="flex items-start">
                             <input
                                 type="checkbox"
                                 id="terms"
-                                required
+                                checked={termsAndConditions}
+                                onChange={(e) => {
+                                    setTermsAndConditions(e.target.checked);
+                                    setTermsAndCOnditionsError('');
+                                }}
                                 className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 mt-1"
                             />
                             <label htmlFor="terms" className="ml-2 text-gray-600">
-                                {t("register_agreeTerms")}                            
+                                {t("register_error_agreeTerms")}
                             </label>
                         </div>
+
+                        {termsAndConditionsError && (
+                            <p className="text-red-600 text-sm mt-1">{termsAndConditionsError}</p>
+                        )}
 
                         <button
                             type="submit"
                             disabled={isLoading}
                             className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {isLoading ? t("register_getsCreated") : t("register_submit")}                        
+                            {isLoading ? <LoadingSpinner size="sm" className="mx-auto" /> : t("register_submit")}
                         </button>
                     </form>
 
