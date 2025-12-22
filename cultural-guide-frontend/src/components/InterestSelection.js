@@ -1,57 +1,65 @@
 ﻿import { useState, useEffect } from "react";
-import { Landmark, Music, Palette, ShoppingBag, Sparkles, TreePine, Utensils, Waves } from "lucide-react";
-import { InterestCard } from "./InterestCard";
+import defaultImage from '../images/ImageWithFallback.jpg';
 import { useTranslation } from "react-i18next";
+import { LoadingSpinner } from "./ui_components/Loading";
+
 
 //New code for translating the buttons
-export function InterestSelection({ user, city = 'Barcelona', onContinue }) {
-
+export function InterestSelection({ user, municipality, onContinue }) {
     const { t, i18n } = useTranslation();
 
-    const getInterests = () => [
-        { id: 'history', title: t("interestSelection_history"), icon: Landmark, selected: false },
-        { id: 'nature', title: t("interestSelection_nature"), icon: TreePine, selected: false },
-        { id: 'food', title: t("interestSelection_food"), icon: Utensils, selected: false },
-        { id: 'art', title: t("interestSelection_art"), icon: Palette, selected: false },
-        { id: 'nightlife', title: t("interestSelection_nightlife"), icon: Music, selected: false },
-        { id: 'wellness', title: t("interestSelection_wellness"), icon: Sparkles, selected: false },
-        { id: 'shopping', title: t("interestSelection_shopping"), icon: ShoppingBag, selected: false },
-        { id: 'beach', title: t("interestSelection_beach"), icon: Waves, selected: false },
-    ];
-
-    const [interests, setInterests] = useState(getInterests());
+    const [interests, setInterests] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    
 
     useEffect(() => {
-        const currentSelected = interests.map(i => i.id).filter(id =>
-            interests.find(interest => interest.id === id && interest.selected)
-        );
-
-        const updatedInterests = getInterests();
-        setInterests(updatedInterests.map(interest => ({
-            ...interest,
-            selected: currentSelected.includes(interest.id)
-        })));
-    }, [i18n.language]);
+        if (!municipality) return;
+        console.log("InterestSelection municipality:", municipality);
 
 
-    //Old code in case something breaks
-/* export function InterestSelection({ user, city = 'Barcelona', onContinue }) {
+        const fetchCategories = async () => {
+            setLoading(true);
+            setError("");
 
-    const { t } = useTranslation();
+            try {
+                const res = await fetch(
+                    `https://apispm.eppoi.io/api/categories?municipality=${encodeURIComponent(
+                        municipality
+                    )}&language=${i18n.language}`
+                );
 
-    // Added into an array to make the translation work
-    const getInterests = () => [
-        { id: 'history', title: t("interestSelection_history"), icon: Landmark, selected: false },
-        { id: 'nature', title: t("interestSelection_nature"), icon: TreePine, selected: false },
-        { id: 'food', title: t("interestSelection_food"), icon: Utensils, selected: false },
-        { id: 'art', title: t("interestSelection_art"), icon: Palette, selected: false },
-        { id: 'nightlife', title: t("interestSelection_nightlife"), icon: Music, selected: false },
-        { id: 'wellness', title: t("interestSelection_wellness"), icon: Sparkles, selected: false },
-        { id: 'shopping', title: t("interestSelection_shopping"), icon: ShoppingBag, selected: false },
-        { id: 'beach', title: t("interestSelection_beach"), icon: Waves, selected: false },
-    ];
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}`);
+                }
 
-    const [interests, setInterests] = useState(getInterests()); */
+                const data = await res.json();
+
+                setInterests(prev => {
+                    // keep already selected interests
+                    const selectedIds = prev
+                        .filter(i => i.selected)
+                        .map(i => i.id);
+
+                    return data.map(cat => ({
+                        id: cat.category.toLowerCase(),
+                        title: cat.label,
+                        image: cat.imagePath
+                            ? cat.imagePath
+                            : defaultImage,
+                        selected: selectedIds.includes(cat.category.toLowerCase())
+                    }));
+                });
+            } catch (err) {
+                console.error("Failed to load categories", err);
+                setError("Failed to load interests");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCategories();
+    }, [municipality, i18n.language]);
 
     const toggleInterest = (id) => {
         setInterests((prev) =>
@@ -72,7 +80,7 @@ export function InterestSelection({ user, city = 'Barcelona', onContinue }) {
         <div className="min-h-screen bg-gray-50 p-4 md:p-8 flex items-center justify-center">
             <div className="w-full max-w-4xl">
                 <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
-
+                    
                     {/* Header */}
                     <div className="mb-8">
                         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
@@ -82,7 +90,7 @@ export function InterestSelection({ user, city = 'Barcelona', onContinue }) {
                             {t("interestSelection_subtitle")}
                         </p>
                         <div className="inline-flex items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm mb-6">
-                            {t("interestSelection_destination")} {city}
+                            {t("interestSelection_destination")} {municipality || "Massignano"}
                         </div>
                         <h2 className="text-xl font-semibold text-gray-900 border-b pb-2">
                             {t("interestSelection_selectionQuestion")}
@@ -90,17 +98,37 @@ export function InterestSelection({ user, city = 'Barcelona', onContinue }) {
                     </div>
 
                     {/* Interests Grid */}
-                    <div className="max-h-[500px] overflow-y-auto pr-2 mb-8 custom-scrollbar">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {interests.map(interest => (
-                                <InterestCard
-                                    key={interest.id}
-                                    interest={interest}
-                                    onToggle={toggleInterest}
-                                />
-                            ))}
-                        </div>
+                    <div className="p-6">
+                        {loading ? (
+                            <LoadingSpinner size="lg" />
+                        ) : null}
                     </div>
+
+                    {error && <p className="text-red-500">{error}</p>}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {interests.map(interest => (
+                            <div
+                                key={interest.id}
+                                onClick={() => toggleInterest(interest.id)}
+                                className={`cursor-pointer rounded-xl border-2 p-4 transition
+                                ${interest.selected
+                                    ? "border-indigo-600 bg-indigo-50"
+                                    : "border-gray-200 bg-white"
+                                }`}
+                            >
+                                <img
+                                    src={interest.image}
+                                    alt={interest.title}
+                                    className="h-32 w-full object-contain mb-3"
+                                />
+                                <h3 className="text-lg font-semibold text-center">
+                                    {interest.title}
+                                </h3>
+                            </div>
+                        ))}
+                    </div>
+
 
                     {/* Footer */}
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-100">
