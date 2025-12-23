@@ -13,5 +13,5 @@ public class AppDbContext : DbContext
     
     public DbSet<Municipality> Municipalities { get; set; }
     
-	public DbSet<EatAndDrink> EatAndDrink { get; set; } // <-- added
+	public DbSet<EatAndDrink> EatAndDrink { get; set; }
 }
