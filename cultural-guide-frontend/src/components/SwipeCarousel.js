@@ -128,15 +128,15 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
                             service.setter(data);
                         } catch (err) {
                             // Logghiamo l'errore del singolo servizio ma non blocchiamo gli altri
-                            console.error(`Errore nel caricamento di un servizio:`, err);
+                            console.error(`Error in loading a service:`, err);
                         }
                     })
                 );
 
             } catch (err) {
-                console.error("Errore generale nel caricamento dati:", err);
+                console.error("General error in data loading:", err);
                 setError(err.message || "Network error");
-                toast.error(t('error_loading_data') || "Failed to load data");
+                toast.error(t('error_loading_data') || "Failed to load data")
             } finally {
                 setLoading(false);
             }
