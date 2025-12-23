@@ -6,10 +6,7 @@ import { ChevronLeft, ChevronRight, MapPin, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import defaultImage from '../images/ImageWithFallback.jpg';
-
-
-
-
+import {fetchEatAndDrinks} from "../services/EatAndDrinksService";
 
 // -----------------------------
 // Arrows
@@ -41,18 +38,12 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
     const [error, setError] = useState("");
     const [currentSlide, setCurrentSlide] = useState(0);
     const { t, i18n } = useTranslation();
+    // Use EatAndDrinksService to fetch data
     const [eatAndDrinks, setEatAndDrinks] = useState([]);
-    const selectedCity = municipality;
-
-    // DEBUG municipality name
-    //console.log('municipality in carousel: ', municipality);
-    const localImages = [
-        "http://localhost:5203/images/img1Cossignani.jpg",
-        "http://localhost:5203/images/img2MassignanoCaffe.jpg",
-        "http://localhost:5203/images/img3.jpg",
-        "http://localhost:5203/images/img4.jpg",
-        "http://localhost:5203/images/img5.jpg"
-    ];
+    // Use AnyOtherService to fetch data
+    // const [eatAndDrinks, setEatAndDrinks] = useState([]);
+    // currently selected municipality from citySelection
+    
 
     const settings = {
         dots: true,
@@ -76,73 +67,40 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
         ],
     };
     
-    // Fetch EatAndDrinks data when municipality or language changes and set EatAndDrinks into carousell
+    // -----------------------------
+    // Fetch EatAndDrinks data when municipality or language changes and set EatAndDrinks into carousel
+    // -----------------------------
     useEffect(() => {
-        if (!municipality) return; // nothing to fetch yet
-        
-        // DEBUG municipality name
-        //console.log('municipality in carousel: ', municipality);
-        const fetchEatAndDrinks = async () => {
+        if (!municipality) return;
+
+        const loadEatAndDrinks = async () => {  // Renamed to avoid conflict
             setLoading(true);
             setError("");
 
             try {
-                const municipality = selectedCity;
                 const language = i18n.language;
 
-                // DEBUG municipality name
-                //console.log('municipality in carousel: ', municipality);
-                
-                const response = await fetch(
-                    `http://localhost:5203/api/eppoiapi/eat-and-drinks?municipality=${encodeURIComponent(municipality)}&language=${encodeURIComponent(language)}`,
-                    {
-                        method: "GET",
-                        headers: { "Content-Type": "application/json" },
-                        credentials: "include",
-                    }
-                );
-                
-                // DEBUG response status
-                //console.log("response from fetch with massignano: " + response.status);
+                console.log('municipality in carousel: ', municipality);
 
-                if (!response.ok) {
-                    setError(`Error fetching eatAndDrinks: ${response.status}`);
-                    return;
-                }
+                // Call the imported service function
+                const data = await fetchEatAndDrinks(municipality, language);
 
-                // await response and parse JSON to array
-                const data = await response.json().catch(() => []);
+                console.log('The transformed data: ', data);
 
-                // Transform backend data to the expected template
-                const transformed = data.map((eatAndDrinks,index) => ({
-                    id: eatAndDrinks.entityId,
-                    type: eatAndDrinks.badgeText,
-                    image: eatAndDrinks.imagePath
-                        ? `https://eppoi.io${eatAndDrinks.imagePath}`
-                        : defaultImage,
-                        
-                    /*image: localImages[index % localImages.length],*/
-                    title: eatAndDrinks.entityName,             // plain string without translations
-                    description: eatAndDrinks.badgeText || "",  // plain string without translations
-                    location: eatAndDrinks.address || "Unknown address",
-                    openingHours: "N/A", // you can extend backend to provide this if available
-                }));
-                
-                // DEBUG transformed data
-                console.log(transformed);
-
-                setEatAndDrinks(transformed);
+                setEatAndDrinks(data);
 
             } catch (err) {
                 console.error(err);
-                setError("Network error while fetching eatAndDrinks");
+                setError(err.message || "Network error while fetching eatAndDrinks");
+                toast.error(t('error_loading_data') || "Failed to load data");
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchEatAndDrinks();
-    }, [selectedCity, i18n.language]);
+        loadEatAndDrinks();
+    }, [municipality, i18n.language]);
+
 
 
     const handleViewDetails = (poi) => {
