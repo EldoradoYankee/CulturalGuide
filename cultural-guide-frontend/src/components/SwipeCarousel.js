@@ -18,6 +18,7 @@ import {fetchRecreationAndFun} from "../services/RecreationAndFunService";
 import {fetchServices} from "../services/ServicesService";
 import {fetchSleep} from "../services/SleepService";
 import { fetchTypicalProducts } from "../services/TypicalProductsService";
+import {LoadingSpinner} from "./ui_components/Loading";
 
 // -----------------------------
 // Arrows
@@ -193,6 +194,7 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
             <div className="max-w-2xl mx-auto">
 
             <Slider {...settings}>
+                {loading ? <LoadingSpinner size="lg" className="mx-auto" /> : null}
                 {eatAndDrinks.map((eatAndDrink) => (
                     <div key={eatAndDrink.id} className="px-2">
                         <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all hover:shadow-2xl border-2 border-transparent hover:border-indigo-600">
