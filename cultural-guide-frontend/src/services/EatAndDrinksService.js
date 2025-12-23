@@ -26,11 +26,11 @@ export const fetchEatAndDrinks = async (municipality, language = "it") => {
         // Transform backend data to the expected template
         data = data.map((eatAndDrinks) => ({
             id: eatAndDrinks.entityId,
-            type: eatAndDrinks.badgeText,
-            image: eatAndDrinks.imagePath
-                ? `https://eppoi.io${eatAndDrinks.imagePath}`
-                : defaultImage,
-            title: eatAndDrinks.entityName,
+            type: eatAndDrinks.badgeText,                       // Rename entityId with id
+            image: eatAndDrinks.imagePath                       // rename badgeText with type
+                ? `https://eppoi.io${eatAndDrinks.imagePath}`   // Create the complete URL of the image
+                : defaultImage,                                 // If missing, uses the fallback image
+            title: eatAndDrinks.entityName,                     // Rename entityName in title
             description: eatAndDrinks.badgeText || "",
             location: eatAndDrinks.address || "Unknown address",
             openingHours: "N/A",

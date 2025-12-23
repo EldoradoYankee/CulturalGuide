@@ -7,6 +7,17 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import defaultImage from '../images/ImageWithFallback.jpg';
 import {fetchEatAndDrinks} from "../services/EatAndDrinksService";
+import {fetchArtAndCulture} from "../services/ArtAndCultureService";
+import {fetchArticlesAndMagazines} from "../services/ArticlesAndMagazinesService";
+import {fetchEconomicOperators} from "../services/EconomicOperatorsService";
+import {fetchEvents} from "../services/EventsService";
+import {fetchItineraries} from "../services/ItinerariesService";
+import {fetchNature} from "../services/NatureService";
+import {fetchPointsOfSale} from "../services/PointsOfSaleService";
+import {fetchRecreationAndFun} from "../services/RecreationAndFunService";
+import {fetchServices} from "../services/ServicesService";
+import {fetchSleep} from "../services/SleepService";
+import { fetchTypicalProducts } from "../services/TypicalProductsService";
 
 // -----------------------------
 // Arrows
@@ -40,6 +51,18 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
     const { t, i18n } = useTranslation();
     // Use EatAndDrinksService to fetch data
     const [eatAndDrinks, setEatAndDrinks] = useState([]);
+    const [artAndCulture, setArtAndCulture] = useState([]);
+    const [articles, setArticles] = useState([]);
+    const [economicOperators, setEconomicOperators] = useState([]);
+    const [events, setEvents] = useState([]);
+    const [itineraries, setItineraries] = useState([]);
+    const [natureItems, setNatureItems] = useState([]);
+    const [pointsOfSale, setPointsOfSale] = useState([]);
+    const [recreationItems, setRecreationItems] = useState([]);
+    const [publicServices, setPublicServices] = useState([]);
+    const [sleepItems, setSleepItems] = useState([]);
+    const [typicalProducts, setTypicalProducts] = useState([]);
+
     // Use AnyOtherService to fetch data
     // const [eatAndDrinks, setEatAndDrinks] = useState([]);
     // currently selected municipality from citySelection
@@ -68,37 +91,57 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
     };
     
     // -----------------------------
-    // Fetch EatAndDrinks data when municipality or language changes and set EatAndDrinks into carousel
+    // Fetch AllData data when municipality or language changes and set AllData into carousel
     // -----------------------------
     useEffect(() => {
         if (!municipality) return;
 
-        const loadEatAndDrinks = async () => {  // Renamed to avoid conflict
+        const loadAllData = async () => {
             setLoading(true);
             setError("");
 
             try {
                 const language = i18n.language;
 
-                console.log('municipality in carousel: ', municipality);
+                // 1. Definiamo la configurazione: associa ogni funzione al suo setter
+                const servicesConfig = [
+                    { fn: fetchEatAndDrinks, setter: setEatAndDrinks },
+                    { fn: fetchArtAndCulture, setter: setArtAndCulture },
+                    { fn: fetchArticlesAndMagazines, setter: setArticles },
+                    { fn: fetchEconomicOperators, setter: setEconomicOperators },
+                    { fn: fetchEvents, setter: setEvents },
+                    { fn: fetchItineraries, setter: setItineraries },
+                    { fn: fetchNature, setter: setNatureItems },
+                    { fn: fetchPointsOfSale, setter: setPointsOfSale },
+                    { fn: fetchRecreationAndFun, setter: setRecreationItems },
+                    { fn: fetchServices, setter: setPublicServices },
+                    { fn: fetchSleep, setter: setSleepItems },
+                    { fn: fetchTypicalProducts, setter: setTypicalProducts },
+                ];
 
-                // Call the imported service function
-                const data = await fetchEatAndDrinks(municipality, language);
-
-                console.log('The transformed data: ', data);
-
-                setEatAndDrinks(data);
+                // 2. Eseguiamo tutte le chiamate in parallelo
+                await Promise.all(
+                    servicesConfig.map(async (service) => {
+                        try {
+                            const data = await service.fn(municipality, language);
+                            service.setter(data);
+                        } catch (err) {
+                            // Logghiamo l'errore del singolo servizio ma non blocchiamo gli altri
+                            console.error(`Errore nel caricamento di un servizio:`, err);
+                        }
+                    })
+                );
 
             } catch (err) {
-                console.error(err);
-                setError(err.message || "Network error while fetching eatAndDrinks");
+                console.error("Errore generale nel caricamento dati:", err);
+                setError(err.message || "Network error");
                 toast.error(t('error_loading_data') || "Failed to load data");
             } finally {
                 setLoading(false);
             }
         };
 
-        loadEatAndDrinks();
+        loadAllData();
     }, [municipality, i18n.language]);
 
 
