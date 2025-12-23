@@ -9,6 +9,7 @@ import { SwipeCarousel }  from "./components/SwipeCarousel";
 import { useTranslation } from "react-i18next";
 import { Header } from "./components/Header";
 import { CitySelection } from "./components/CitySelection";
+import { TimeAvailability } from "./components/TimeAvailability";
 
 
 // You can keep the AuthView as a plain object/constant if needed
@@ -21,6 +22,7 @@ const AuthView = {
     INTERESTS: "interests",
     SWIPECAROUSEL: "swipecarousel",
     CITYSELECTION: "cityselection",
+    TIMEAVAILABILITY: "timeavailability"
 };
 
 function App() {
@@ -131,6 +133,16 @@ function App() {
                 />
             )}
 
+            {currentView === AuthView.TIMEAVAILABILITY && user && (
+                <TimeAvailability
+                    user={user}
+                    language={i18n.language}
+                    onContinue={(start, end) => {
+                        setCurrentView(AuthView.START);
+                    }}
+                />
+            )}
+            
         </div>
         </Suspense>
 

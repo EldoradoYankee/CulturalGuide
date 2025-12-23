@@ -2,14 +2,18 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { User, MessageSquare, Settings, MapPin, ArrowRight } from "lucide-react";
 import { InterestSelection } from "./InterestSelection";
+import { TimeAvailability } from "./TimeAvailability";
 
 export function Start({ onNavigate }) {
     const [showInterestSelection, setShowInterests] = React.useState(false);
+    const [showTimeAvailability, setShowTimeSelection] = React.useState(false);
     const { t } = useTranslation();
 
     const handleNavigate = (id) => {
         if (id === "recommendations") {
             setShowInterests(true);
+        } else if (id === "preferences") {
+            setShowTimeSelection(true);
         } else {
             onNavigate(id);
         }
@@ -22,6 +26,17 @@ export function Start({ onNavigate }) {
                 user={{ name: "Traveler" }} // You can pass dynamic user data
                 onContinue={(selectedInterests) => {
                     console.log("Selected Interests:", selectedInterests);
+                    setShowInterests(false); // go back to start after continue
+                }}
+            />
+        );
+    }
+    if (showTimeAvailability) {
+        // Render the TimeAvailability page
+        return (
+            <TimeAvailability
+                onContinue={(selectedTimeAvailability) => {
+                    console.log("Selected Interests:", selectedTimeAvailability);
                     setShowInterests(false); // go back to start after continue
                 }}
             />
@@ -75,7 +90,9 @@ export function Start({ onNavigate }) {
                                 key={item.id}
                                 onClick={() => {
                                     if (item.id === "recommendations") {
-                                        onNavigate("cityselection"); // Changed from handleNavigate to onNavigate
+                                        onNavigate("citycelection");
+                                    } else if (item.id === "preferences") {
+                                        onNavigate("timeavailability");
                                     } else {
                                         onNavigate(item.id);
                                     }
