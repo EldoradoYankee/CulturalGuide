@@ -142,7 +142,7 @@ export function SwipeCarousel({  onViewDetails, onBack, municipality }) {
         };
 
         loadAllData();
-    }, [municipality, i18n.language]);
+    }, [t, municipality, i18n.language]);
 
 
 
