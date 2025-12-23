@@ -69,7 +69,7 @@ export function InlineLoading({
     return (
         <div className="flex items-center gap-2">
             <div
-                className={`${sizeClass} border-indigo-200 border-t-indigo-600 rounded-full animate-spin`}
+                className={`${sizeClasses} border-indigo-200 border-t-indigo-600 rounded-full animate-spin`}
                 role="status"
                 aria-label={t("loadingSpinner_ariaLabel")}
             />
