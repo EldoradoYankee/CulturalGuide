@@ -136,6 +136,7 @@
   "timeAvailability_continue": "Continue",
   "timeAvailability_errorSelectBoth": "Please select both time points",
   "timeAvailability_errorEndBeforeStart": "End date must be after start date",
-  "timeAvailability_days": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+  "timeAvailability_days": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+  "timeAvailability_goBack": "Back"
   
 }

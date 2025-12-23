@@ -136,6 +136,7 @@
   "timeAvailability_continue": "Weiter",
   "timeAvailability_errorSelectBoth": "Bitte wählen Sie beide Zeitpunkte aus",
   "timeAvailability_errorEndBeforeStart": "Das Enddatum muss nach dem Startdatum liegen",
-  "timeAvailability_days": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+  "timeAvailability_days": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+  "timeAvailability_goBack": "Zurück"
 
 }
