@@ -54,6 +54,35 @@ namespace CulturalGuideBACKEND.Controllers
 
             return Ok(result);
         }
+        
+        // ===============================
+        //  Proxy Image Endpoint for POI images
+        // ===============================
+        [HttpGet("proxy-image")]
+        public async Task<IActionResult> ProxyImage([FromQuery] string imageUrl)
+        {
+	        if (string.IsNullOrEmpty(imageUrl))
+	        { return BadRequest("Image URL is required"); }
+
+	        try
+	        {
+		        using var httpClient = new HttpClient();
+		        var imageBytes = await httpClient.GetByteArrayAsync(imageUrl);
+        
+		        // Detect content type from URL extension
+		        var contentType = imageUrl.EndsWith(".webp") ? "image/webp" 
+			        : imageUrl.EndsWith(".jpg") || imageUrl.EndsWith(".jpeg") ? "image/jpeg"
+			        : imageUrl.EndsWith(".png") ? "image/png"
+			        : "image/jpeg";
+        
+		        return File(imageBytes, contentType);
+	        }
+	        catch (Exception ex)
+	        {
+		        _logger.LogError(ex, "Failed to proxy image: {ImageUrl}", imageUrl);
+		        return NotFound();
+	        }
+        }
 
 
         // ===============================

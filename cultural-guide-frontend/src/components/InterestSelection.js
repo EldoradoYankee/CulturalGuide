@@ -17,7 +17,6 @@ export function InterestSelection({ user, municipality, onContinue }) {
         if (!municipality) return;
         console.log("InterestSelection municipality:", municipality);
 
-
         const fetchCategories = async () => {
             setLoading(true);
             setError("");
@@ -36,7 +35,6 @@ export function InterestSelection({ user, municipality, onContinue }) {
                 const data = await res.json();
 
                 setInterests(prev => {
-                    // keep already selected interests
                     const selectedIds = prev
                         .filter(i => i.selected)
                         .map(i => i.id);
@@ -44,8 +42,9 @@ export function InterestSelection({ user, municipality, onContinue }) {
                     return data.map(cat => ({
                         id: cat.category.toLowerCase(),
                         title: cat.label,
+                        // Proxy the image through your backend
                         image: cat.imagePath
-                            ? cat.imagePath
+                            ? `http://localhost:5203/api/eppoiapi/proxy-image?imageUrl=${encodeURIComponent(cat.imagePath)}`
                             : defaultImage,
                         selected: selectedIds.includes(cat.category.toLowerCase())
                     }));
@@ -60,7 +59,6 @@ export function InterestSelection({ user, municipality, onContinue }) {
 
         fetchCategories();
     }, [municipality, i18n.language]);
-
     const toggleInterest = (id) => {
         setInterests((prev) =>
             prev.map((interest) =>
