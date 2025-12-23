@@ -12,7 +12,7 @@ export const fetchTypicalProducts = async (municipality, language = "it") => {
     }
 
     try {
-        // Seguendo il pattern delle API SPM di Eppoi per i prodotti tipici
+        // Seguendo il pattern delle API SPM di Eppoi per i prodotti tipici.
         const url = `https://apispm.eppoi.io/api/typical-products/card-list?municipality=${encodeURIComponent(municipality)}&language=${encodeURIComponent(language)}`;
 
         const response = await fetch(url, {
