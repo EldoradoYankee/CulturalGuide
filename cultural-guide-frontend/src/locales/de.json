@@ -127,6 +127,15 @@
   "interestSelection_selectAtLeastOne": "Wählen Sie mindestens ein Interesse, um fortzufahren",
 
   "loadingSpinner_loading": "Lädt…",
-  "loadingSpinner_ariaLabel": "Inhalt wird geladen"
+  "loadingSpinner_ariaLabel": "Inhalt wird geladen",
+
+  "timeAvailability_title": "Verfügbarkeitszeitraum",
+  "timeAvailability_subtitle": "Wählen Sie Ihren verfügbaren Zeitraum aus",
+  "timeAvailability_from": "Von",
+  "timeAvailability_to": "Bis",
+  "timeAvailability_continue": "Weiter",
+  "timeAvailability_errorSelectBoth": "Bitte wählen Sie beide Zeitpunkte aus",
+  "timeAvailability_errorEndBeforeStart": "Das Enddatum muss nach dem Startdatum liegen",
+  "timeAvailability_days": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
 
 }

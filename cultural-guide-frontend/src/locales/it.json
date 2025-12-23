@@ -127,6 +127,15 @@
   "interestSelection_selectAtLeastOne": "Seleziona almeno un interesse per continuare",
 
   "loadingSpinner_loading": "Caricamento…",
-  "loadingSpinner_ariaLabel": "Contenuto in caricamento"
+  "loadingSpinner_ariaLabel": "Contenuto in caricamento",
+
+  "timeAvailability_title": "Periodo di disponibilità",
+  "timeAvailability_subtitle": "Seleziona il tuo periodo di disponibilità",
+  "timeAvailability_from": "Da",
+  "timeAvailability_to": "A",
+  "timeAvailability_continue": "Continua",
+  "timeAvailability_errorSelectBoth": "Seleziona entrambi gli orari",
+  "timeAvailability_errorEndBeforeStart": "La data di fine deve essere successiva alla data di inizio",
+  "timeAvailability_days": ["Do", "Lu", "Ma", "Me", "Gi", "Ve", "Sa"]
   
 }

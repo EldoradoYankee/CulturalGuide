@@ -127,6 +127,15 @@
   "interestSelection_selectAtLeastOne": "Select at least one interest to continue",
 
   "loadingSpinner_loading": "Loading…",
-  "loadingSpinner_ariaLabel": "Content is loading"
+  "loadingSpinner_ariaLabel": "Content is loading",
+
+  "timeAvailability_title": "Availability Timespan",
+  "timeAvailability_subtitle": "Select your available time period",
+  "timeAvailability_from": "From",
+  "timeAvailability_to": "To",
+  "timeAvailability_continue": "Continue",
+  "timeAvailability_errorSelectBoth": "Please select both time points",
+  "timeAvailability_errorEndBeforeStart": "End date must be after start date",
+  "timeAvailability_days": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
   
 }
