@@ -77,7 +77,7 @@ export function PasswordRecovery({ onBackToLogin }) {
                                 onClick={onBackToLogin}
                                 className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors"
                             >
-                                {t("passwordRecovery_backToLogin")}
+                                {t("passwordRecovery_goBackToLogin")}
                             </button>
                         </div>
                     </div>
@@ -98,7 +98,7 @@ export function PasswordRecovery({ onBackToLogin }) {
                         className="flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-6"
                     >
                         <ArrowLeft className="w-5 h-5 mr-2" />
-                        {t("passwordRecovery_backToLogin")}
+                        {t("passwordRecovery_goBackToLogin")}
                     </button>
 
                     <div className="text-center mb-8">
