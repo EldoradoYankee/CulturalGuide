@@ -75,7 +75,7 @@
   "passwordRecovery_emailSent": "E-Mail gesendet",
   "passwordRecovery_sentEmailTo": "Wir haben Ihnen eine E-Mail gesendet mit Anweisungen zum Zurücksetzen Ihres Passworts an",
   "passwordRecovery_checkSpam": "Bitte überprüfen Sie auch Ihren Spam-Ordner, falls Sie die E-Mail nicht finden.",
-  "passwordRecovery_backToLogin": "Zurück zur Anmeldung",
+  "passwordRecovery_goBackToLogin": "Zurück zur Anmeldung",
   "passwordRecovery_forgotPasswordQuestion": "Passwort vergessen?",
   "passwordRecovery_forgotPassword": "Kein Problem! Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen Anweisungen zum Zurücksetzen.",
   "passwordRecovery_emailRecoverySend": "Wiederherstellungs-E-Mail senden",
@@ -103,12 +103,13 @@
   "citySelection_selectCity": "Ausgewählte Stadt:",
   "citySelection_Continue": "Weiter",
   "citySelection_goBack": "Zurück",
+  "citySelection_goBack": "Zurück",
 
   "swipeCarousel_viewDetails": "Details ansehen",
   "swipeCarousel_location": "Standort",
   "swipeCarousel_hours": "Öffnungszeiten",
   "swipeCarousel_detailsClicked": "Details für",
-  "swipeCarousel_back": "Zurück",
+  "swipeCarousel_goBack": "Zurück",
 
   "interestSelection_history": "Geschichte & Kultur",
   "interestSelection_nature": "Natur & Abenteuer",
@@ -125,6 +126,7 @@
   "interestSelection_continue": "Fortfahren",
   "interestSelection_selected": "Interesse ausgewählt",
   "interestSelection_selectAtLeastOne": "Wählen Sie mindestens ein Interesse, um fortzufahren",
+  "interestSelection_goBack": "Zurück",
 
   "loadingSpinner_loading": "Lädt…",
   "loadingSpinner_ariaLabel": "Inhalt wird geladen",

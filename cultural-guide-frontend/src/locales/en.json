@@ -75,7 +75,7 @@
   "passwordRecovery_emailSent": "Email sent",
   "passwordRecovery_sentEmailTo": "We have sent you an email with instructions to reset your password to",
   "passwordRecovery_checkSpam": "Please also check your spam folder if you can't find the email.",
-  "passwordRecovery_backToLogin": "Back to login",
+  "passwordRecovery_goBackToLogin": "Back to login",
   "passwordRecovery_forgotPasswordQuestion": "Forgot your password?",
   "passwordRecovery_forgotPassword": "No problem! Enter your email address and we will send you instructions to reset.",
   "passwordRecovery_emailRecoverySend": "Send recovery email",
@@ -103,12 +103,13 @@
   "citySelection_selectCity": "City selected:",
   "citySelection_Continue": "Continue",
   "citySelection_goBack": "Go back",
+  "citySelection_goBack": "Back",
 
   "swipeCarousel_viewDetails": "View Details",
   "swipeCarousel_location": "Location",
   "swipeCarousel_hours": "Opening Hours",
   "swipeCarousel_detailsClicked": "Details for",
-  "swipeCarousel_back": "Back",
+  "swipeCarousel_goBack": "Back",
 
   "interestSelection_history": "History & Culture",
   "interestSelection_nature": "Nature & Adventure",
@@ -125,6 +126,7 @@
   "interestSelection_continue": "Continue",
   "interestSelection_selected": "interest selected",
   "interestSelection_selectAtLeastOne": "Select at least one interest to continue",
+  "interestSelection_goBack": "Back",
 
   "loadingSpinner_loading": "Loading…",
   "loadingSpinner_ariaLabel": "Content is loading",
