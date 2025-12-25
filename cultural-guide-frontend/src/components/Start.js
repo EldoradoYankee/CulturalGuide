@@ -50,10 +50,10 @@ export function Start({ onNavigate }) {
                                 onClick={() => {
                                     if (item.id === "recommendations") {
                                         // Navigate to city selection first
-                                        onNavigate("cityselection");
+                                        onNavigate("swipecarousel");
                                     } else if (item.id === "preferences") {
                                         // Navigate to time availability
-                                        onNavigate("timeavailability");
+                                        onNavigate("interests");
                                     } else {
                                         // Navigate to other views
                                         onNavigate(item.id);

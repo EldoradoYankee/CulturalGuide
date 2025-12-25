@@ -100,49 +100,19 @@ function App() {
                     <Dashboard user={user} onLogout={handleLogout} />
                 )}
 
-                {/* City Selection - First step for recommendations */}
-                {currentView === AuthView.CITYSELECTION && user && (
-                    <CitySelection
-                        onCitySelect={(city) => {
-                            const municipalityName = city.trim().split(" ").pop();
-                            setSelectedCity(municipalityName);
-                            setCurrentView(AuthView.INTERESTS); // Go to interests after city selection
-                        }}
-                        onBack={() => setCurrentView(AuthView.START)}
-                    />
-                )}
-
-                {/* Interest Selection - Second step for recommendations */}
-                {currentView === AuthView.INTERESTS && user && (
-                    <InterestSelection
-                        user={user}
-                        municipality={selectedCity}
-                        onBack={() => setCurrentView(AuthView.CITYSELECTION)}
-                        onContinue={(selectedInterests) => {
-                            console.log("Selected interests:", selectedInterests);
-                            setCurrentView(AuthView.SWIPECAROUSEL); // Go to carousel after interests
-                        }}
-                    />
-                )}
-
                 {/* Swipe Carousel - Final step showing recommendations */}
                 {currentView === AuthView.SWIPECAROUSEL && user && (
                     <SwipeCarousel
                         municipality={selectedCity}
-                        onBack={() => setCurrentView(AuthView.INTERESTS)}
+                        onBack={() => setCurrentView(AuthView.START)}
                     />
                 )}
 
-                {/* Time Availability - Standalone preference setting */}
-                {currentView === AuthView.TIMEAVAILABILITY && user && (
-                    <TimeAvailability
+                {/* InterestSelection - Page with TIMEAVAILABILITY, CITYSELECTION & INTERESTSELECTION */}
+                {currentView === AuthView.INTERESTS && user && (
+                    <InterestSelection
                         user={user}
-                        language={i18n.language}
                         onBack={() => setCurrentView(AuthView.START)}
-                        onContinue={(start, end) => {
-                            console.log("Time availability set:", start, end);
-                            setCurrentView(AuthView.START);
-                        }}
                     />
                 )}
             </div>
