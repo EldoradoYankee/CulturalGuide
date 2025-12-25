@@ -156,6 +156,10 @@ export function SwipeCarousel({onViewDetails, onBack, municipality}) {
 
     return (
         <div className="w-full py-8 px-4 overflow-hidden">
+            {!municipality && (
+                <div className="flex flex-col">
+                NO MUNICIPALITY, TIME OR CATEGORIES SELECTED
+            </div>)}
             <div className="max-w-2xl mx-auto">
                 <div className="w-full max-w-4xl">
                     {/* Back Button */}
