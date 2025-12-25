@@ -122,6 +122,7 @@
   "interestSelection_greetings": "Hallo",
   "interestSelection_subtitle": "Personalisieren Sie Ihr Touristenerlebnis, indem Sie ein paar Fragen beantworten.",
   "interestSelection_destination": "📍 Ziel:",
+  "interestSelection_timeAvailability": "\uD83D\uDCC5 Von {{startDate}} um {{startHour}} bis {{endDate}} um {{endHour}}",
   "interestSelection_selectionQuestion": "Was sind Ihre Interessen?",
   "interestSelection_continue": "Fortfahren",
   "interestSelection_selected": "Interesse ausgewählt",

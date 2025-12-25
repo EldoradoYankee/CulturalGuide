@@ -122,6 +122,7 @@
   "interestSelection_greetings": "Hello",
   "interestSelection_subtitle": "Customize your tourist experience by answering a few questions.",
   "interestSelection_destination": "\uD83D\uDCCD Destination:",
+  "interestSelection_timeAvailability": "\uD83D\uDCC5 From {{startDate}} at {{startHour}} to {{endDate}} at {{endHour}}",
   "interestSelection_selectionQuestion": "What are your interests?",
   "interestSelection_continue": "Continue",
   "interestSelection_selected": "interest selected",
