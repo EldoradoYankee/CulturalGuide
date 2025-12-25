@@ -144,11 +144,16 @@ export function InterestSelection({ user, onBack }) {
                 setError("");
 
                 try {
+                    // ------------- Fetch categories based on selected city -------------
+                    // Trim first 10 characters from selectedCity ("Commune di ")
+                    let selectedCityTrim = selectedCity.substring(10, selectedCity.length);
                     const res = await fetch(
                         `https://apispm.eppoi.io/api/categories?municipality=${encodeURIComponent(
-                            selectedCity
+                            selectedCityTrim
                         )}&language=${i18n.language}`
                     );
+                    
+                    console.log(res);
 
                     if (!res.ok) {
                         throw new Error(`HTTP ${res.status}`);
