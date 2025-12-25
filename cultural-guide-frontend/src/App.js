@@ -138,6 +138,7 @@ function App() {
                     <TimeAvailability
                         user={user}
                         language={i18n.language}
+                        onBack={() => setCurrentView(AuthView.START)}
                         onContinue={(start, end) => {
                             console.log("Time availability set:", start, end);
                             setCurrentView(AuthView.START);

@@ -50,7 +50,7 @@ export function Start({ onNavigate }) {
                                 onClick={() => {
                                     if (item.id === "recommendations") {
                                         // Navigate to city selection first
-                                        onNavigate("cityselection"); // Fixed typo: was "citycelection"
+                                        onNavigate("cityselection");
                                     } else if (item.id === "preferences") {
                                         // Navigate to time availability
                                         onNavigate("timeavailability");

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import {ArrowRight, ChevronLeft} from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 
@@ -70,20 +70,47 @@ export function TimeAvailability({ onContinue, onBack }) {
         endSelection.date && endSelection.hour !== null;
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="w-full py-8 px-4 overflow-hidden">
+            <div className="max-w-2xl mx-auto">
+                <div className="w-full max-w-4xl">
+            {/* Back Button */}
             {onBack && (
                 <button
                     onClick={onBack}
-                    className="w-full sm:w-auto px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                    className="mb-6 flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition"
                 >
-                    {t("timeAvailability_goBack")}
+                    <ChevronLeft className="w-5 h-5"/>
+                    {t('timeAvailability_goBack')}
                 </button>
             )}
+            <style>
+                {`
+                          .slick-slider {
+                            margin: 0 -80px;
+                          }
+                          .slick-dots li button:before {
+                            font-size: 10px;
+                            color: #6366f1;
+                          }
+                          .slick-dots li.slick-active button:before {
+                            color: #6366f1;
+                            opacity: 1;
+                          }
+                          .slick-slide {
+                            padding: 0 10px;
+                          }
+                          .slick-list {
+                            overflow: visible;
+                          }
+                        `}
+            </style>
             <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-5xl">
 
                 <h1 className="text-2xl font-bold mb-2">{t('timeAvailability_title')}</h1>
                 <p className="text-gray-600 mb-6">{t('timeAvailability_subtitle')}</p>
 
+                
+                
                 {/* Start / End Selector */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
                     {['start', 'end'].map(type => (
@@ -155,6 +182,8 @@ export function TimeAvailability({ onContinue, onBack }) {
                     <ArrowRight />
                 </button>
             </div>
+        </div>
+        </div>
         </div>
     );
 }
