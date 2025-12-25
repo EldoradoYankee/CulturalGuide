@@ -11,8 +11,6 @@ import { Header } from "./components/Header";
 import { CitySelection } from "./components/CitySelection";
 import { TimeAvailability } from "./components/TimeAvailability";
 
-
-// You can keep the AuthView as a plain object/constant if needed
 const AuthView = {
     LOGIN: "login",
     REGISTER: "register",
@@ -30,7 +28,6 @@ function App() {
     const [user, setUser] = useState(null);
     const [selectedCity, setSelectedCity] = useState('');
     const { i18n } = useTranslation();
-    
 
     // Restore saved language from localStorage
     useEffect(() => {
@@ -40,9 +37,7 @@ function App() {
         }
     }, [i18n]);
 
-
     const handleLogin = (email) => {
-        // Simulate user login
         const mockUser = {
             email,
             name: email.split("@")[0],
@@ -53,7 +48,6 @@ function App() {
     };
 
     const handleRegister = (email, name) => {
-        // Simulate user registration
         const mockUser = {
             email,
             name,
@@ -68,84 +62,90 @@ function App() {
         setCurrentView(AuthView.LOGIN);
     };
 
-    const handleInterestContinue = (selectedInterests) => {
-        console.log("Selected Interests:", selectedInterests);
-        setCurrentView(AuthView.SWIPECAROUSEL);
-    };
-
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <Header
-                navigateToStart={() => setCurrentView("start")}
-                navigateToLogin={() => setCurrentView("login")} 
+                navigateToStart={() => setCurrentView(AuthView.START)}
+                navigateToLogin={() => setCurrentView(AuthView.LOGIN)}
             />
-        <div style={{ paddingTop: 64 }} className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-            {currentView === "login" && (
-                <LoginForm
-                    onLogin={handleLogin}
-                    onSwitchToRegister={() => setCurrentView("register")}
-                    onSwitchToRecovery={() => setCurrentView("recovery")}
-                />
-            )}
-            {currentView === "register" && (
-                <RegisterForm
-                    onRegister={handleRegister}
-                    onSwitchToLogin={() => setCurrentView("login")}
-                />
-            )}
-            {currentView === AuthView.START && user && (
-                <Start onNavigate={(view) => setCurrentView(view)} />
-            )}
-            {currentView === "recovery" && (
-                <PasswordRecovery
-                    onBackToLogin={() => setCurrentView("login")}
-                />
-            )}
-            {currentView === "dashboard" && user && (
-                <Dashboard user={user} onLogout={handleLogout} />
-            )}
+            <div style={{ paddingTop: 64 }} className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
 
-            {currentView === AuthView.INTERESTS && user && (
-                <InterestSelection
-                    user={user}
-                    municipality={selectedCity.trim().split(" ").pop()}
-                    onContinue={(selectedInterests) => {
-                            setCurrentView(AuthView.SWIPECAROUSEL);
-                    }
-                }
-                />
-            )}
+                {/* Views */}
+                {currentView === AuthView.LOGIN && (
+                    <LoginForm
+                        onLogin={handleLogin}
+                        onSwitchToRegister={() => setCurrentView(AuthView.REGISTER)}
+                        onSwitchToRecovery={() => setCurrentView(AuthView.RECOVERY)}
+                    />
+                )}
 
-            {currentView === AuthView.SWIPECAROUSEL && (
-                <SwipeCarousel
-                    municipality={selectedCity.trim().split(" ").pop()}
-                    onBack={() => setCurrentView(AuthView.CITYSELECTION)}
-                />
-            )}
+                {currentView === AuthView.REGISTER && (
+                    <RegisterForm
+                        onRegister={handleRegister}
+                        onSwitchToLogin={() => setCurrentView(AuthView.LOGIN)}
+                    />
+                )}
 
-            {currentView === AuthView.CITYSELECTION && user && (
-                <CitySelection
-                    onCitySelect={(city) => {
-                        setSelectedCity(city.trim().split(" ").pop());
-                        setCurrentView(AuthView.INTERESTS);
-                    }}
-                    onBack={() => setCurrentView(AuthView.START)}
-                />
-            )}
+                {currentView === AuthView.START && user && (
+                    <Start onNavigate={(view) => setCurrentView(view)} />
+                )}
 
-            {currentView === AuthView.TIMEAVAILABILITY && user && (
-                <TimeAvailability
-                    user={user}
-                    language={i18n.language}
-                    onContinue={(start, end) => {
-                        setCurrentView(AuthView.START);
-                    }}
-                />
-            )}
-            
-        </div>
+                {currentView === AuthView.RECOVERY && (
+                    <PasswordRecovery
+                        onBackToLogin={() => setCurrentView(AuthView.LOGIN)}
+                    />
+                )}
+
+                {currentView === AuthView.DASHBOARD && user && (
+                    <Dashboard user={user} onLogout={handleLogout} />
+                )}
+
+                {/* City Selection - First step for recommendations */}
+                {currentView === AuthView.CITYSELECTION && user && (
+                    <CitySelection
+                        onCitySelect={(city) => {
+                            const municipalityName = city.trim().split(" ").pop();
+                            setSelectedCity(municipalityName);
+                            setCurrentView(AuthView.INTERESTS); // Go to interests after city selection
+                        }}
+                        onBack={() => setCurrentView(AuthView.START)}
+                    />
+                )}
+
+                {/* Interest Selection - Second step for recommendations */}
+                {currentView === AuthView.INTERESTS && user && (
+                    <InterestSelection
+                        user={user}
+                        municipality={selectedCity}
+                        onBack={() => setCurrentView(AuthView.CITYSELECTION)}
+                        onContinue={(selectedInterests) => {
+                            console.log("Selected interests:", selectedInterests);
+                            setCurrentView(AuthView.SWIPECAROUSEL); // Go to carousel after interests
+                        }}
+                    />
+                )}
+
+                {/* Swipe Carousel - Final step showing recommendations */}
+                {currentView === AuthView.SWIPECAROUSEL && user && (
+                    <SwipeCarousel
+                        municipality={selectedCity}
+                        onBack={() => setCurrentView(AuthView.INTERESTS)}
+                    />
+                )}
+
+                {/* Time Availability - Standalone preference setting */}
+                {currentView === AuthView.TIMEAVAILABILITY && user && (
+                    <TimeAvailability
+                        user={user}
+                        language={i18n.language}
+                        onContinue={(start, end) => {
+                            console.log("Time availability set:", start, end);
+                            setCurrentView(AuthView.START);
+                        }}
+                    />
+                )}
+            </div>
         </Suspense>
-
     );
 }
 

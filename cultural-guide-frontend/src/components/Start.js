@@ -1,48 +1,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { User, MessageSquare, Settings, MapPin, ArrowRight } from "lucide-react";
-import { InterestSelection } from "./InterestSelection";
-import { TimeAvailability } from "./TimeAvailability";
 
 export function Start({ onNavigate }) {
-    const [showInterestSelection, setShowInterests] = React.useState(false);
-    const [showTimeAvailability, setShowTimeSelection] = React.useState(false);
     const { t } = useTranslation();
 
-    const handleNavigate = (id) => {
-        if (id === "recommendations") {
-            setShowInterests(true);
-        } else if (id === "preferences") {
-            setShowTimeSelection(true);
-        } else {
-            onNavigate(id);
-        }
-    };
-
-    if (showInterestSelection) {
-        // Render the InterestSelection page
-        return (
-            <InterestSelection
-                user={{ name: "Traveler" }} // You can pass dynamic user data
-                onContinue={(selectedInterests) => {
-                    console.log("Selected Interests:", selectedInterests);
-                    setShowInterests(false); // go back to start after continue
-                }}
-            />
-        );
-    }
-    if (showTimeAvailability) {
-        // Render the TimeAvailability page
-        return (
-            <TimeAvailability
-                onContinue={(selectedTimeAvailability) => {
-                    console.log("Selected Interests:", selectedTimeAvailability);
-                    setShowInterests(false); // go back to start after continue
-                }}
-            />
-        );
-    }
-    
     const menuItems = [
         {
             id: "profile",
@@ -74,33 +36,32 @@ export function Start({ onNavigate }) {
         },
     ];
 
-
     return (
         <div className="min-h-screen p-4 md:p-8">
             <div className="max-w-6xl mx-auto">
-
                 {/* Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {menuItems.map((item) => {
                         const Icon = item.icon;
 
-                        // TODO : onNavigate is forcing the redirect to interests
                         return (
                             <button
                                 key={item.id}
                                 onClick={() => {
                                     if (item.id === "recommendations") {
-                                        onNavigate("citycelection");
+                                        // Navigate to city selection first
+                                        onNavigate("cityselection"); // Fixed typo: was "citycelection"
                                     } else if (item.id === "preferences") {
+                                        // Navigate to time availability
                                         onNavigate("timeavailability");
                                     } else {
+                                        // Navigate to other views
                                         onNavigate(item.id);
                                     }
                                 }}
                                 className="group bg-white rounded-2xl shadow-xl p-8 text-left hover:shadow-2xl transition-all hover:scale-105"
                             >
-
-                            {/* Icon */}
+                                {/* Icon */}
                                 <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center mb-6`}>
                                     <Icon className="w-8 h-8 text-white" />
                                 </div>
@@ -117,7 +78,6 @@ export function Start({ onNavigate }) {
                         );
                     })}
                 </div>
-
             </div>
         </div>
     );
