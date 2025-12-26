@@ -127,6 +127,8 @@
   "interestSelection_continue": "Continua",
   "interestSelection_selected": "interesse selezionato",
   "interestSelection_selectAtLeastOne": "Seleziona almeno un interesse per continuare",
+  "interestSelection_profileVectorSavedSuccessfully": "Vettore profilo salvato con successo!",
+  "interestSelection_profileVectorError": "Impossibile salvare il profilo vettoriale. Riprovare.",
   "interestSelection_goBack": "Indietro",
 
   "loadingSpinner_loading": "Caricamento…",
