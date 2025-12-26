@@ -102,7 +102,6 @@
   "citySelection_dropDownMenu": "Seleziona una città",
   "citySelection_selectCity": "Città selezionata:",
   "citySelection_Continue": "Continua",
-  "citySelection_goBack": "Torna indietro",
   "citySelection_goBack": "Indietro",
 
   "swipeCarousel_viewDetails": "Vedi Dettagli",
@@ -110,6 +109,15 @@
   "swipeCarousel_hours": "Orari",
   "swipeCarousel_detailsClicked": "Dettagli per",
   "swipeCarousel_goBack": "Indietro",
+  "swipeCarousel_errorLoadingData": "Errore durante il recupero dei dati.",
+  "swipeCarousel_checkingPreferences": "Controllo delle tue preferenze...",
+  "swipeCarousel_setPreferences": "Imposta le tue preferenze",
+  "swipeCarousel_setPreferencesSubtitle": "Personalizza le tue raccomandazioni fornendo i tuoi interessi e il periodo di disponibilità.",
+  "swipeCarousel_preferencesInclude": "Le tue preferenze includono:",
+  "swipeCarousel_timeAvailability": "Periodo di disponibilità per la tua viaggio",
+  "swipeCarousel_destination": "Destinazione del tuo viaggio",
+  "swipeCarousel_interests": "I tuoi interessi e categorie",
+  "swipeCarousel_setPreferencesButton": "Imposta Preferenze",
 
   "interestSelection_history": "Storia e Cultura",
   "interestSelection_nature": "Natura e Avventura",

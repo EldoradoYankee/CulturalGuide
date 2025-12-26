@@ -102,7 +102,6 @@
   "citySelection_dropDownMenu": "Select a city",
   "citySelection_selectCity": "City selected:",
   "citySelection_Continue": "Continue",
-  "citySelection_goBack": "Go back",
   "citySelection_goBack": "Back",
 
   "swipeCarousel_viewDetails": "View Details",
@@ -110,7 +109,16 @@
   "swipeCarousel_hours": "Opening Hours",
   "swipeCarousel_detailsClicked": "Details for",
   "swipeCarousel_goBack": "Back",
-
+  "swipeCarousel_errorLoadingData": "Failed to fetch data.",
+  "swipeCarousel_checkingPreferences": "Checking your preferences...",
+  "swipeCarousel_setPreferences": "Set Your Preferences",
+  "swipeCarousel_setPreferencesSubtitle": "To get personalized recommendations, please set your travel preferences including time availability, destination, and interests.",
+  "swipeCarousel_preferencesInclude": "Your preferences will include:",
+  "swipeCarousel_timeAvailability": "Time availability for your trip",
+  "swipeCarousel_destination": "Time availability for your trip",
+  "swipeCarousel_interests": "Your interests and categories",
+  "swipeCarousel_setPreferencesButton": "Set Preferences",
+  
   "interestSelection_history": "History & Culture",
   "interestSelection_nature": "Nature & Adventure",
   "interestSelection_food": "Food & Wine",
