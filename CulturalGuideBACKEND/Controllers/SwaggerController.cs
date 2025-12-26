@@ -259,33 +259,35 @@ public class EppoiApiController : ControllerBase
 
     /// <summary>
     /// GET user categories, timeAvailability & municipality as a profile vector.
+    /// returns either the profile vector or 404 if not found
     /// </summary>
     /// <response code="200">List of municipalities</response>
+    /// <response code="404">No preferences found for this user</response>
     /// <response code="500">Server error fetching municipalities</response>
     [HttpGet("profile-vector/{userId}")]
     public async Task<IActionResult> GetPreferences(string userId)
     {
         try
         {
-            var preference = await _db.ProfileVector
+            var profileVector = await _db.ProfileVector
                 .FirstOrDefaultAsync(p => p.UserId == userId);
 
-            if (preference == null)
+            if (profileVector == null)
             {
-                return NotFound(new { message = "No preferences found for this user" });
+                return NotFound(new { message = "No profileVector yet for this user" });
             }
 
-            var categories = JsonSerializer.Deserialize<List<string>>(preference.SelectedCategories) ?? new List<string>();
+            var categories = JsonSerializer.Deserialize<List<string>>(profileVector.SelectedCategories) ?? new List<string>();
 
             return Ok(new
             {
-                userId = preference.UserId,
-                municipality = preference.Municipality,
-                startTime = preference.StartTime,
-                endTime = preference.EndTime,
+                userId = profileVector.UserId,
+                municipality = profileVector.Municipality,
+                startTime = profileVector.StartTime,
+                endTime = profileVector.EndTime,
                 selectedCategories = categories,
-                createdAt = preference.CreatedAt,
-                updatedAt = preference.UpdatedAt
+                createdAt = profileVector.CreatedAt,
+                updatedAt = profileVector.UpdatedAt
             });
         }
         catch (Exception ex)
