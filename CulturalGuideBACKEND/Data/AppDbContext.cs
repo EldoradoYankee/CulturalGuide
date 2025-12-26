@@ -14,4 +14,6 @@ public class AppDbContext : DbContext
     public DbSet<Municipality> Municipalities { get; set; }
     
 	public DbSet<EatAndDrink> EatAndDrink { get; set; }
+
+	public DbSet<ProfileVector> ProfileVector { get; set; }
 }
