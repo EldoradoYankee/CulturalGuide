@@ -104,7 +104,9 @@ function App() {
                 {currentView === AuthView.SWIPECAROUSEL && user && (
                     <SwipeCarousel
                         municipality={selectedCity}
+                        user={user}
                         onBack={() => setCurrentView(AuthView.START)}
+                        onNavigateToPreferences={() => setCurrentView(AuthView.INTERESTS)}
                     />
                 )}
 
