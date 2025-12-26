@@ -27,6 +27,7 @@ export function InterestSelection({ user, onBack }) {
     // Interest selection state
     const [interests, setInterests] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [loadingProfileVector, setLoadingProfileVector] = useState(false);
     const [error, setError] = useState("");
 
     // ========================================
@@ -189,21 +190,66 @@ export function InterestSelection({ user, onBack }) {
         );
     };
 
-    const handleInterestComplete = () => {
+    // -------
+    // SAVES THE PROFILE VECTOR
+    // -------
+    const handleInterestComplete = async () => {
         const selectedIds = interests.filter(i => i.selected).map(i => i.id);
         if (selectedIds.length === 0) {
             toast.error(t("interestSelection_selectAtLeastOne"));
             return;
         }
 
-        console.log("Time:", { start: startSelection, end: endSelection });
-        console.log("City:", selectedCity);
-        console.log("Interests:", selectedIds);
+        // Prepare data for backend with hours 0 0 0
+        const start = new Date(startSelection.date);
+        start.setHours(startSelection.hour, 0, 0, 0);
 
-        // Go back to start
-        onBack();
+        const end = new Date(endSelection.date);
+        end.setHours(endSelection.hour, 0, 0, 0);
+
+        const preferenceData = {
+            userId: user.email,
+            municipality: selectedCity,
+            startTime: start.toISOString(),
+            endTime: end.toISOString(),
+            selectedCategories: selectedIds
+        };
+
+        console.log("Saving preferences from data retrieved:", preferenceData);
+
+        try {
+            setLoadingProfileVector(true);
+
+            const response = await fetch("http://localhost:5203/api/eppoiapi/save-profile-vector", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify(preferenceData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || `HTTP ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log("Preferences saved successfully:", result);
+
+            toast.success(t("interestSelection_profileVectorSavedSuccessfully"));
+
+            // Go back to start after successful save
+            onBack();
+
+        } catch (err) {
+            console.error("Failed to save preferences:", err);
+            toast.error(t("interestSelection_profileVectorError"));
+        } finally {
+            setLoading(false);
+        }
     };
-
+    
     const handleBack = () => {
         if (currentStep === 1) {
             onBack(); // Go back to Start component
@@ -528,6 +574,11 @@ export function InterestSelection({ user, onBack }) {
                                 >
                                     {t("interestSelection_continue")}
                                     <ArrowRight className="w-5 h-5" />
+                                    {loadingProfileVector && (
+                                        <div className="flex justify-center py-4">
+                                            <LoadingSpinner size="sm" />
+                                        </div>
+                                    )}
                                 </button>
                             </div>
                         </>
