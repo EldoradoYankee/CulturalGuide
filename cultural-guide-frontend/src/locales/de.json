@@ -118,6 +118,10 @@
   "swipeCarousel_destination": "Zielort Ihrer Reise",
   "swipeCarousel_interests": "Ihre Interessen und Kategorien",
   "swipeCarousel_setPreferencesButton": "Präferenzen festlegen",
+  "swipeCarousel_showingRecommendationsFor": "Empfehlungen für",
+  "swipeCarousel_editPreferences": "Bearbeiten Sie Ihre Präferenzen",
+  "swipeCarousel_destination_icon": "📍 Zielort:",
+  "swipeCarousel_timeAvailability_icon": "\uD83D\uDCC5 Von {{startDate}} um {{startHour}} bis {{endDate}} um {{endHour}}",
 
   "interestSelection_history": "Geschichte & Kultur",
   "interestSelection_nature": "Natur & Abenteuer",
