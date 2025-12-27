@@ -364,7 +364,7 @@ export function InterestSelection({ user, onBack }) {
                                         key={hour}
                                         onClick={() => selectHour(hour)}
                                         disabled={!currentSelection.date}
-                                        className={`p-2 rounded-lg border text-sm ${
+                                        className={`p-2 rounded-lg border text-[9px] sm:text-sm ${
                                             currentSelection.hour === hour
                                                 ? 'border-indigo-600 bg-indigo-50'
                                                 : 'border-gray-200 disabled:opacity-50'

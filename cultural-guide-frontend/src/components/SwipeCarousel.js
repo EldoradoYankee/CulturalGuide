@@ -49,11 +49,11 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
     // City selection state
     const [municipalities, setMunicipalities] = useState([]);
     const [selectedCity, setSelectedCity] = useState("");
-    
+
     // Time availability state
     const [startSelection, setStartSelection] = useState({ date: null, hour: null });
     const [endSelection, setEndSelection] = useState({ date: null, hour: null });
-    
+
     // Preference state
     const [hasProfileVector, setHasProfileVector] = useState(null);
     const [profileVector, setProfileVector] = useState(null);
@@ -166,7 +166,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                 const language = i18n.language;
                 // Fallback if frontEnd municipality differs from profile vector municipality
                 const municipalityToUse = profileVector.municipality.substring(10, selectedCity.length) || municipality.substring(10, selectedCity.length);
-                
+
                 // Fetch all services in parallel
                 const servicesConfig = [
                     { fn: fetchEatAndDrinks, setter: setEatAndDrinks },
