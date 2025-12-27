@@ -19,6 +19,7 @@ import { fetchServices } from "../services/ServicesService";
 import { fetchSleep } from "../services/SleepService";
 import { fetchTypicalProducts } from "../services/TypicalProductsService";
 import { LoadingSpinner } from "./ui_components/Loading";
+import {formatDate} from "../utils/formatDate";
 
 // ... (NextArrow and PrevArrow components stay the same)
 const NextArrow = ({ onClick }) => (
@@ -45,9 +46,17 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
     const [currentSlide, setCurrentSlide] = useState(0);
     const { t, i18n } = useTranslation();
 
+    // City selection state
+    const [municipalities, setMunicipalities] = useState([]);
+    const [selectedCity, setSelectedCity] = useState("");
+    
+    // Time availability state
+    const [startSelection, setStartSelection] = useState({ date: null, hour: null });
+    const [endSelection, setEndSelection] = useState({ date: null, hour: null });
+    
     // Preference state
-    const [hasPreferences, setHasProfileVector] = useState(null); // null = checking, true/false = result
-    const [userPreferences, setUserPreferences] = useState(null);
+    const [hasProfileVector, setHasProfileVector] = useState(null);
+    const [profileVector, setProfileVector] = useState(null);
 
     // Data states
     const [eatAndDrinks, setEatAndDrinks] = useState([]);
@@ -112,7 +121,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
 
                 if (response.ok) {
                     const profileVector = await response.json();
-                    setUserPreferences(profileVector);
+                    setProfileVector(profileVector);
                     setHasProfileVector(true);
 
                     console.log("User preferences found:", profileVector);
@@ -136,11 +145,11 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
     }, [user]);
 
     // -----------------------------
-    // Fetch data only if user has preferences
+    // Fetch data according to profile vector
     // -----------------------------
     useEffect(() => {
         // Don't fetch if we haven't checked preferences yet or if user has no preferences
-        if (hasPreferences === null || !hasPreferences || !userPreferences) return;
+        if (hasProfileVector === null || !hasProfileVector || !profileVector) return;
 
         const loadAllData = async () => {
             setLoading(true);
@@ -148,7 +157,8 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
 
             try {
                 const language = i18n.language;
-                const municipalityToUse = userPreferences.municipality || municipality;
+                // Fallback if frontEnd municipality differs from profile vector municipality
+                const municipalityToUse = profileVector.municipality || municipality;
 
                 console.log("Loading data for municipality:", municipalityToUse);
 
@@ -188,7 +198,58 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
         };
 
         loadAllData();
-    }, [hasPreferences, userPreferences, municipality, i18n.language, t]);
+    }, [hasProfileVector, profileVector, municipality, i18n.language, t]);
+
+    // -----------------
+    // Extract city and time availability from profile vector
+    // -----------------
+    useEffect(() => {
+        if (!profileVector) {
+            return;
+        }
+
+        // City
+        if (profileVector.municipality) {
+            setSelectedCity(profileVector.municipality);
+        }
+
+        // Time Availability - Parse ISO strings to { date, hour } format
+        if (profileVector.startTime) {
+            const startDate = new Date(profileVector.startTime);
+            setStartSelection({
+                date: startDate,
+                hour: startDate.getHours()
+            });
+            console.log("Parsed start time:", {
+                date: startDate,
+                hour: startDate.getHours()
+            });
+        }
+
+        if (profileVector.endTime) {
+            const endDate = new Date(profileVector.endTime);
+            setEndSelection({
+                date: endDate,
+                hour: endDate.getHours()
+            });
+            console.log("Parsed end time:", {
+                date: endDate,
+                hour: endDate.getHours()
+            });
+        }
+
+    }, [profileVector]); // Add profileVector as dependency
+
+    // -----------------------------
+    // wait for time being ready
+    // -----------------------------
+    const isTimeAvailabilityReady =
+        startSelection?.date &&
+        startSelection?.hour !== null &&
+        startSelection?.hour !== undefined &&
+        endSelection?.date &&
+        endSelection?.hour !== null &&
+        endSelection?.hour !== undefined;
 
     const handleViewDetails = (poi) => {
         if (onViewDetails) {
@@ -201,7 +262,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
     // -----------------------------
     // Show loading while checking preferences
     // -----------------------------
-    if (hasPreferences === null) {
+    if (hasProfileVector === null) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
@@ -215,7 +276,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
     // -----------------------------
     // Show "Set Preferences" page if no preferences found
     // -----------------------------
-    if (hasPreferences === false) {
+    if (hasProfileVector === false) {
         return (
             <div className="min-h-screen p-4 md:p-8">
                 <div className="max-w-2xl mx-auto">
@@ -300,23 +361,34 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                     )}
 
                     {/* Preferences Info Banner */}
-                    {userPreferences && (
-                        <div className="mb-6 p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        {t('showing_results_for') || 'Showing results for'}
-                                    </p>
-                                    <p className="font-semibold text-indigo-900">
-                                        {userPreferences.municipality}
-                                    </p>
+                    {profileVector && (
+                        <div className="bg-white mb-6 p-4 shadow-xl rounded-lg">
+                            <div className="flex items-center justify-between ">
+                                <div className="container m-2">
+                                    {!isTimeAvailabilityReady && <LoadingSpinner size="sm"/>}
+                                    <div className="row inline-flex items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm mb-6">{isTimeAvailabilityReady && (
+                                        <div>{
+                                            t("interestSelection_timeAvailability", {
+                                                startDate: formatDate(startSelection.date, formatDate.locale),
+                                                startHour: `${startSelection.hour.toString().padStart(2, '0')}:00 → `,
+                                                endDate: formatDate(endSelection, formatDate.locale),
+                                                endHour: `${endSelection.hour.toString().padStart(2, '0')}:00`
+                                            })
+                                        }</div>
+                                    )}
+                                    </div>
+                                    <div className="row inline-flex items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm mb-6">
+                                        {t("interestSelection_destination")} {selectedCity}
+                                    </div>
+                                    <div className="row w-5/12 items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm">
+                                        <p>🖊️ &nbsp;
+                                            <button onClick={onNavigateToPreferences}
+                                                    className="text-sm text-indigo-600 hover:text-indigo-700 underline">
+                                                {t('swipeCarousel_editPreferences')}
+                                            </button>
+                                        </p>
+                                    </div>
                                 </div>
-                                <button
-                                    onClick={onNavigateToPreferences}
-                                    className="text-sm text-indigo-600 hover:text-indigo-700 underline"
-                                >
-                                    {t('edit_preferences') || 'Edit preferences'}
-                                </button>
                             </div>
                         </div>
                     )}
