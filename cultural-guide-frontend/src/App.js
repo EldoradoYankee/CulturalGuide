@@ -8,8 +8,6 @@ import { InterestSelection } from "./components/InterestSelection";
 import { SwipeCarousel }  from "./components/SwipeCarousel";
 import { useTranslation } from "react-i18next";
 import { Header } from "./components/Header";
-import { CitySelection } from "./components/CitySelection";
-import { TimeAvailability } from "./components/TimeAvailability";
 
 const AuthView = {
     LOGIN: "login",
