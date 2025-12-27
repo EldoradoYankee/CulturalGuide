@@ -87,14 +87,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
             {
                 breakpoint: 768,
                 settings: {
-                    centerPadding: '20px',
-                    arrows: false,
-                },
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    centerPadding: '10px',
+                    centerPadding: '40px',
                     arrows: false,
                 },
             },
@@ -135,12 +128,12 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                 } else if (response.status === 404) {
                     // No preferences found
                     setHasProfileVector(false);
-                    toast.error("No preferences found for user");
+                    console.log("No preferences found for user");
                 } else {
                     throw new Error(`HTTP ${response.status}`);
                 }
             } catch (err) {
-                toast.error("Error checking preferences:", err);
+                console.error("Error checking preferences:", err);
                 setError("Failed to check user profile vector.");
                 setHasProfileVector(false);
             } finally {
@@ -165,8 +158,10 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
             try {
                 const language = i18n.language;
                 // Fallback if frontEnd municipality differs from profile vector municipality
-                const municipalityToUse = profileVector.municipality.substring(10, selectedCity.length) || municipality.substring(10, selectedCity.length);
-                
+                const municipalityToUse = profileVector.municipality || municipality;
+
+                console.log("Loading data for municipality:", municipalityToUse);
+
                 // Fetch all services in parallel
                 const servicesConfig = [
                     { fn: fetchEatAndDrinks, setter: setEatAndDrinks },
@@ -189,11 +184,12 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                             const data = await service.fn(municipalityToUse, language);
                             service.setter(data);
                         } catch (err) {
-                            toast.error(`Error loading service:`, err);
+                            console.error(`Error loading service:`, err);
                         }
                     })
                 );
             } catch (err) {
+                console.error("General error in data fetching from different endpoints:", err);
                 setError(err.message);
                 toast.error(t('swipeCarousel_errorLoadingData'));
             } finally {
@@ -224,11 +220,19 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                 date: startDate,
                 hour: startDate.getHours()
             });
+            console.log("Parsed start time:", {
+                date: startDate,
+                hour: startDate.getHours()
+            });
         }
 
         if (profileVector.endTime) {
             const endDate = new Date(profileVector.endTime);
             setEndSelection({
+                date: endDate,
+                hour: endDate.getHours()
+            });
+            console.log("Parsed end time:", {
                 date: endDate,
                 hour: endDate.getHours()
             });
@@ -376,7 +380,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                                     <div className="row inline-flex items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm mb-6">
                                         {t("interestSelection_destination")} {selectedCity}
                                     </div>
-                                    <div className="flex flex-row items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm w-full md:w-5/12">
+                                    <div className="row w-5/12 items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm">
                                         <p>🖊️ &nbsp;
                                             <button onClick={onNavigateToPreferences}
                                                     className="text-sm text-indigo-600 hover:text-indigo-700 underline">
@@ -408,46 +412,32 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                         <>
                             <style>
                                 {`
-              /* Desktop styles */
-              @media (min-width: 768px) {
-                .slick-slider {
-                  margin: 0 -80px;
-                }
-              }
-              
-              /* Mobile styles */
-              @media (max-width: 767px) {
-                .slick-slider {
-                  margin: 0 -20px;
-                }
-                .slick-slide > div {
-                  padding: 0 10px;
-                }
-              }
-              
-              .slick-dots li button:before {
-                font-size: 10px;
-                color: #6366f1;
-              }
-              .slick-dots li.slick-active button:before {
-                color: #6366f1;
-                opacity: 1;
-              }
-              .slick-slide {
-                padding: 0 10px;
-              }
-              .slick-list {
-                overflow: visible;
-              }
-            `}
+                                  .slick-slider {
+                                    margin: 0 -80px;
+                                  }
+                                  .slick-dots li button:before {
+                                    font-size: 10px;
+                                    color: #6366f1;
+                                  }
+                                  .slick-dots li.slick-active button:before {
+                                    color: #6366f1;
+                                    opacity: 1;
+                                  }
+                                  .slick-slide {
+                                    padding: 0 10px;
+                                  }
+                                  .slick-list {
+                                    overflow: visible;
+                                  }
+                                `}
                             </style>
 
                             <div className="max-w-2xl mx-auto">
                                 <Slider {...settings}>
                                     {eatAndDrinks.map((eatAndDrink) => (
                                         <div key={eatAndDrink.id} className="px-2">
-                                            <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all hover:shadow-2xl border-2 border-transparent hover:border-indigo-600 max-w-sm md:max-w-none mx-auto">
-                                                <div className="relative h-48 sm:h-56 md:h-64 lg:h-80 overflow-hidden">
+                                            <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all hover:shadow-2xl border-2 border-transparent hover:border-indigo-600">
+                                                <div className="relative h-64 md:h-80 overflow-hidden">
                                                     <img
                                                         alt={eatAndDrink.title}
                                                         src={eatAndDrink.image}
@@ -458,29 +448,29 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                                                         }}
                                                     />
                                                     <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow-xl">
-                                                        <span className="text-indigo-600 capitalize text-xs md:text-sm">{eatAndDrink.type}</span>
+                                                        <span className="text-indigo-600 capitalize">{eatAndDrink.type}</span>
                                                     </div>
                                                 </div>
 
-                                                <div className="p-4 md:p-6">
-                                                    <h2 className="text-lg md:text-xl text-gray-900 mb-3 md:mb-4">{eatAndDrink.title}</h2>
-                                                    <p className="text-sm md:text-base text-gray-600 mb-3 md:mb-4 line-clamp-3">
+                                                <div className="p-6">
+                                                    <h2 className="text-gray-900 mb-4">{eatAndDrink.title}</h2>
+                                                    <p className="text-gray-600 mb-4 line-clamp-3">
                                                         {eatAndDrink.description}
                                                     </p>
 
-                                                    <div className="space-y-2 mb-4 md:mb-6">
-                                                        <div className="flex items-center gap-2 text-gray-600 text-sm">
+                                                    <div className="space-y-2 mb-6">
+                                                        <div className="flex items-center gap-2 text-gray-600">
                                                             <MapPin className="w-4 h-4 text-indigo-600 flex-shrink-0" />
-                                                            <span className="truncate">{eatAndDrink.location}</span>
+                                                            <span>{eatAndDrink.location}</span>
                                                         </div>
-                                                        <div className="flex items-center gap-2 text-gray-600 text-sm">
+                                                        <div className="flex items-center gap-2 text-gray-600">
                                                             <Clock className="w-4 h-4 text-indigo-600 flex-shrink-0" />
                                                             <span>{eatAndDrink.openingHours}</span>
                                                         </div>
                                                     </div>
 
                                                     <button
-                                                        className="w-full bg-indigo-600 text-white py-2 px-4 rounded-xl hover:bg-indigo-700 transition text-sm md:text-base"
+                                                        className="w-full bg-indigo-600 text-white py-2 px-4 rounded-xl hover:bg-indigo-700 transition"
                                                         onClick={() => handleViewDetails(eatAndDrink)}
                                                     >
                                                         {t('swipeCarousel_viewDetails')}
