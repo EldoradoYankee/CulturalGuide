@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import {SwipeCarouselDetail} from "./SwipeCarouselDetail";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -45,6 +46,9 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
     const [error, setError] = useState("");
     const [currentSlide, setCurrentSlide] = useState(0);
     const { t, i18n } = useTranslation();
+
+    // Detail view state
+    const [selectedItem, setSelectedItem] = useState(null);
 
     // City selection state
     const [municipalities, setMunicipalities] = useState([]);
@@ -251,7 +255,8 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
         if (onViewDetails) {
             onViewDetails(poi);
         } else {
-            toast.success(`${t('swipeCarousel_detailsClicked')} ${poi.title}`);
+            setSelectedItem(poi);
+            //toast.success(`${t('swipeCarousel_detailsClicked')} ${poi.title}`);
         }
     };
 
@@ -342,9 +347,15 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
     // Show carousel if preferences exist
     // -----------------------------
     return (
-        <div className="w-full py-8 px-4 overflow-hidden">
-            <div className="max-w-2xl mx-auto">
-                <div className="w-full max-w-4xl">
+        //added relative to contain arrows
+        <div className="w-full py-8 px-4 overflow-hidden relative">
+            {selectedItem && (
+                <SwipeCarouselDetail
+                    item={selectedItem}
+                    onClose={() => setSelectedItem(null)}
+                />
+            )}
+            <div className={`max-w-2xl mx-auto transition-all duration-500 ${selectedItem ? 'blur-sm grayscale opacity-50 pointer-events-none' : ''}`}>                <div className="w-full max-w-4xl">
                     {/* Back Button */}
                     {onBack && (
                         <button
@@ -446,8 +457,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                                 <Slider {...settings}>
                                     {eatAndDrinks.map((eatAndDrink) => (
                                         <div key={eatAndDrink.id} className="px-2">
-                                            <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all hover:shadow-2xl border-2 border-transparent hover:border-indigo-600 max-w-sm md:max-w-none mx-auto">
-                                                <div className="relative h-48 sm:h-56 md:h-64 lg:h-80 overflow-hidden">
+                                            <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all border-2 border-transparent hover:border-indigo-600 max-w-sm md:max-w-none mx-auto">                                                <div className="relative h-48 sm:h-56 md:h-64 lg:h-80 overflow-hidden">
                                                     <img
                                                         alt={eatAndDrink.title}
                                                         src={eatAndDrink.image}
