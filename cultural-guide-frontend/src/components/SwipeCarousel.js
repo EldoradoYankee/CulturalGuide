@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {SwipeCarouselDetail} from "./SwipeCarouselDetail";
+import { SwipeCarouselDetail } from "./SwipeCarouselDetail";
+import { MapView } from "./ui_components/MapView";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -20,8 +21,13 @@ import { fetchServices } from "../services/ServicesService";
 import { fetchSleep } from "../services/SleepService";
 import { fetchTypicalProducts } from "../services/TypicalProductsService";
 import { LoadingSpinner } from "./ui_components/Loading";
-import {formatDate} from "../utils/formatDate";
-import {mapCategoriesToEndpoints, mapPoiToEndpoint} from "../services/PoiToEnpointMapper";
+import { formatDate } from "../utils/formatDate";
+import { mapCategoriesToEndpoints, mapPoiToEndpoint} from "../services/PoiToEnpointMapper";
+import {fetchEntertainmentLeisure} from "../services/EntertainmentLeisureService";
+import {fetchOrganizations} from "../services/OrganizationService";
+import {fetchRoutes} from "../services/RoutesService";
+import {fetchShopping} from "../services/ShoppingService";
+import { fetchMap } from "../services/MapService";
 
 // ... (NextArrow and PrevArrow components stay the same)
 const NextArrow = ({ onClick }) => (
@@ -63,11 +69,21 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
     const [hasProfileVector, setHasProfileVector] = useState(null);
     const [profileVector, setProfileVector] = useState(null);
 
+    // Locations for MapView
+    const [centerLatitude, setCenterLatitude] = useState();
+    const [centerLongitude, setCenterLongitude] = useState();
+    
+    const [markers, setMarkers] = useState([]);
+    
     // Data states
     const [eatAndDrinks, setEatAndDrinks] = useState([]);
     const [artAndCulture, setArtAndCulture] = useState([]);
     const [articles, setArticles] = useState([]);
+    const [organizations, setOrganizations] = useState([]);
+    const [routes, setRoutes] = useState([]);
+    const [shopping, setShopping] = useState([]);
     const [economicOperators, setEconomicOperators] = useState([]);
+    const [entertainmentLeisure, setEntertainmentLeisure] = useState([]);
     const [events, setEvents] = useState([]);
     const [itineraries, setItineraries] = useState([]);
     const [natureItems, setNatureItems] = useState([]);
@@ -181,17 +197,21 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                 // Fetch all services in parallel
                 const servicesConfig = [
                     { fn: fetchEatAndDrinks, setter: setEatAndDrinks },
-                    { fn: fetchArtAndCulture, setter: setArtAndCulture },
-                    { fn: fetchArticlesAndMagazines, setter: setArticles },
-                    { fn: fetchEconomicOperators, setter: setEconomicOperators },
-                    { fn: fetchEvents, setter: setEvents },
-                    { fn: fetchItineraries, setter: setItineraries },
-                    { fn: fetchNature, setter: setNatureItems },
-                    { fn: fetchPointsOfSale, setter: setPointsOfSale },
-                    { fn: fetchRecreationAndFun, setter: setRecreationItems },
-                    { fn: fetchServices, setter: setPublicServices },
-                    { fn: fetchSleep, setter: setSleepItems },
-                    { fn: fetchTypicalProducts, setter: setTypicalProducts },
+                    //{ fn: fetchEntertainmentLeisure, setter: setEntertainmentLeisure },
+                    //{ fn: fetchArtAndCulture, setter: setArtAndCulture },
+                    //{ fn: fetchArticlesAndMagazines, setter: setArticles },
+                    //{ fn: fetchOrganizations, setter: setOrganizations },
+                    //{ fn: fetchRoutes, setter: setRoutes },
+                    //{ fn: fetchShopping, setter: setShopping },
+                    //{ fn: fetchEconomicOperators, setter: setEconomicOperators },
+                    //{ fn: fetchEvents, setter: setEvents },
+                    //{ fn: fetchItineraries, setter: setItineraries },
+                    //{ fn: fetchNature, setter: setNatureItems },
+                    //{ fn: fetchPointsOfSale, setter: setPointsOfSale },
+                    //{ fn: fetchRecreationAndFun, setter: setRecreationItems },
+                    //{ fn: fetchServices, setter: setPublicServices },
+                    //{ fn: fetchSleep, setter: setSleepItems },
+                    //{ fn: fetchTypicalProducts, setter: setTypicalProducts },
                 ];
 
                 await Promise.all(
@@ -249,7 +269,38 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
     }, [profileVector]); // Add profileVector as dependency
 
     // -----------------------------
-    // wait for time being ready
+    // Prepare locations for MapView
+    // -----------------------------
+    useEffect(() => {
+        if (!selectedCity) return;
+
+        const loadMarkersOnMap = async () => {
+            try {
+                setLoading(true);
+                console.log("Loading map data for municipality: " + selectedCity);
+                const data = await fetchMap(selectedCity);
+                console.log("Map data:", data.locations);
+                console.log("Center data:", data.center);
+                setMarkers(data.locations);
+                if (data.length > 0) {
+                    setCenterLatitude(data.center.latitude);
+                    setCenterLongitude(data.center.longitude);
+                }
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadMarkersOnMap();
+    }, [selectedCity]);
+    
+    // -----------------------------
+    // wait for municipality
+    // -----------------------------
+
+    // -----------------------------
+    // wait for timeAvailability from ProfileVector Database fetch is ready
     // -----------------------------
     const isTimeAvailabilityReady =
         startSelection?.date &&
@@ -363,7 +414,8 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                     onClose={() => setSelectedItem(null)}
                 />
             )}
-            <div className={`max-w-2xl mx-auto transition-all duration-500 ${selectedItem ? 'blur-sm grayscale opacity-50 pointer-events-none' : ''}`}>                <div className="w-full max-w-4xl">
+            <div className={`max-w-2xl mx-auto transition-all duration-500 ${selectedItem ? 'blur-sm grayscale opacity-50 pointer-events-none' : ''}`}>                
+                <div className="w-full max-w-4xl">
                     {/* Back Button */}
                     {onBack && (
                         <button
@@ -377,7 +429,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
 
                     {/* Preferences Info Banner */}
                     {profileVector && (
-                        <div className="bg-white mb-6 p-4 shadow-xl rounded-lg">
+                        <div className="bg-white mb-6 p-4 shadow-xl rounded-3xl">
                             <div className="flex items-center justify-between ">
                                 <div className="container m-2">
                                     {!isTimeAvailabilityReady && <LoadingSpinner size="sm"/>}
@@ -465,7 +517,8 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                                 <Slider {...settings}>
                                     {eatAndDrinks.map((eatAndDrink) => (
                                         <div key={eatAndDrink.id} className="px-2">
-                                            <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all border-2 border-transparent hover:border-indigo-600 max-w-sm md:max-w-none mx-auto">                                                <div className="relative h-48 sm:h-56 md:h-64 lg:h-80 overflow-hidden">
+                                            <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all border-2 border-transparent hover:border-indigo-600 max-w-sm md:max-w-none mx-auto">                                                
+                                                <div className="relative h-48 sm:h-56 md:h-64 lg:h-80 overflow-hidden">
                                                     <img
                                                         alt={eatAndDrink.title}
                                                         src={eatAndDrink.image}
@@ -512,6 +565,19 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                         </>
                     )}
 
+                    {/* MapView for interactions on OSM map */}
+                    <div className="bg-white mt-10 mb-6 p-4 shadow-xl rounded-3xl">
+                        <MapView
+                            locations={markers}
+                            center={{ latitude: centerLatitude, longitude: centerLongitude }}
+                            zoom={13}
+                            height="700px"
+                            onLocationClick={() => {
+                                console.log("Location clicked: " + markers);
+                            }}
+                        />
+                    </div>
+                
                     {/* Empty State */}
                     {!loading && !error && eatAndDrinks.length === 0 && (
                         <div className="text-center py-20 text-gray-600">
