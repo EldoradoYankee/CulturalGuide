@@ -13,18 +13,18 @@ import { fetchSleep } from './SleepService';
 
 
 const CATEGORY_ENDPOINT_MAP = {
-    ArtCulture: fetchArtAndCulture,
-    Articles: fetchArticlesAndMagazines,
-    Sleep: fetchSleep,
-    Events: fetchEvents,
-    Routes: fetchRoutes,
-    EatAndDrink: fetchEatAndDrinks,
-    Nature: fetchNature,
-    Organizations: fetchOrganizations,
-    TypicalProducts: fetchTypicalProducts,
-    Shopping: fetchShopping,
-    Services: fetchServices,
-    EntertainmentLeisure: fetchEntertainmentLeisure,
+    artculture: fetchArtAndCulture,
+    articles: fetchArticlesAndMagazines,
+    sleep: fetchSleep,
+    events: fetchEvents,
+    routes: fetchRoutes,
+    eatanddrink: fetchEatAndDrinks,
+    nature: fetchNature,
+    organizations: fetchOrganizations,
+    typicalproducts: fetchTypicalProducts,
+    shopping: fetchShopping,
+    services: fetchServices,
+    entertainmentleisure: fetchEntertainmentLeisure,
 };
 
 export const mapCategoriesToEndpoints = (categories = []) => {
