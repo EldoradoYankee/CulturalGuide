@@ -534,13 +534,48 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                 }
               }
               
+              /* CSS */
+              .slick-dots {
+                --dot-size: 10px;
+                --dot-gap: 6px;
+                white-space: nowrap;                 /* keep dots on one line */
+                overflow: hidden;                   /* hide overflow beyond max-width */
+                padding: 0;
+                margin: 0 auto;
+                box-sizing: content-box;
+              }
+              
               .slick-dots li button:before {
                 font-size: 10px;
                 color: #6366f1;
+                white-space: nowrap;                 /* keep dots on one line */
+                overflow: hidden;                   /* hide overflow beyond max-width */
+                max-width: calc(16 * (var(--dot-size) + (var(--dot-gap) * 2))); /* show up to 16 dots */
+                box-sizing: content-box;
               }
+              
+              /* active dot */
               .slick-dots li.slick-active button:before {
                 color: #6366f1;
+                white-space: nowrap;                 /* keep dots on one line */
+                overflow: hidden;                   /* hide overflow beyond max-width */
+                max-width: calc(16 * (var(--dot-size) + (var(--dot-gap) * 2))); /* show up to 16 dots */
+                box-sizing: content-box;
                 opacity: 1;
+              }
+              /* ensure list items don't wrap to new line */
+              .slick-dots li {
+                display: inline-block;
+                float: none;
+                vertical-align: middle;
+              }
+              
+              /* make the button a fixed box for the dot and remove default inline :before text rendering */
+              .slick-dots li button {
+                display: inline-block;
+                background: transparent;
+                border: none;
+                cursor: pointer;
               }
               .slick-slide {
                 padding: 0 10px;
