@@ -105,6 +105,7 @@
   "citySelection_goBack": "Indietro",
 
   "swipeCarousel_viewDetails": "Vedi Dettagli",
+  "swipeCarousel_loadingMap": "Caricamento Mappa...",
   "swipeCarousel_location": "Posizione",
   "swipeCarousel_hours": "Orari",
   "swipeCarousel_detailsClicked": "Dettagli per",

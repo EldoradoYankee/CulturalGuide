@@ -105,6 +105,7 @@
   "citySelection_goBack": "Back",
 
   "swipeCarousel_viewDetails": "View Details",
+  "swipeCarousel_loadingMap": "Loading Map...",
   "swipeCarousel_location": "Location",
   "swipeCarousel_hours": "Opening Hours",
   "swipeCarousel_detailsClicked": "Details for",
