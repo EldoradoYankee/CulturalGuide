@@ -13,7 +13,7 @@ export function MapView({
     const [currentZoom, setCurrentZoom] = useState(zoom);
     const [mapCenter, setMapCenter] = useState(null);
     // i18n
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     // initialize / react to prop changes
     useEffect(() => {
@@ -50,15 +50,7 @@ export function MapView({
     const closeBanner = () => {
         setSelectedLocation(null);
     };
-
-    const handleZoomIn = () => {
-        setCurrentZoom((prev) => Math.min((prev ?? zoom) + 1, 18));
-    };
-
-    const handleZoomOut = () => {
-        setCurrentZoom((prev) => Math.max((prev ?? zoom) - 1, 1));
-    };
-
+    
     // Calculate marker positions relative to map center
     const getMarkerPosition = (location) => {
         if (!mapCenter || currentZoom == null || !location) {
@@ -151,24 +143,6 @@ export function MapView({
                             );
                         })}
                 </div>
-            </div>
-
-            {/* Zoom Controls */}
-            <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
-                <button
-                    onClick={handleZoomIn}
-                    className="w-10 h-10 bg-white rounded-lg shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
-                    title="Zoom In"
-                >
-                    <ZoomIn className="w-5 h-5 text-gray-700" />
-                </button>
-                <button
-                    onClick={handleZoomOut}
-                    className="w-10 h-10 bg-white rounded-lg shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
-                    title="Zoom Out"
-                >
-                    <ZoomOut className="w-5 h-5 text-gray-700" />
-                </button>
             </div>
 
             {/* Information Banner */}
