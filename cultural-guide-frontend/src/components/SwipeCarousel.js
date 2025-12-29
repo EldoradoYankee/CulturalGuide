@@ -191,40 +191,85 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                 // Extract selected categories from profile vector as poi
                 const pois = profileVector.selectedCategories;
                 // Call service to identify which endpoints to call based on poi
-                const filteredEndpoints = mapCategoriesToEndpoints(profileVector.selectedCategories)
+                const filteredEndpoints = mapCategoriesToEndpoints(profileVector.selectedCategories);
+                const filteredEndpointNames = filteredEndpoints.map(fn => fn.name);
                 
-                
-                // Fetch all services in parallel
+                // functionlist with setters for all possible services -> to be filtered depending on pois
                 const servicesConfig = [
                     { fn: fetchEatAndDrinks, setter: setEatAndDrinks },
-                    //{ fn: fetchEntertainmentLeisure, setter: setEntertainmentLeisure },
-                    //{ fn: fetchArtAndCulture, setter: setArtAndCulture },
-                    //{ fn: fetchArticlesAndMagazines, setter: setArticles },
-                    //{ fn: fetchOrganizations, setter: setOrganizations },
-                    //{ fn: fetchRoutes, setter: setRoutes },
-                    //{ fn: fetchShopping, setter: setShopping },
-                    //{ fn: fetchEconomicOperators, setter: setEconomicOperators },
-                    //{ fn: fetchEvents, setter: setEvents },
-                    //{ fn: fetchItineraries, setter: setItineraries },
-                    //{ fn: fetchNature, setter: setNatureItems },
-                    //{ fn: fetchPointsOfSale, setter: setPointsOfSale },
-                    //{ fn: fetchRecreationAndFun, setter: setRecreationItems },
-                    //{ fn: fetchServices, setter: setPublicServices },
-                    //{ fn: fetchSleep, setter: setSleepItems },
-                    //{ fn: fetchTypicalProducts, setter: setTypicalProducts },
+                    { fn: fetchEntertainmentLeisure, setter: setEntertainmentLeisure },
+                    { fn: fetchArtAndCulture, setter: setArtAndCulture },
+                    { fn: fetchArticlesAndMagazines, setter: setArticles },
+                    { fn: fetchOrganizations, setter: setOrganizations },
+                    { fn: fetchRoutes, setter: setRoutes },
+                    { fn: fetchShopping, setter: setShopping },
+                    { fn: fetchEconomicOperators, setter: setEconomicOperators },
+                    { fn: fetchEvents, setter: setEvents },
+                    { fn: fetchItineraries, setter: setItineraries },
+                    { fn: fetchNature, setter: setNatureItems },
+                    { fn: fetchPointsOfSale, setter: setPointsOfSale },
+                    { fn: fetchRecreationAndFun, setter: setRecreationItems },
+                    { fn: fetchServices, setter: setPublicServices },
+                    { fn: fetchSleep, setter: setSleepItems },
+                    { fn: fetchTypicalProducts, setter: setTypicalProducts },
                 ];
-
-                await Promise.all(
-                    servicesConfig.map(async (service) => {
-                        console.log("Downloading from serviceEndpoint: " + service.fn.name);
+                
+                // fetch all selected endpoints in parallel, return per-endpoint {ep, data}
+                const rawResults = await Promise.all(
+                    servicesConfig.map(async (serviceEntry) => {
+                        // support either a function directly or an object { fn, setter }
+                        const fn = typeof serviceEntry === 'function' ? serviceEntry : serviceEntry?.fn;
+                        const serviceName = fn?.name ?? (serviceEntry?.setter ? 'unnamed_service' : 'unknown');
+                        
                         try {
-                            const data = await service.fn(municipalityToUse, language);
-                            service.setter(data);
+                            // check fn from servicesConfig exists 
+                            if (!fn) throw new Error('No fetch function provided');
+                            
+                            // check if this service is in filteredEndpoints
+                            if (filteredEndpointNames.includes(serviceName)) {
+                                // If the function declares two or more parameters, pass language as second arg, otherwise call with municipality only.
+                                const data = fn.length >= 2
+                                    ? await fn(municipalityToUse, language) 
+                                    : await fn(municipalityToUse);
+    
+                                //console.log("Filtered Endpoints to call: " + profileVector.selectedCategories);
+                                
+                                return { service: serviceName, data };
+                            } else {
+                                toast.error(`Skipping service ${serviceName} as it's not in user's selected categories.`);
+                                return {service: '', undefined};
+                            }
                         } catch (err) {
-                            toast.error(`Error loading service:`, err);
+                            toast.error(`Error loading ${serviceName}: ${err?.message ?? err}`);
+                            return { service: serviceName, data: [] };
                         }
                     })
                 );
+
+                // helper to normalize a single raw item into the carousel shape
+                const normalizeItem = (item, source, index) => {
+                    return {
+                        id: item.id ?? item._id ?? item.uuid ?? `${source}_${index}`,
+                        title: item.title ?? item.name ?? item.nome ?? item.label ?? "N/A",
+                        description: item.description ?? item.descr ?? item.summary ?? null,
+                        location: item.location ?? item.address ?? item.vicinity ?? item.place ?? null,
+                        image: item.image ?? item.imageUrl ?? item.thumbnail ?? null,
+                        type: item.type ?? item.category ?? source,
+                        openingHours: item.openingHours ?? item.opening_hours ?? item.hours ?? null,
+                        // keep raw payload if needed later
+                        _raw: item,
+                    };
+                };
+                
+                // flatten + normalize
+                const combined = rawResults.flatMap(({ service: service, data }) => {
+                    const arr = Array.isArray(data) ? data : (data?.items ?? data?.locations ?? []);
+                    if (!Array.isArray(arr)) return [];
+                    return arr.map((item, index) => normalizeItem(item, service, index));
+                });
+                
+                // set into the state the carousel uses. (You can use a separate state if preferred)
+                setEatAndDrinks(combined);
             } catch (err) {
                 setError(err.message);
                 toast.error(t('swipeCarousel_errorLoadingData'));
@@ -277,10 +322,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
         const loadMarkersOnMap = async () => {
             try {
                 setLoading(true);
-                console.log("Loading map data for municipality: " + selectedCity);
                 const data = await fetchMap(selectedCity);
-                console.log("Map data:", data.locations);
-                console.log("Center data:", data.center);
                 setMarkers(data.locations);
                 if (data.length > 0) {
                     setCenterLatitude(data.center.latitude);
@@ -295,10 +337,6 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
         loadMarkersOnMap();
     }, [selectedCity]);
     
-    // -----------------------------
-    // wait for municipality
-    // -----------------------------
-
     // -----------------------------
     // wait for timeAvailability from ProfileVector Database fetch is ready
     // -----------------------------
@@ -315,7 +353,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
             onViewDetails(poi);
         } else {
             setSelectedItem(poi);
-            //toast.success(`${t('swipeCarousel_detailsClicked')} ${poi.title}`);
+            toast.success(`${t('swipeCarousel_detailsClicked')} ${poi.title}`);
         }
     };
 
