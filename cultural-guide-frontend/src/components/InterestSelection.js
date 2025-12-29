@@ -154,8 +154,6 @@ export function InterestSelection({ user, onBack }) {
                         )}&language=${i18n.language}`
                     );
                     
-                    console.log(res);
-
                     if (!res.ok) {
                         throw new Error(`HTTP ${res.status}`);
                     }

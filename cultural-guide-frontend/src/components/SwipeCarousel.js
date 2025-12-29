@@ -21,6 +21,7 @@ import { fetchSleep } from "../services/SleepService";
 import { fetchTypicalProducts } from "../services/TypicalProductsService";
 import { LoadingSpinner } from "./ui_components/Loading";
 import {formatDate} from "../utils/formatDate";
+import {mapCategoriesToEndpoints, mapPoiToEndpoint} from "../services/PoiToEnpointMapper";
 
 // ... (NextArrow and PrevArrow components stay the same)
 const NextArrow = ({ onClick }) => (
@@ -159,7 +160,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
     // Fetch data according to profile vector
     // -----------------------------
     useEffect(() => {
-        // Don't fetch if we haven't checked preferences yet or if user has no preferences
+        // Don't fetch if we haven't checked profileVector yet or if user has no profileVector
         if (hasProfileVector === null || !hasProfileVector || !profileVector) return;
 
         const loadAllData = async () => {
@@ -171,6 +172,12 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                 // Fallback if frontEnd municipality differs from profile vector municipality
                 const municipalityToUse = profileVector.municipality.substring(10, selectedCity.length) || municipality.substring(10, selectedCity.length);
 
+                // Extract selected categories from profile vector as poi
+                const pois = profileVector.selectedCategories;
+                // Call service to identify which endpoints to call based on poi
+                const filteredEndpoints = mapCategoriesToEndpoints(profileVector.selectedCategories)
+                
+                
                 // Fetch all services in parallel
                 const servicesConfig = [
                     { fn: fetchEatAndDrinks, setter: setEatAndDrinks },
@@ -189,6 +196,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
 
                 await Promise.all(
                     servicesConfig.map(async (service) => {
+                        console.log("Downloading from serviceEndpoint: " + service.fn.name);
                         try {
                             const data = await service.fn(municipalityToUse, language);
                             service.setter(data);
