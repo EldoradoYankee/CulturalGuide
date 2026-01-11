@@ -22,11 +22,11 @@ import { fetchSleep } from "../services/SleepService";
 import { fetchTypicalProducts } from "../services/TypicalProductsService";
 import { LoadingSpinner } from "./ui_components/Loading";
 import { formatDate } from "../utils/formatDate";
-import { mapCategoriesToEndpoints, mapPoiToEndpoint} from "../services/PoiToEnpointMapper";
-import {fetchEntertainmentLeisure} from "../services/EntertainmentLeisureService";
-import {fetchOrganizations} from "../services/OrganizationService";
-import {fetchRoutes} from "../services/RoutesService";
-import {fetchShopping} from "../services/ShoppingService";
+import { mapCategoriesToEndpoints } from "../services/PoiToEnpointMapper";
+import { fetchEntertainmentLeisure } from "../services/EntertainmentLeisureService";
+import { fetchOrganizations } from "../services/OrganizationService";
+import { fetchRoutes } from "../services/RoutesService";
+import { fetchShopping } from "../services/ShoppingService";
 import { fetchMap } from "../services/MapService";
 
 // ... (NextArrow and PrevArrow components stay the same)
@@ -58,7 +58,6 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
     const [selectedItem, setSelectedItem] = useState(null);
 
     // City selection state
-    const [municipalities, setMunicipalities] = useState([]);
     const [selectedCity, setSelectedCity] = useState("");
 
     // Time availability state
@@ -68,6 +67,9 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
     // Preference state
     const [hasProfileVector, setHasProfileVector] = useState(null);
     const [profileVector, setProfileVector] = useState(null);
+    
+    // Remove filter state
+    const [showAllCategories, setShowAllCategories] = useState(false);
 
     // Locations for MapView
     const [centerLatitude, setCenterLatitude] = useState();
@@ -75,23 +77,8 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
     
     const [markers, setMarkers] = useState([]);
     
-    // Data states
-    const [eatAndDrinks, setEatAndDrinks] = useState([]);
-    const [artAndCulture, setArtAndCulture] = useState([]);
-    const [articles, setArticles] = useState([]);
-    const [organizations, setOrganizations] = useState([]);
-    const [routes, setRoutes] = useState([]);
-    const [shopping, setShopping] = useState([]);
-    const [economicOperators, setEconomicOperators] = useState([]);
-    const [entertainmentLeisure, setEntertainmentLeisure] = useState([]);
-    const [events, setEvents] = useState([]);
-    const [itineraries, setItineraries] = useState([]);
-    const [natureItems, setNatureItems] = useState([]);
-    const [pointsOfSale, setPointsOfSale] = useState([]);
-    const [recreationItems, setRecreationItems] = useState([]);
-    const [publicServices, setPublicServices] = useState([]);
-    const [sleepItems, setSleepItems] = useState([]);
-    const [typicalProducts, setTypicalProducts] = useState([]);
+    // Fetched data states after applying profile vector
+    const [fetchedCardList, setFetchedCardList] = useState([]);
 
     const settings = {
         dots: true,
@@ -172,9 +159,25 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
         checkUserProfileVector();
     }, [user]);
 
+    // All available categories constant (move outside component or define at top)
+    const ALL_CATEGORIES = [
+        "eatanddrink",
+        "entertainmentleisure",
+        "artculture",
+        "articles",
+        "organizations",
+        "routes",
+        "shopping",
+        "events",
+        "nature",
+        "services",
+        "sleep",
+        "typicalproducts"
+    ];
+
     // -----------------------------
-    // Fetch data according to profile vector
-    // -----------------------------
+// Fetch data according to profile vector
+// -----------------------------
     useEffect(() => {
         // Don't fetch if we haven't checked profileVector yet or if user has no profileVector
         if (hasProfileVector === null || !hasProfileVector || !profileVector) return;
@@ -185,68 +188,68 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
 
             try {
                 const language = i18n.language;
-                // Fallback if frontEnd municipality differs from profile vector municipality
-                const municipalityToUse = profileVector.municipality.substring(10, selectedCity.length) || municipality.substring(10, selectedCity.length);
+                const municipalityToUse = profileVector.municipality.substring(10) || municipality.substring(10);
 
-                // Extract selected categories from profile vector as poi
-                const pois = profileVector.selectedCategories;
-                // Call service to identify which endpoints to call based on poi
-                const filteredEndpoints = mapCategoriesToEndpoints(profileVector.selectedCategories);
+                // Determine which categories to use - prioritize showAllCategories flag
+                let categoriesToFetch;
+                if (showAllCategories) {
+                    categoriesToFetch = ALL_CATEGORIES;
+                } else {
+                    categoriesToFetch = profileVector.selectedCategories || [];
+                }
+
+                // Call service to identify which endpoints to call
+                const filteredEndpoints = mapCategoriesToEndpoints(categoriesToFetch);
                 const filteredEndpointNames = filteredEndpoints.map(fn => fn.name);
-                
-                // functionlist with setters for all possible services -> to be filtered depending on pois
+
+                // All possible services
                 const servicesConfig = [
-                    { fn: fetchEatAndDrinks, setter: setEatAndDrinks },
-                    { fn: fetchEntertainmentLeisure, setter: setEntertainmentLeisure },
-                    { fn: fetchArtAndCulture, setter: setArtAndCulture },
-                    { fn: fetchArticlesAndMagazines, setter: setArticles },
-                    { fn: fetchOrganizations, setter: setOrganizations },
-                    { fn: fetchRoutes, setter: setRoutes },
-                    { fn: fetchShopping, setter: setShopping },
-                    { fn: fetchEconomicOperators, setter: setEconomicOperators },
-                    { fn: fetchEvents, setter: setEvents },
-                    { fn: fetchItineraries, setter: setItineraries },
-                    { fn: fetchNature, setter: setNatureItems },
-                    { fn: fetchPointsOfSale, setter: setPointsOfSale },
-                    { fn: fetchRecreationAndFun, setter: setRecreationItems },
-                    { fn: fetchServices, setter: setPublicServices },
-                    { fn: fetchSleep, setter: setSleepItems },
-                    { fn: fetchTypicalProducts, setter: setTypicalProducts },
+                    { fn: fetchEatAndDrinks },
+                    { fn: fetchEntertainmentLeisure },
+                    { fn: fetchArtAndCulture },
+                    { fn: fetchArticlesAndMagazines },
+                    { fn: fetchOrganizations },
+                    { fn: fetchRoutes },
+                    { fn: fetchShopping },
+                    { fn: fetchEconomicOperators },
+                    { fn: fetchEvents },
+                    { fn: fetchItineraries },
+                    { fn: fetchNature },
+                    { fn: fetchPointsOfSale },
+                    { fn: fetchRecreationAndFun },
+                    { fn: fetchServices },
+                    { fn: fetchSleep },
+                    { fn: fetchTypicalProducts },
                 ];
-                
-                // fetch all selected endpoints in parallel, return per-endpoint {ep, data}
+
+                // Fetch all selected endpoints in parallel
                 const rawResults = await Promise.all(
                     servicesConfig.map(async (serviceEntry) => {
-                        // support either a function directly or an object { fn, setter }
                         const fn = typeof serviceEntry === 'function' ? serviceEntry : serviceEntry?.fn;
-                        const serviceName = fn?.name ?? (serviceEntry?.setter ? 'unnamed_service' : 'unknown');
-                        
+                        const serviceName = fn?.name ?? 'unknown';
+
                         try {
-                            // check fn from servicesConfig exists 
                             if (!fn) throw new Error('No fetch function provided');
-                            
-                            // check if this service is in filteredEndpoints
+
+                            // Check if this service should be called
                             if (filteredEndpointNames.includes(serviceName)) {
-                                // If the function declares two or more parameters, pass language as second arg, otherwise call with municipality only.
                                 const data = fn.length >= 2
-                                    ? await fn(municipalityToUse, language) 
+                                    ? await fn(municipalityToUse, language)
                                     : await fn(municipalityToUse);
-    
-                                //console.log("Filtered Endpoints to call: " + profileVector.selectedCategories);
-                                
+
+                                console.log(`  ✓ ${serviceName}: ${data?.length || 0} items`);
                                 return { service: serviceName, data };
                             } else {
-                                toast.error(`Skipping service ${serviceName} as it's not in user's selected categories.`);
-                                return {service: '', undefined};
+                                return { service: serviceName, data: [] };
                             }
                         } catch (err) {
-                            toast.error(`Error loading ${serviceName}: ${err?.message ?? err}`);
+                            console.error(`  ✗ ${serviceName}:`, err?.message ?? err);
                             return { service: serviceName, data: [] };
                         }
                     })
                 );
 
-                // helper to normalize a single raw item into the carousel shape
+                // Normalize items
                 const normalizeItem = (item, source, index) => {
                     return {
                         id: item.id ?? item._id ?? item.uuid ?? `${source}_${index}`,
@@ -256,20 +259,20 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                         image: item.image ?? item.imageUrl ?? item.thumbnail ?? null,
                         type: item.type ?? item.category ?? source,
                         openingHours: item.openingHours ?? item.opening_hours ?? item.hours ?? null,
-                        // keep raw payload if needed later
                         _raw: item,
                     };
                 };
-                
-                // flatten + normalize
-                const combined = rawResults.flatMap(({ service: service, data }) => {
+
+                // Flatten and normalize
+                const combined = rawResults.flatMap(({ service, data }) => {
                     const arr = Array.isArray(data) ? data : (data?.items ?? data?.locations ?? []);
                     if (!Array.isArray(arr)) return [];
                     return arr.map((item, index) => normalizeItem(item, service, index));
                 });
-                
-                // set into the state the carousel uses. (You can use a separate state if preferred)
-                setEatAndDrinks(combined);
+
+                console.log(`📊 Total items fetched: ${combined.length}`);
+                setFetchedCardList(combined);
+
             } catch (err) {
                 setError(err.message);
                 toast.error(t('swipeCarousel_errorLoadingData'));
@@ -279,7 +282,28 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
         };
 
         loadAllData();
-    }, [hasProfileVector, profileVector, municipality, i18n.language, t]);
+
+        // IMPORTANT: Only depend on showAllCategories, NOT on profileVector
+        // This prevents re-fetching when profileVector changes
+    }, [showAllCategories, hasProfileVector, municipality, i18n.language, t]);
+
+    // -----------------------------
+    // Handle Remove/Restore Preferences Toggle
+    // -----------------------------
+    const onTogglePreferences = () => {
+        setShowAllCategories((prev) => {
+            const newValue = !prev;
+            console.log(`🔄 Toggling filters: ${newValue ? 'SHOW ALL' : 'USE FILTERS'}`);
+
+            if (newValue) {
+                toast.info(t('loading_all_categories') || 'Loading all categories...');
+            } else {
+                toast.info(t('applying_filters') || 'Applying your preferences...');
+            }
+
+            return newValue;
+        });
+    };
 
     // -----------------
     // Extract city and time availability from profile vector
@@ -468,30 +492,47 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                     {/* Preferences Info Banner */}
                     {profileVector && (
                         <div className="bg-white mb-6 p-4 shadow-xl rounded-3xl">
-                            <div className="flex items-center justify-between ">
-                                <div className="container m-2">
-                                    {!isTimeAvailabilityReady && <LoadingSpinner size="sm"/>}
-                                    <div className="row inline-flex items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm mb-6">{isTimeAvailabilityReady && (
-                                        <div>{
-                                            t("interestSelection_timeAvailability", {
-                                                startDate: formatDate(startSelection.date, formatDate.locale),
-                                                startHour: `${startSelection.hour.toString().padStart(2, '0')}:00 → `,
-                                                endDate: formatDate(endSelection, formatDate.locale),
-                                                endHour: `${endSelection.hour.toString().padStart(2, '0')}:00`
-                                            })
-                                        }</div>
-                                    )}
+                            <div className="items-center justify-between ">
+                                <div className="flex flex-col w-full gap-3 mb-4">
+                                    {!isTimeAvailabilityReady && <LoadingSpinner size="sm" />}
+
+                                    <div className="flex items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm">
+                                        {isTimeAvailabilityReady && t("interestSelection_timeAvailability", {
+                                            startDate: formatDate(startSelection.date, formatDate.locale),
+                                            startHour: `${startSelection.hour.toString().padStart(2, '0')}:00 → `,
+                                            endDate: formatDate(endSelection, formatDate.locale),
+                                            endHour: `${endSelection.hour.toString().padStart(2, '0')}:00`
+                                        })}
                                     </div>
-                                    <div className="row inline-flex items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm mb-6">
+
+                                    <div className="flex items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm">
                                         {t("interestSelection_destination")} {selectedCity}
                                     </div>
-                                    <div className="flex flex-row items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm w-full md:w-5/12">
-                                        <p>🖊️ &nbsp;
-                                            <button onClick={onNavigateToPreferences}
-                                                    className="text-sm text-indigo-600 hover:text-indigo-700 underline">
-                                                {t('swipeCarousel_editPreferences')}
+
+                                    <div className="flex items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm">
+                                        🖊️&nbsp;
+                                        <button
+                                            onClick={onNavigateToPreferences}
+                                            className="text-sm text-indigo-600 hover:text-indigo-700 underline"
+                                        >
+                                            {t('swipeCarousel_editPreferences')}
+                                        </button>
+                                    </div>
+
+                                    <div className="flex flex-row items-center bg-indigo-50 px-3 py-1 mt-2 rounded-full text-indigo-700 font-medium text-sm w-full md:w-5/12">
+                                        <p>
+                                            ❌ &nbsp;
+                                            <button
+                                                onClick={onTogglePreferences}
+                                                className="text-sm text-indigo-600 hover:text-indigo-700 underline"
+                                            >
+                                                {(t('swipeCarousel_resetPreferences'))}
                                             </button>
                                         </p>
+                                    </div>
+                                    
+                                    <div className="flex items-center bg-indigo-50 px-3 py-1 rounded-full text-indigo-700 font-medium text-sm">
+                                        🧮 {t("swipeCarousel_fetchedCardListLength")} {fetchedCardList.length}
                                     </div>
                                 </div>
                             </div>
@@ -513,7 +554,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                     )}
 
                     {/* Carousel */}
-                    {!loading && !error && eatAndDrinks.length > 0 && (
+                    {!loading && !error && fetchedCardList.length > 0 && (
                         <>
                             <style>
                                 {`
@@ -588,13 +629,13 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
 
                             <div className="max-w-2xl mx-auto">
                                 <Slider {...settings}>
-                                    {eatAndDrinks.map((eatAndDrink) => (
-                                        <div key={eatAndDrink.id} className="px-2">
+                                    {fetchedCardList.map((fetchedCard) => (
+                                        <div key={fetchedCard.id} className="px-2">
                                             <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all border-2 border-transparent hover:border-indigo-600 max-w-sm md:max-w-none mx-auto">                                                
                                                 <div className="relative h-48 sm:h-56 md:h-64 lg:h-80 overflow-hidden">
                                                     <img
-                                                        alt={eatAndDrink.title}
-                                                        src={eatAndDrink.image}
+                                                        alt={fetchedCard.title}
+                                                        src={fetchedCard.image}
                                                         className="w-full h-full object-cover"
                                                         onError={(e) => {
                                                             e.target.onerror = null;
@@ -602,30 +643,30 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                                                         }}
                                                     />
                                                     <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow-xl">
-                                                        <span className="text-indigo-600 capitalize text-xs md:text-sm">{eatAndDrink.type}</span>
+                                                        <span className="text-indigo-600 capitalize text-xs md:text-sm">{fetchedCard.type}</span>
                                                     </div>
                                                 </div>
 
                                                 <div className="p-4 md:p-6">
-                                                    <h2 className="text-lg md:text-xl text-gray-900 mb-3 md:mb-4">{eatAndDrink.title}</h2>
+                                                    <h2 className="text-lg md:text-xl text-gray-900 mb-3 md:mb-4">{fetchedCard.title}</h2>
                                                     <p className="text-sm md:text-base text-gray-600 mb-3 md:mb-4 line-clamp-3">
-                                                        {eatAndDrink.description}
+                                                        {fetchedCard.description}
                                                     </p>
 
                                                     <div className="space-y-2 mb-4 md:mb-6">
                                                         <div className="flex items-center gap-2 text-gray-600 text-sm">
                                                             <MapPin className="w-4 h-4 text-indigo-600 flex-shrink-0" />
-                                                            <span className="truncate">{eatAndDrink.location}</span>
+                                                            <span className="truncate">{fetchedCard.location}</span>
                                                         </div>
                                                         <div className="flex items-center gap-2 text-gray-600 text-sm">
                                                             <Clock className="w-4 h-4 text-indigo-600 flex-shrink-0" />
-                                                            <span>{eatAndDrink.openingHours}</span>
+                                                            <span>{fetchedCard.openingHours}</span>
                                                         </div>
                                                     </div>
 
                                                     <button
                                                         className="w-full bg-indigo-600 text-white py-2 px-4 rounded-xl hover:bg-indigo-700 transition text-sm md:text-base"
-                                                        onClick={() => handleViewDetails(eatAndDrink)}
+                                                        onClick={() => handleViewDetails(fetchedCard)}
                                                     >
                                                         {t('swipeCarousel_viewDetails')}
                                                     </button>
@@ -652,7 +693,7 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
                     </div>
                 
                     {/* Empty State */}
-                    {!loading && !error && eatAndDrinks.length === 0 && (
+                    {!loading && !error && fetchedCardList.length === 0 && (
                         <div className="text-center py-20 text-gray-600">
                             <p>{t('no_results') || 'No results found for your preferences'}</p>
                         </div>
