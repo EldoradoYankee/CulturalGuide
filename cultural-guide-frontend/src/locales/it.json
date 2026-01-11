@@ -121,6 +121,8 @@
   "swipeCarousel_setPreferencesButton": "Imposta Preferenze",
   "swipeCarousel_showingRecommendationsFor": "Mostrando raccomandazioni per",
   "swipeCarousel_editPreferences": "Modifica le tue preferenze",
+  "swipeCarousel_resetPreferences": "Reimposta tutte le preferenze",
+  "swipeCarousel_fetchedCardListLength": "Raccomandazioni totali recuperate:",
   "swipeCarousel_destination_icon": "📍 Destinazione:",
   "swipeCarousel_timeAvailability_icon": "\uD83D\uDCC5 Da {{startDate}} le {{startHour}} a {{endDate}} le {{endHour}}",
 
