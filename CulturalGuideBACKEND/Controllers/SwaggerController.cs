@@ -109,6 +109,26 @@ public class EppoiApiController : ControllerBase
         return Ok(result);
     }
 
+     // ===============================
+     //  DETAIL: Fetch SINGLE EatAndDrink by ID
+     // ===============================
+    [HttpGet("eat-and-drinks/detail/{id}")]
+        public async Task<IActionResult> GetEatAndDrinkDetail(string id, [FromQuery] string language = "it")
+        {
+            try
+            {
+                var result = await _swaggerEppoiService.GetEatAndDrinkDetailAsync(id, language);
+
+                if (result == null) return NotFound($"POI with ID {id} not found.");
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching details for ID: {Id}", id);
+                return StatusCode(500, "Internal server error");
+            }
+        }
     // ===============================
     //  EXAMPLE ENDPOINT #3
     //  Search for experiences based on interests

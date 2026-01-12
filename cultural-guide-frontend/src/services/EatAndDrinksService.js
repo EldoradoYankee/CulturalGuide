@@ -1,6 +1,9 @@
 // services/EatAndDrinksService.js
 import defaultImage from "../images/ImageWithFallback.jpg";
 
+const API_BASE_URL = "http://localhost:5203/api/eppoiapi";
+
+
 export const fetchEatAndDrinks = async (municipality, language = "it") => {
     if (!municipality) {
         throw new Error("Municipality is required");
@@ -8,7 +11,7 @@ export const fetchEatAndDrinks = async (municipality, language = "it") => {
 
     try {
         const response = await fetch(
-            `http://localhost:5203/api/eppoiapi/eat-and-drinks?municipality=${encodeURIComponent(municipality)}&language=${encodeURIComponent(language)}`,
+            `${API_BASE_URL}/eat-and-drinks?municipality=${encodeURIComponent(municipality)}&language=${encodeURIComponent(language)}`,
             {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
@@ -42,3 +45,29 @@ export const fetchEatAndDrinks = async (municipality, language = "it") => {
         throw new Error("Network error while fetching eatAndDrinks");
     }
 };
+
+export const fetchEatAndDrinkDetail = async (id, language = "it") => {
+    try{
+        const response = await fetch(
+            `${API_BASE_URL}/eat-and-drinks/detail/${encodeURIComponent(id)}?language=${encodeURIComponent(language)}`,
+            {
+                method: "GET",
+                headers: {"Content-Type": "application/json"},
+                credentials: "include",
+            }
+        );
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                console.warn(`Detail API non found for Id ${id} .`);
+                return null;
+            }
+            throw new Error(`Error fetching detail: ${response.status}`);
+        }
+
+        return await response.json();
+    }catch (error){
+        console.error("fetchEatAndDrinkDetail error:", error);
+        throw error;
+    }
+}

@@ -93,7 +93,28 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
 
             return result ?? Array.Empty<EppoiEatAndDrinksDTO>();
         }
+         // =====================
+         // EATANDDRINK DETAIL (SINGLE ITEM)
+         // =====================
+         public async Task<object> GetEatAndDrinkDetailAsync(string id, string language)
+         {
+             await EnsureAuthenticatedAsync();
 
+             // Endpoint call: /api/eat-and-drink/detail/{identifier}
+             var url = $"/api/eat-and-drink/detail/{id}?language={language}";
+
+             _logger.LogInformation($"Eppoi GetEatAndDrinkDetailAsync calling: {url}");
+
+             var response = await _httpClient.GetAsync(url);
+
+             if (!response.IsSuccessStatusCode)
+             {
+                 _logger.LogWarning($"Eppoi GetEatAndDrinkDetailAsync failed with status: {response.StatusCode} for ID: {id}");
+                 return null;
+             }
+              var result = await response.Content.ReadFromJsonAsync<object>();
+              return result;
+         }
 		// =====================
         // SEARCH EXPERIENCES
         // =====================

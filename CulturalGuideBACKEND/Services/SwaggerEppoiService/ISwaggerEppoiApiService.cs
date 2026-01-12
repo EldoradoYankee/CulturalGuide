@@ -9,9 +9,12 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
     {
         Task<object> GetPointsOfInterestAsync(string city);
         Task<object> SearchExperiencesAsync(SwaggerEppoiRequest request);
+        Task<object> GetEatAndDrinkDetailAsync(string id, string language);
+
         Task<IEnumerable<EppoiCategoriesDTO>> GetCategoriesAsync(string municipality, string language);
 		Task<IEnumerable<EppoiMunicipalitiesDTO>> GetMunicipalitiesAsync();
 		Task<IEnumerable<EppoiEatAndDrinksDTO>> GetEatAndDrinksAsync(string municipality, string language);
 		Task<IEnumerable<EppoiMunicipalitiesDTO>> GetMunicipalitiesIntoDbAsync();
+
     }
 }
