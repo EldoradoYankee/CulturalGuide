@@ -51,7 +51,9 @@ namespace CulturalGuideBACKEND.Services
                 _logger.LogError(ex, ">>> Error calling GetCategoriesAsync on startup");
             }
 
+            // ---------------------
             // invoke GetMunicipalitiesAsync at every startup to warm up the db
+            // ---------------------
             try
             {
                 using var scope = _services.CreateScope();
@@ -64,6 +66,51 @@ namespace CulturalGuideBACKEND.Services
             }
 
             _logger.LogInformation(">>> Startup service finished.");
+            
+            // ---------------------
+            // invoke GetAllCards at every startup to provide content to the db for the chatbot
+            // ---------------------
+            try
+            {
+                using var scope = _services.CreateScope();
+                var eppoiService = scope.ServiceProvider.GetRequiredService<ISwaggerEppoiApiService>();
+
+                // endpoints used in app
+                string[] endpoints = new string[]
+                {
+                    "art-culture",
+                    "articles",
+                    "eat-and-drink",
+                    "entertainment-leisure",
+                    "events",
+                    "nature",
+                    "organizations",
+                    "routes",
+                    "services",
+                    "shopping",
+                    "sleep",
+                    "typical-products"
+                };
+                
+                
+                
+                // languages used in app
+                string[] languages = new string[] { "it", "en", "de" };
+                // municipalities used in app
+                string[] municipalities = (await eppoiService.GetMunicipalitiesAsync())
+                    .Select(m => {
+                        var name = m?.LegalName ?? string.Empty;
+                        return name.Substring(10); // remove "Comune di "
+                    })
+                    .ToArray();
+                
+                await eppoiService.GetCardsAsync(municipalities, languages, endpoints);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ">>> Error calling GetCardsAsync on startup");
+                throw;
+            }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
