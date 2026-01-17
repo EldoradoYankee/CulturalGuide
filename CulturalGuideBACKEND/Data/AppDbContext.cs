@@ -19,6 +19,7 @@ public class AppDbContext : DbContext
 	
 	public DbSet<CardItem> CardItems { get; set; }
 
+	public DbSet<CardItemDetail> CardItemDetails { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{

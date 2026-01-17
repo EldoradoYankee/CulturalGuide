@@ -215,164 +215,148 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
             return municipalities;
         }
 
-        public async Task<IEnumerable<EppoiUnifiedCardDTO>> GetCardsAsync(string[] municipalities, string[] languages, string[] endpoints)
+    public async Task<IEnumerable<EppoiUnifiedCardDTO>> GetCardsAsync(
+        string[] municipalities,
+        string[] languages,
+        string[] endpoints)
+    {
+        var allResults = new List<EppoiUnifiedCardDTO>();
+
+        // Track entityId -> (endpoint, municipality)
+        var entityIdMetadata = new Dictionary<string, (string endpoint, string municipality)>();
+
+        foreach (var municipality in municipalities)
         {
-            var allResults = new List<EppoiUnifiedCardDTO>();
-            
-            // ---------------------
-            // For each municipality, get all cards (each category)
-            // ---------------------
-            foreach (var municipality in municipalities)
+            foreach (var language in languages)
             {
-                foreach (var language in languages)
+                foreach (var endpoint in endpoints)
                 {
-                    foreach (var endpoint in endpoints)
+                    try
                     {
-                        try
+                        var url =
+                            $"https://apispm.eppoi.io/api/{endpoint}/card-list?municipality={Uri.EscapeDataString(municipality)}&language={Uri.EscapeDataString(language)}";
+
+                        _logger.LogInformation($"Calling Eppoi API: {url}");
+
+                        var response = await _httpClient.GetAsync(url);
+
+                        if (!response.IsSuccessStatusCode)
+                            continue;
+
+                        var content = await response.Content.ReadAsStringAsync();
+
+                        var items = JsonSerializer.Deserialize<List<EppoiUnifiedCardDTO>>(content,
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                        if (items == null)
+                            continue;
+
+                        foreach (var item in items)
                         {
-                            var url =
-                                $"https://apispm.eppoi.io/api/{endpoint}/card-list?municipality={Uri.EscapeDataString(municipality)}&language={Uri.EscapeDataString(language)}";
-
-                            _logger.LogInformation($"Calling Eppoi API: {url}");
-
-                            var response = await _httpClient.GetAsync(url);
-
-                            _logger.LogInformation($"Eppoi {endpoint} response status: {response.StatusCode}");
-
-                            if (!response.IsSuccessStatusCode)
+                            if (!string.IsNullOrEmpty(item.EntityId) &&
+                                !entityIdMetadata.ContainsKey(item.EntityId))
                             {
-                                _logger.LogWarning(
-                                    $"Failed to fetch {endpoint} for {municipality} {language}: {response.StatusCode}");
-                                continue;
+                                entityIdMetadata[item.EntityId] = (endpoint, municipality);
                             }
 
-                            var content = await response.Content.ReadAsStringAsync();
-                            var items = JsonSerializer.Deserialize<List<EppoiUnifiedCardDTO>>(content,
-                                new JsonSerializerOptions
-                                {
-                                    PropertyNameCaseInsensitive = true
-                                });
-
-                            if (items != null && items.Any())
-                            {
-                                foreach (var item in items)
-                                {
-                                    item.Language = language;
-                                    item.Municipality = municipality;
-                                }
-
-                                allResults.AddRange(items);
-                                _logger.LogInformation(
-                                    $"Fetched {items.Count} items from {endpoint} for {municipality} (it)");
-                            }
+                            item.Language = language;
+                            item.Municipality = municipality;
                         }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError(ex, $"Error fetching {endpoint} for {municipality} (it)");
-                        }
+
+                        allResults.AddRange(items);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"Error fetching {endpoint} for {municipality}");
                     }
                 }
             }
+        }
 
-            _logger.LogInformation($"Total items fetched: {allResults.Count}");
+        // ---------------------
+        // FETCH DETAILS
+        // ---------------------
+        int detailsFetchedCount = 0;
+        int detailsSkippedCount = 0;
+        int detailsErrorCount = 0;
 
-            // ---------------------
-            // Save to the database with better error handling
-            // ---------------------
-            var savedCount = 0;
-            var skippedCount = 0;
-            var errorCount = 0;
+        foreach (var kvp in entityIdMetadata)
+        {
+            var entityId = kvp.Key;
+            var (endpoint, municipality) = kvp.Value;
 
-            
-            foreach (var dto in allResults)
+            foreach (var language in languages)
             {
                 try
                 {
-                    // Validate required fields
-                    if (string.IsNullOrWhiteSpace(dto.EntityId))
+                    bool detailExists = await _db.CardItemDetails.AnyAsync(x =>
+                        x.EntityId == entityId &&
+                        x.Language == language);
+
+                    if (detailExists)
                     {
-                        _logger.LogWarning($"Skipping item with null/empty EntityId: {dto.EntityName}");
-                        errorCount++;
-                        continue;
-                    }
-                    if (string.IsNullOrWhiteSpace(dto.Language))
-                    {
-                        _logger.LogWarning($"Skipping item with null/empty Language: {dto.EntityName} ({dto.EntityId})");
-                        errorCount++;
-                        continue;
-                    }
-                    if (string.IsNullOrWhiteSpace(dto.Municipality))
-                    {
-                        _logger.LogWarning($"Skipping item with null/empty Municipality: {dto.EntityName} ({dto.EntityId})");
-                        errorCount++;
+                        detailsSkippedCount++;
                         continue;
                     }
 
-                    // Check if item already exists
-                    bool exists = await _db.CardItems.AnyAsync(x =>
-                        x.EntityId == dto.EntityId &&
-                        x.Language == dto.Language &&
-                        x.Municipality == dto.Municipality
-                    );
+                    var detailUrl =
+                        $"https://apispm.eppoi.io/api/{endpoint}/detail/{Uri.EscapeDataString(entityId)}?language={Uri.EscapeDataString(language)}";
 
-                    if (exists)
+                    var detailResponse = await _httpClient.GetAsync(detailUrl);
+
+                    if (!detailResponse.IsSuccessStatusCode)
                     {
-                        skippedCount++;
+                        detailsErrorCount++;
                         continue;
                     }
 
-                    _logger.LogInformation($"Adding item to database: {dto.EntityName}");
+                    var detailContent = await detailResponse.Content.ReadAsStringAsync();
 
-                    // Truncate fields that might be too long
-                    var entity = new CardItem
+                    var detail = JsonSerializer.Deserialize<EppoiCardItemDetailDTO>(
+                        detailContent,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (detail == null)
+                        continue;
+
+                    var detailEntity = new CardItemDetail
                     {
-                        EntityId = TruncateString(dto.EntityId!, 255),
-                        EntityName = TruncateString(dto.EntityName, 500),
-                        ImagePath = TruncateString(dto.ImagePath, 1000),
-                        BadgeText = TruncateString(dto.BadgeText, 255),
-                        Address = TruncateString(dto.Address, 500),
-                        Classification = TruncateString(dto.Classification, 255),
-                        Date = DateTime.TryParse(dto.Date, out var d) ? d : null,
-                        MunicipalityName = TruncateString(dto.MunicipalityData?.LegalName, 255),
-                        MunicipalityLogoPath = TruncateString(dto.MunicipalityData?.ImagePath, 1000),
-                        Language = TruncateString(dto.Language, 10),
-                        Municipality = TruncateString(dto.Municipality, 255),
+                        EntityId = TruncateString(entityId, 255),
+                        Category = TruncateString(endpoint, 50),
+                        Language = TruncateString(language, 10),
+                        Municipality = TruncateString(municipality, 255),
+                        Title = TruncateString(detail.Title ?? detail.Name ?? detail.EntityName, 500),
+                        Description = detail.Description ?? detail.ShortDescription,
+                        Address = TruncateString(detail.Address, 500),
+                        PrimaryImage = TruncateString(detail.PrimaryImage ?? detail.ImagePath, 1000),
+                        Latitude = detail.Latitude,
+                        Longitude = detail.Longitude,
+                        JsonPayload = detailContent,
                         CreatedAt = DateTime.UtcNow
                     };
 
-                    _db.CardItems.Add(entity);
-                    await _db.SaveChangesAsync();
-                    savedCount++;
-                    _logger.LogInformation($"Entity saved: {savedCount} items so far...");
-                }
-                catch (DbUpdateException dbEx)
-                {
-                    _logger.LogError(dbEx, $"Database error saving item: {dto.EntityName} ({dto.EntityId})");
-                    _logger.LogError($"Inner exception: {dbEx.InnerException?.Message}");
-                    errorCount++;
+                    _db.CardItemDetails.Add(detailEntity);
+                    detailsFetchedCount++;
+
+                    if (detailsFetchedCount % 50 == 0)
+                        await _db.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Error saving item: {dto.EntityName} ({dto.EntityId})");
-                    errorCount++;
+                    _logger.LogError(ex, $"Error fetching detail for {entityId}");
+                    detailsErrorCount++;
                 }
             }
-
-            // Save any remaining items
-            try
-            {
-                //await _db.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error saving final batch to database");
-            }
-            
-            _logger.LogInformation($"Database operation complete: {savedCount} saved, {skippedCount} skipped, {errorCount} errors");
-
-            return allResults;
         }
-        
+
+        await _db.SaveChangesAsync();
+
+        _logger.LogInformation($"Details saved: {detailsFetchedCount}, skipped: {detailsSkippedCount}, errors: {detailsErrorCount}");
+
+        return allResults;
+    }
+
+
         // Helper method to truncate strings
         private string TruncateString(string value, int maxLength)
         {
@@ -385,12 +369,15 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
         // =====================
         // Fetch all card details depending on the above card items
         // =====================
-        private Task<IEnumerable<EppoiCardItemDetailsDTO>> GetCardDetailsAsync()
+        private Task<List<string>> GetCardDetailsAsync()
         {
-            var string[][] entityIdsPerEndpoint = _db.CardItems
+            var entityIds = _db.CardItems
                 .Select(ci => ci.EntityId)
                 .Distinct()
                 .ToList();
+
+            return Task.FromResult(entityIds);
         }
+
     }
 }
