@@ -231,7 +231,7 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
                         try
                         {
                             var url =
-                                $"https://apispm.eppoi.io/api/{endpoint}/card-list?municipality={Uri.EscapeDataString(municipality)}&language=it";
+                                $"https://apispm.eppoi.io/api/{endpoint}/card-list?municipality={Uri.EscapeDataString(municipality)}&language={Uri.EscapeDataString(language)}";
 
                             _logger.LogInformation($"Calling Eppoi API: {url}");
 
@@ -242,7 +242,7 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
                             if (!response.IsSuccessStatusCode)
                             {
                                 _logger.LogWarning(
-                                    $"Failed to fetch {endpoint} for {municipality} (it): {response.StatusCode}");
+                                    $"Failed to fetch {endpoint} for {municipality} {language}: {response.StatusCode}");
                                 continue;
                             }
 
@@ -381,6 +381,16 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
     
             return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
-        
+
+        // =====================
+        // Fetch all card details depending on the above card items
+        // =====================
+        private Task<IEnumerable<EppoiCardItemDetailsDTO>> GetCardDetailsAsync()
+        {
+            var string[][] entityIdsPerEndpoint = _db.CardItems
+                .Select(ci => ci.EntityId)
+                .Distinct()
+                .ToList();
+        }
     }
 }
