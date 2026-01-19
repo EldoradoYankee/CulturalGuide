@@ -40,7 +40,7 @@ export function Chatbot({user, onBack}) {
     }, [messages, isTyping]);
 
     // -----------------------------
-    // Check if user has preferences
+    // Check if user has preferences (profile vector) stored
     // -----------------------------
     useEffect(() => {
         if (!user) {
@@ -138,67 +138,68 @@ export function Chatbot({user, onBack}) {
             return;
         }
 
-        // Add user message
         const userMessage = {
             id: Date.now().toString(),
             text: inputText,
             sender: 'user',
             timestamp: new Date(),
+            language: i18n.language,
         };
 
         setMessages((prev) => [...prev, userMessage]);
+        const messageToSend = inputText;
         setInputText('');
         setIsTyping(true);
 
         try {
-            // Send POST request to backend
-            const response = await fetch('http://localhost:5203/api/eppoiapi/chat', {
+            const response = await fetch('http://localhost:5203/api/chatbot/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({
+                    // check in backend if user has valid token/session
+                    userId: user.id || user.email,
                     municipality: selectedCity,
-                    message: inputText,
-                    userName: user.name,
-                    messageSentDate: Date.now(),
+                    message: messageToSend,
+                    messageSentDate: new Date().toISOString(),
+                    language: i18n.language,
                 }),
             });
 
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error(`HTTP ${response.status}`);
             }
 
             const data = await response.json();
 
-            // Simulate typing delay
-            setTimeout(() => {
+            if (data.success) {
                 const botMessage = {
                     id: (Date.now() + 1).toString(),
-                    text: data.response || data.message || 'I received your message!',
+                    text: data.response || data.message,
                     sender: 'bot',
                     timestamp: new Date(),
                 };
 
                 setMessages((prev) => [...prev, botMessage]);
-                setIsTyping(false);
-            }, 500);
+            } else {
+                throw new Error(data.error || 'Unknown error');
+            }
         } catch (error) {
             console.error('Error sending message:', error);
 
-            // Fallback response if API fails
-            setTimeout(() => {
-                const botMessage = {
-                    id: (Date.now() + 1).toString(),
-                    text: `I'm currently unable to connect to the server. This is a demo response to your message: "${inputText}"`,
-                    sender: 'bot',
-                    timestamp: new Date(),
-                };
+            const errorMessage = {
+                id: (Date.now() + 1).toString(),
+                text: t('chatbot.errorResponse') || 'Sorry, I encountered an error. Please try again.',
+                sender: 'bot',
+                timestamp: new Date(),
+            };
 
-                setMessages((prev) => [...prev, botMessage]);
-                setIsTyping(false);
-                toast.error(t('chatbot.errorSending'));
-            }, 1000);
+            setMessages((prev) => [...prev, errorMessage]);
+            toast.error(t('chatbot.errorSending'));
+        } finally {
+            setIsTyping(false);
         }
     };
 

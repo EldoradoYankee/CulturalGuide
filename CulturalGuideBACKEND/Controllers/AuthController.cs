@@ -103,6 +103,10 @@ public class AuthController : ControllerBase
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwt = tokenHandler.WriteToken(token);
+        
+        // save jwt in user record
+        user.JwtToken = jwt;
+        _db.SaveChanges();
 
         Response.Cookies.Append("access_token", jwt, new CookieOptions
         {
@@ -166,6 +170,7 @@ public class AuthController : ControllerBase
 
         // save jwt in user record
         user.JwtToken = jwt;
+        _db.SaveChanges();
 
         // Send verification email that user is registered but has to verify email
         await _emailService.SendVerificationEmail(

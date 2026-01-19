@@ -3,6 +3,7 @@ using CulturalGuideBACKEND.Models;
 using CulturalGuideBACKEND.Services.Email;
 using CulturalGuideBACKEND.Services.SwaggerEppoiService;
 using CulturalGuideBACKEND.Services;
+using CulturalGuideBACKEND.Hubs;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -92,6 +93,12 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
+// Gemini Service
+builder.Services.AddScoped<IGeminiService, GeminiService>();
+builder.Services.AddScoped<IChatContextService, ChatContextService>();
+
+
+
 // Fluent Email
 //builder.Services.AddFluentEmail("no-reply@yourapp.com")
 //    .AddSmtpSender("smtp.server.com", 587, "smtp-user", "smtp-password");
@@ -101,6 +108,11 @@ builder.Services.AddSwaggerGen(options =>
 // 2) BUILD (after this point, no more AddServices!)
 // ------------------------------------------------------
 var app = builder.Build();
+
+// ---------------------------
+// After var app = builder.Build(); -> ROUTES for Hubs
+// ---------------------------
+app.MapHub<ChatHub>("/chathub");
 
 // ---------------------------
 // 3) MIDDLEWARE
