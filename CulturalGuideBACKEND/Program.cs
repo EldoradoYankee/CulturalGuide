@@ -112,7 +112,7 @@ var app = builder.Build();
 // ---------------------------
 // After var app = builder.Build(); -> ROUTES for Hubs
 // ---------------------------
-app.MapHub<ChatHub>("/chathub");
+//app.MapHub<ChatHub>("/chathub");
 
 // ---------------------------
 // 3) MIDDLEWARE

@@ -35,11 +35,11 @@ namespace CulturalGuideBACKEND.Services
         {
             try
             {
-                var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={_apiKey}";
+                var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={_apiKey}";
 
                 var systemPrompt = $@"You are a helpful travel assistant for {municipality}. 
-                    You have access to information about points of interest, restaurants, hotels, and events in {municipality}.
-                    Be friendly, concise, and provide useful recommendations.
+                    You have access to information about points of interest in certain categories.
+                    Be friendly, concise, and provide useful recommendations in maximum 100 words.
                     
                     Context about the area:
                     {context}

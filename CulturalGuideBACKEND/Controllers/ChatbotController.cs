@@ -55,7 +55,7 @@ namespace CulturalGuideBACKEND.Controllers
                     });
                 }
 
-                _logger.LogInformation($"Chat request from user {request.UserId} for {request.Municipality}");
+                _logger.LogInformation($"Chat request from user {request.UserId} for {request.Municipality} in language {request.Language}");
 
                 // Get user from database
                 var user = await _db.Users
@@ -71,7 +71,7 @@ namespace CulturalGuideBACKEND.Controllers
                 }
 
                 // Build context from database
-                var context = await _contextService.BuildContextAsync(request.Municipality, request.UserId);
+                var context = await _contextService.BuildContextAsync(request.Municipality, request.UserId, request.Language);
 
                 _logger.LogInformation($"Context built for {request.Municipality}: {context.Length} chars");
 
