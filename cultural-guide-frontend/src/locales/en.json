@@ -154,6 +154,8 @@
   "chatbot.errorSending": "Error sending message",
   "chatbot.errorEmpty": "Please enter a message",
   "chatbot.back": "Back",
+  "chatbot.timeAvailability": "\uD83D\uDCC5 From {{startDate}} at {{startHour}} to {{endDate}} at {{endHour}}",
+
 
   "loadingSpinner_loading": "Loading…",
   "loadingSpinner_ariaLabel": "Content is loading",

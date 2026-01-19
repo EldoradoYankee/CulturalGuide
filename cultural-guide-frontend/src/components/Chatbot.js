@@ -1,12 +1,13 @@
-import { useState, useRef, useEffect } from 'react';
-import { Send, ArrowLeft, MapPin, User as UserIcon } from 'lucide-react';
-import { toast } from 'sonner';
-import { useTranslation } from "react-i18next";
+import React, {useState, useRef, useEffect} from 'react';
+import {Send, ArrowLeft, MapPin, User as UserIcon} from 'lucide-react';
+import {toast} from 'sonner';
+import {useTranslation} from "react-i18next";
+import {formatDate} from "../utils/formatDate";
+import {LoadingSpinner} from "./ui_components/Loading";
 
 
-
-export function Chatbot({ user, language, municipality = 'Massignano', onBack }) {
-    const { t, i18n } = useTranslation();
+export function Chatbot({user, onBack}) {
+    const {t, i18n} = useTranslation();
     const [messages, setMessages] = useState([
         {
             id: '1',
@@ -19,11 +20,117 @@ export function Chatbot({ user, language, municipality = 'Massignano', onBack })
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    // City selection state
+    const [selectedCity, setSelectedCity] = useState("");
+
+    // Time availability state
+    const [startSelection, setStartSelection] = useState({date: null, hour: null});
+    const [endSelection, setEndSelection] = useState({date: null, hour: null});
+
+    // Preference state
+    const [hasProfileVector, setHasProfileVector] = useState(null);
+    const [profileVector, setProfileVector] = useState(null);
 
     // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
     }, [messages, isTyping]);
+
+    // -----------------------------
+    // Check if user has preferences
+    // -----------------------------
+    useEffect(() => {
+        if (!user) {
+            setHasProfileVector(false);
+            return;
+        }
+
+        const checkUserProfileVector = async () => {
+            setLoading(true);
+            setError("");
+
+            try {
+                const userId = user.id || user.email;
+
+                const response = await fetch(
+                    `http://localhost:5203/api/eppoiapi/profile-vector/${encodeURIComponent(userId)}`,
+                    {
+                        method: "GET",
+                        headers: {"Content-Type": "application/json"},
+                        credentials: "include",
+                    }
+                );
+
+                if (response.ok) {
+                    const profileVector = await response.json();
+                    setProfileVector(profileVector);
+                    setHasProfileVector(true);
+
+                    console.log("User preferences found:", profileVector);
+                } else if (response.status === 404) {
+                    // No preferences found
+                    setHasProfileVector(false);
+                    toast.error("No preferences found for user");
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (err) {
+                toast.error("Error checking preferences:", err);
+                setError("Failed to check user profile vector.");
+                setHasProfileVector(false);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkUserProfileVector();
+    }, [user]);
+
+    // -----------------
+    // Extract city and time availability from profile vector
+    // -----------------
+    useEffect(() => {
+        if (!profileVector) {
+            return;
+        }
+
+        // City
+        if (profileVector.municipality) {
+            setSelectedCity(profileVector.municipality);
+        }
+
+        // Time Availability - Parse ISO strings to { date, hour } format
+        if (profileVector.startTime) {
+            const startDate = new Date(profileVector.startTime);
+            setStartSelection({
+                date: startDate,
+                hour: startDate.getHours()
+            });
+        }
+
+        if (profileVector.endTime) {
+            const endDate = new Date(profileVector.endTime);
+            setEndSelection({
+                date: endDate,
+                hour: endDate.getHours()
+            });
+        }
+
+    }, [profileVector]); // Add profileVector as dependency
+
+    // -----------------------------
+    // wait for timeAvailability from ProfileVector Database fetch is ready
+    // -----------------------------
+    const isTimeAvailabilityReady =
+        startSelection?.date &&
+        startSelection?.hour !== null &&
+        startSelection?.hour !== undefined &&
+        endSelection?.date &&
+        endSelection?.hour !== null &&
+        endSelection?.hour !== undefined;
 
     const sendMessage = async () => {
         if (!inputText.trim()) {
@@ -51,9 +158,10 @@ export function Chatbot({ user, language, municipality = 'Massignano', onBack })
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    municipality: municipality,
+                    municipality: selectedCity,
                     message: inputText,
                     userName: user.name,
+                    messageSentDate: Date.now(),
                 }),
             });
 
@@ -102,7 +210,7 @@ export function Chatbot({ user, language, municipality = 'Massignano', onBack })
     };
 
     return (
-        <div className="min-h-50 p-4 md:p-8 flex items-center justify-center">
+        <div className="min-h-5 p-4 md:p-8 flex items-center justify-center">
             <div className="w-full max-w-4xl h-[calc(100vh-8rem)] flex flex-col">
                 {/* Header */}
                 <div className="bg-white rounded-t-2xl shadow-xl p-6">
@@ -110,19 +218,38 @@ export function Chatbot({ user, language, municipality = 'Massignano', onBack })
                         onClick={onBack}
                         className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-colors mb-4"
                     >
-                        <ArrowLeft className="w-5 h-5" />
+                        <ArrowLeft className="w-5 h-5"/>
                         <span>{t('chatbot.goBack')}</span>
                     </button>
 
                     <div className="flex items-center justify-between">
+                        {/* Loading State */}
+                        {loading && (
+                            <div className="flex justify-center py-20">
+                                <LoadingSpinner size="lg"/>
+                            </div>
+                        )}
                         <div>
                             <h1 className="text-gray-900 mb-2">{t('chatbot.title')}</h1>
                             <p className="text-gray-600">{t('chatbot.subtitle')}</p>
                         </div>
-                        <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 rounded-lg">
-                            <MapPin className="w-4 h-4 text-indigo-600" />
-                            <span className="text-indigo-900 text-sm">{municipality}</span>
-                        </div>
+                        {!loading && (
+                            <div items-center justify-between>
+                                <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 rounded-lg">
+                                    <MapPin className="w-4 h-4 text-indigo-600"/>
+                                    <span className="text-indigo-900 text-sm">{selectedCity}</span>
+                                </div>
+                                <br/>
+                                <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 rounded-lg">
+                                    {isTimeAvailabilityReady && t("interestSelection_timeAvailability", {
+                                        startDate: formatDate(startSelection.date, formatDate.locale),
+                                        startHour: `${startSelection.hour.toString().padStart(2, '0')}:00 → `,
+                                        endDate: formatDate(endSelection, formatDate.locale),
+                                        endHour: `${endSelection.hour.toString().padStart(2, '0')}:00`
+                                    })}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -133,7 +260,8 @@ export function Chatbot({ user, language, municipality = 'Massignano', onBack })
                             key={message.id}
                             className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                         >
-                            <div className={`flex gap-3 max-w-[80%] ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                            <div
+                                className={`flex gap-3 max-w-[80%] ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                                 {/* Avatar */}
                                 <div
                                     className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
@@ -143,10 +271,11 @@ export function Chatbot({ user, language, municipality = 'Massignano', onBack })
                                     }`}
                                 >
                                     {message.sender === 'user' ? (
-                                        <UserIcon className="w-5 h-5" />
+                                        <UserIcon className="w-5 h-5"/>
                                     ) : (
                                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+                                            <path
+                                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
                                         </svg>
                                     )}
                                 </div>
@@ -163,7 +292,7 @@ export function Chatbot({ user, language, municipality = 'Massignano', onBack })
                                         <p className="break-words">{message.text}</p>
                                     </div>
                                     <p className={`text-xs text-gray-500 mt-1 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}>
-                                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        {message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
                                     </p>
                                 </div>
                             </div>
@@ -175,25 +304,30 @@ export function Chatbot({ user, language, municipality = 'Massignano', onBack })
                         <div className="flex justify-start">
                             <div className="flex gap-3 max-w-[80%]">
                                 {/* Bot Avatar */}
-                                <div className="w-10 h-10 rounded-full bg-gray-300 text-gray-700 flex items-center justify-center flex-shrink-0">
+                                <div
+                                    className="w-10 h-10 rounded-full bg-gray-300 text-gray-700 flex items-center justify-center flex-shrink-0">
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+                                        <path
+                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
                                     </svg>
                                 </div>
 
                                 {/* Typing Bubble */}
                                 <div className="bg-white rounded-2xl rounded-tl-none shadow-md px-5 py-4">
                                     <div className="flex gap-1.5">
-                                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                                             style={{animationDelay: '0ms'}}></div>
+                                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                                             style={{animationDelay: '150ms'}}></div>
+                                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                                             style={{animationDelay: '300ms'}}></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    <div ref={messagesEndRef} />
+                    <div ref={messagesEndRef}/>
                 </div>
 
                 {/* Input Container */}
@@ -217,7 +351,7 @@ export function Chatbot({ user, language, municipality = 'Massignano', onBack })
                             disabled={isTyping || !inputText.trim()}
                             className="w-12 h-12 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0 hover:scale-105 active:scale-95"
                         >
-                            <Send className="w-5 h-5" />
+                            <Send className="w-5 h-5"/>
                         </button>
                     </div>
                 </div>

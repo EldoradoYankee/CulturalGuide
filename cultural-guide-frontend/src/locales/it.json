@@ -154,6 +154,8 @@
   "chatbot.errorSending": "Errore durante l'invio del messaggio",
   "chatbot.errorEmpty": "Per favore inserisci un messaggio",
   "chatbot.goBack": "Indietro",
+  "chatbot.timeAvailability": "\uD83D\uDCC5 Da {{startDate}} le {{startHour}} a {{endDate}} le {{endHour}}",
+
 
 
   "loadingSpinner_loading": "Caricamento…",
