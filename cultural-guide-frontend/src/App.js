@@ -6,6 +6,7 @@ import { PasswordRecovery } from "./components/PasswordRecovery";
 import { Dashboard } from "./components/Dashboard";
 import { InterestSelection } from "./components/InterestSelection";
 import { SwipeCarousel }  from "./components/SwipeCarousel";
+import { Chatbot }  from "./components/Chatbot";
 import { useTranslation } from "react-i18next";
 import { Header } from "./components/Header";
 
@@ -18,7 +19,8 @@ const AuthView = {
     INTERESTS: "interests",
     SWIPECAROUSEL: "swipecarousel",
     CITYSELECTION: "cityselection",
-    TIMEAVAILABILITY: "timeavailability"
+    TIMEAVAILABILITY: "timeavailability",
+    CHATBOT: "chatbot",
 };
 
 function App() {
@@ -115,6 +117,16 @@ function App() {
                         onBack={() => setCurrentView(AuthView.START)}
                     />
                 )}
+
+                {/* ChatBot - Chat window connected to online LLM */}
+                {currentView === AuthView.CHATBOT && user && (
+                    <Chatbot
+                        user={user}
+                        onBack={() => setCurrentView(AuthView.START)}
+                    />
+                )
+                    
+                }
             </div>
         </Suspense>
     );

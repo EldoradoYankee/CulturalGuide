@@ -54,7 +54,11 @@ export function Start({ onNavigate }) {
                                     } else if (item.id === "preferences") {
                                         // Navigate to time availability
                                         onNavigate("interests");
-                                    } else {
+                                    } else if (item.id === "chatbot") {
+                                        // Navigate to chatbot directly
+                                        onNavigate("chatbot");
+                                    }
+                                    else {
                                         // Navigate to other views
                                         onNavigate(item.id);
                                     }

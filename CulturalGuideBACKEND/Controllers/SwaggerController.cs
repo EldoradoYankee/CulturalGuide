@@ -81,7 +81,7 @@ public class EppoiApiController : ControllerBase
 		        : "image/jpeg";
     
 	        return File(imageBytes, contentType);
-        }
+        }	
         catch (Exception ex)
         {
 	        _logger.LogError(ex, "Failed to proxy image: {ImageUrl}", imageUrl);

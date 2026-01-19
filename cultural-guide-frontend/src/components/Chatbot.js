@@ -1,48 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, ArrowLeft, MapPin, User as UserIcon } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
+import { useTranslation } from "react-i18next";
 
-const translations = {
-    de: {
-        title: 'Chat-Assistent',
-        subtitle: 'Stelle mir Fragen zu deinem Aufenthalt',
-        typePlaceholder: 'Schreibe eine Nachricht...',
-        municipality: 'Stadt',
-        typing: 'tippt...',
-        errorSending: 'Fehler beim Senden der Nachricht',
-        errorEmpty: 'Bitte gib eine Nachricht ein',
-    },
-    en: {
-        title: 'Chat Assistant',
-        subtitle: 'Ask me questions about your stay',
-        typePlaceholder: 'Type a message...',
-        municipality: 'Municipality',
-        typing: 'typing...',
-        errorSending: 'Error sending message',
-        errorEmpty: 'Please enter a message',
-    },
-    es: {
-        title: 'Asistente de chat',
-        subtitle: 'Hazme preguntas sobre tu estancia',
-        typePlaceholder: 'Escribe un mensaje...',
-        municipality: 'Municipio',
-        typing: 'escribiendo...',
-        errorSending: 'Error al enviar el mensaje',
-        errorEmpty: 'Por favor ingresa un mensaje',
-    },
-    fr: {
-        title: 'Assistant de chat',
-        subtitle: 'Posez-moi des questions sur votre séjour',
-        typePlaceholder: 'Écrivez un message...',
-        municipality: 'Municipalité',
-        typing: 'en train d\'écrire...',
-        errorSending: 'Erreur lors de l\'envoi du message',
-        errorEmpty: 'Veuillez saisir un message',
-    },
-};
 
-export function ChatComponent({ user, language, municipality = 'Berlin', onBack }) {
-    const t = translations[language];
+
+export function Chatbot({ user, language, municipality = 'Massignano', onBack }) {
+    const { t, i18n } = useTranslation();
     const [messages, setMessages] = useState([
         {
             id: '1',
@@ -63,7 +27,7 @@ export function ChatComponent({ user, language, municipality = 'Berlin', onBack 
 
     const sendMessage = async () => {
         if (!inputText.trim()) {
-            toast.error(t.errorEmpty);
+            toast.error(t('chatbot.errorEmpty'));
             return;
         }
 
@@ -125,7 +89,7 @@ export function ChatComponent({ user, language, municipality = 'Berlin', onBack 
 
                 setMessages((prev) => [...prev, botMessage]);
                 setIsTyping(false);
-                toast.error(t.errorSending);
+                toast.error(t('chatbot.errorSending'));
             }, 1000);
         }
     };
@@ -147,13 +111,13 @@ export function ChatComponent({ user, language, municipality = 'Berlin', onBack 
                         className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-colors mb-4"
                     >
                         <ArrowLeft className="w-5 h-5" />
-                        <span>Zurück</span>
+                        <span>{t('chatbot.back')}</span>
                     </button>
 
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-gray-900 mb-2">{t.title}</h1>
-                            <p className="text-gray-600">{t.subtitle}</p>
+                            <h1 className="text-gray-900 mb-2">{t('chatbot.title')}</h1>
+                            <p className="text-gray-600">{t('chatbot.subtitle')}</p>
                         </div>
                         <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 rounded-lg">
                             <MapPin className="w-4 h-4 text-indigo-600" />
@@ -242,7 +206,7 @@ export function ChatComponent({ user, language, municipality = 'Berlin', onBack 
                                 value={inputText}
                                 onChange={(e) => setInputText(e.target.value)}
                                 onKeyPress={handleKeyPress}
-                                placeholder={t.typePlaceholder}
+                                placeholder={t('chatbot.typePlaceholder')}
                                 disabled={isTyping}
                                 className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:outline-none transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
                             />
