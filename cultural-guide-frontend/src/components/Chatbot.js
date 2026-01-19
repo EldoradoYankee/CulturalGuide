@@ -102,7 +102,7 @@ export function Chatbot({ user, language, municipality = 'Massignano', onBack })
     };
 
     return (
-        <div className="min-h-screen p-4 md:p-8 flex items-center justify-center">
+        <div className="min-h-50 p-4 md:p-8 flex items-center justify-center">
             <div className="w-full max-w-4xl h-[calc(100vh-8rem)] flex flex-col">
                 {/* Header */}
                 <div className="bg-white rounded-t-2xl shadow-xl p-6">
@@ -111,7 +111,7 @@ export function Chatbot({ user, language, municipality = 'Massignano', onBack })
                         className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-colors mb-4"
                     >
                         <ArrowLeft className="w-5 h-5" />
-                        <span>{t('chatbot.back')}</span>
+                        <span>{t('chatbot.goBack')}</span>
                     </button>
 
                     <div className="flex items-center justify-between">

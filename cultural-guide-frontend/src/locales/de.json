@@ -146,6 +146,15 @@
   "interestSelection_profileVectorError": "Unmöglich den Profile Vector zu speichern. Bitte erneut versuchen.",
   "interestSelection_goBack": "Zurück",
 
+  "chatbot.title": "Chat-Assistent",
+  "chatbot.subtitle": "Stelle mir Fragen zu deinem Aufenthalt",
+  "chatbot.typePlaceholder": "Schreibe eine Nachricht...",
+  "chatbot.municipality": "Stadt",
+  "chatbot.typing": "tippt...",
+  "chatbot.errorSending": "Fehler beim Senden der Nachricht",
+  "chatbot.errorEmpty": "Bitte gib eine Nachricht ein",
+  "chatbot.goBack": "Zurück",
+
   "loadingSpinner_loading": "Lädt…",
   "loadingSpinner_ariaLabel": "Inhalt wird geladen",
 

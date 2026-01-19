@@ -146,6 +146,15 @@
   "interestSelection_profileVectorError": "Failed to save Profile Vector. Please try again.",
   "interestSelection_goBack": "Back",
 
+  "chatbot.title": "Chat Assistant",
+  "chatbot.subtitle": "Ask me questions about your stay",
+  "chatbot.typePlaceholder": "Type a message...",
+  "chatbot.municipality": "Municipality",
+  "chatbot.typing": "typing...",
+  "chatbot.errorSending": "Error sending message",
+  "chatbot.errorEmpty": "Please enter a message",
+  "chatbot.back": "Back",
+
   "loadingSpinner_loading": "Loading…",
   "loadingSpinner_ariaLabel": "Content is loading",
 

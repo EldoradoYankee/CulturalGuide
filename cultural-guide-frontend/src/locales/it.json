@@ -146,6 +146,16 @@
   "interestSelection_profileVectorError": "Impossibile salvare il profilo vettoriale. Riprovare.",
   "interestSelection_goBack": "Indietro",
 
+  "chatbot.title": "Assistente Chat",
+  "chatbot.subtitle": "Fammi domande sul tuo soggiorno",
+  "chatbot.typePlaceholder": "Scrivi un messaggio...",
+  "chatbot.municipality": "Comune",
+  "chatbot.typing": "sta scrivendo...",
+  "chatbot.errorSending": "Errore durante l'invio del messaggio",
+  "chatbot.errorEmpty": "Per favore inserisci un messaggio",
+  "chatbot.goBack": "Indietro",
+
+
   "loadingSpinner_loading": "Caricamento…",
   "loadingSpinner_ariaLabel": "Contenuto in caricamento",
 
