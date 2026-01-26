@@ -253,4 +253,16 @@ public class AuthController : ControllerBase
         Response.Cookies.Delete("access_token");
         return Ok(new { message = "Logged out" });
     }
+    
+    [HttpDelete("{id}")]
+    public IActionResult DeleteUser(int id)
+    {
+        var user = _db.Users.Find(id);
+        if (user == null)
+            return NotFound();
+
+        _db.Users.Remove(user);
+        _db.SaveChanges();
+        return Ok(new { message = "User with userId: {} deleted successfully", id });
+    }
 }
