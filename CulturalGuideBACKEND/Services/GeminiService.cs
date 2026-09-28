@@ -35,7 +35,13 @@ namespace CulturalGuideBACKEND.Services
         {
             try
             {
-                var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={_apiKey}";
+                if (string.IsNullOrWhiteSpace(_apiKey) || _apiKey == "NEVER-PUSH-TO-GIT" || _apiKey.Contains("YOUR_"))
+                {
+                    _logger.LogWarning("Gemini API key is not configured in appsettings.json. Returning context-aware response.");
+                    return $"[Gemini Assistant for {municipality}]: Currently running in local mode. You can ask about points of interest, events, and restaurants in {municipality}!";
+                }
+
+                var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={_apiKey}";
 
                 var systemPrompt = $@"You are a helpful travel assistant for {municipality}. 
                     You have access to information about points of interest in certain categories.
