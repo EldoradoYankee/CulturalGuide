@@ -9,6 +9,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Remove="CulturalGuideBACKEND.Tests\**" />
+        <Content Remove="CulturalGuideBACKEND.Tests\**" />
+        <EmbeddedResource Remove="CulturalGuideBACKEND.Tests\**" />
+        <None Remove="CulturalGuideBACKEND.Tests\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="FluentAssertions" Version="8.8.0" />
         <PackageReference Include="Google.Cloud.AIPlatform.V1" Version="3.60.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.11" />

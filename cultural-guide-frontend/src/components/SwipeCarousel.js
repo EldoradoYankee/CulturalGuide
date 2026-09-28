@@ -141,9 +141,8 @@ export function SwipeCarousel({ onViewDetails, onBack, municipality, user, onNav
 
                     console.log("User preferences found:", profileVector);
                 } else if (response.status === 404) {
-                    // No preferences found
+                    // No preferences found yet for this user
                     setHasProfileVector(false);
-                    toast.error("No preferences found for user");
                 } else {
                     throw new Error(`HTTP ${response.status}`);
                 }

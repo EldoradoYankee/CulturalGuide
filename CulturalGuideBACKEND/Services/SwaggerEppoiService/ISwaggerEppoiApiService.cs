@@ -16,6 +16,6 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
 		Task<IEnumerable<EppoiEatAndDrinksDTO>> GetEatAndDrinksAsync(string municipality, string language);
 		Task<IEnumerable<EppoiMunicipalitiesDTO>> GetMunicipalitiesIntoDbAsync();
 		Task<IEnumerable<EppoiUnifiedCardDTO>> GetCardsAsync(string[] municipalities, string[] languages, string[] endpoints);
-
+		Task<object?> GetMapAsync(string municipality);
     }
 }

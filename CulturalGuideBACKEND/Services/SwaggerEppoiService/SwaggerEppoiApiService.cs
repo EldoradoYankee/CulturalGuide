@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
@@ -137,27 +136,31 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
         // =====================
         public async Task<IEnumerable<EppoiCategoriesDTO>> GetCategoriesAsync(string municipality, string language)
         {
-            //await EnsureAuthenticatedAsync();
+            try
+            {
+                var url = $"/api/categories?municipality={municipality}&language={language}";
+                _logger.LogInformation($"Eppoi Base URL: {url}");
 
-            var url = $"/api/categories?municipality={municipality}&language={language}";
-            _logger.LogInformation($"Eppoi Base URL: {url}");
+                var response = await _httpClient.GetAsync(url);
+                _logger.LogInformation($"Eppoi GetCategoriesAsync response status: {response.StatusCode}");
 
-            var response = await _httpClient.GetAsync(url);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorBody = await response.Content.ReadAsStringAsync();
+                    _logger.LogWarning($"Eppoi GetCategoriesAsync failed with status {response.StatusCode}: {errorBody}");
+                    return Array.Empty<EppoiCategoriesDTO>();
+                }
 
-            // Log response status from Eppoi API Controller
-            _logger.LogInformation($"Eppoi GetCategoriesAsync response status from Controller: {response}");
+                var resultCategories = await response.Content.ReadFromJsonAsync<IEnumerable<EppoiCategoriesDTO>>();
+                _logger.LogInformation($"Categories received from Eppoi API: {resultCategories?.Count() ?? 0} items");
 
-            // -------------------------
-            // PRINT ALL CATEGORIES
-            // -------------------------
-            _logger.LogInformation("Categories received from Eppoi API:");
-
-            var resultCategories = await response.Content.ReadFromJsonAsync<IEnumerable<EppoiCategoriesDTO>>();
-
-            response.EnsureSuccessStatusCode();
-            _logger.LogInformation($"Eppoi GetCategoriesAsync response status: {response.StatusCode}");
-
-            return resultCategories ?? Array.Empty<EppoiCategoriesDTO>();
+                return resultCategories ?? Array.Empty<EppoiCategoriesDTO>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error in GetCategoriesAsync for municipality '{municipality}'");
+                return Array.Empty<EppoiCategoriesDTO>();
+            }
         }
         
         // GET municipalities from Eppoi API and save into local DB table if not already present
@@ -379,5 +382,37 @@ namespace CulturalGuideBACKEND.Services.SwaggerEppoiService
             return Task.FromResult(entityIds);
         }
 
+        // =====================
+        // MAP MARKERS FOR MUNICIPALITY
+        // =====================
+        public async Task<object?> GetMapAsync(string municipality)
+        {
+            try
+            {
+                var cleanMunicipality = municipality;
+                if (cleanMunicipality.StartsWith("Comune di ", StringComparison.OrdinalIgnoreCase))
+                    cleanMunicipality = cleanMunicipality.Substring("Comune di ".Length).Trim();
+                else if (cleanMunicipality.StartsWith("Commune di ", StringComparison.OrdinalIgnoreCase))
+                    cleanMunicipality = cleanMunicipality.Substring("Commune di ".Length).Trim();
+
+                var url = $"/api/map?municipality={Uri.EscapeDataString(cleanMunicipality)}";
+                _logger.LogInformation($"Eppoi GetMapAsync URL: {url}");
+
+                var response = await _httpClient.GetAsync(url);
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogWarning($"Eppoi GetMapAsync returned status: {response.StatusCode}");
+                    return new { markers = Array.Empty<object>(), centerLatitude = 43.0, centerLongitude = 13.8 };
+                }
+
+                var result = await response.Content.ReadFromJsonAsync<object>();
+                return result ?? new { markers = Array.Empty<object>(), centerLatitude = 43.0, centerLongitude = 13.8 };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching map data for {Municipality}", municipality);
+                return new { markers = Array.Empty<object>(), centerLatitude = 43.0, centerLongitude = 13.8 };
+            }
+        }
     }
 }

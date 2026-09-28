@@ -11,8 +11,7 @@ export const fetchMap = async (municipality) => {
     }
 
     try {
-        // Seguendo il pattern delle API SPM di Eppoi per la natura
-        const url = `https://apispm.eppoi.io/api/map?municipality=${encodeURIComponent(municipality.substring(10, municipality.length))}`;
+        const url = `http://localhost:5203/api/eppoiapi/map?municipality=${encodeURIComponent(municipality)}`;
 
         const response = await fetch(url, {
             method: "GET",

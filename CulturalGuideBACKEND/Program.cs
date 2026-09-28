@@ -22,8 +22,11 @@ builder.Services.AddOpenApi();
 
 // Db
 builder.Services.AddDbContext<AppDbContext>(options =>
+{
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ??
-                      "Data Source=app.db"));
+                      "Data Source=app.db");
+    options.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+});
 
 // Password hasher scope
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -68,16 +71,19 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddHostedService<AppStartupService>();
 
 // Required for IHttpClientFactory
-builder.Services.AddHttpClient();
+builder.Services.ConfigureHttpClientDefaults(b =>
+{
+    b.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    });
+});
 
 // Named Eppoi API client
 builder.Services.AddHttpClient("EppoiClient", client =>
 {
-	Console.WriteLine("BASE URL: " + builder.Configuration["SwaggerEppoiApi:BaseUrl"]);
-	Console.WriteLine("API KEY: " + builder.Configuration["SwaggerEppoiApi:ApiKey"]);
-
-	var config = builder.Configuration;
-    client.BaseAddress = new Uri("https://apispm.eppoi.io");
+    var baseUrl = builder.Configuration["SwaggerEppoiApi:BaseUrl"] ?? "https://apispm.eppoi.io";
+    client.BaseAddress = new Uri(baseUrl);
 });
 
 // Register the service

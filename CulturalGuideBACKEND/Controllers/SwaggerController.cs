@@ -193,6 +193,13 @@ public class EppoiApiController : ControllerBase
         var municipalities = await _swaggerEppoiService.GetMunicipalitiesAsync();
         return Ok(municipalities);
     }
+
+    [HttpGet("map")]
+    public async Task<IActionResult> GetMap([FromQuery] string municipality)
+    {
+        var mapData = await _swaggerEppoiService.GetMapAsync(municipality);
+        return Ok(mapData);
+    }
 	
 	
 	
@@ -200,7 +207,7 @@ public class EppoiApiController : ControllerBase
     //  PROFILE VECTOR ENDPOINTS
     // ===============================
     /// <summary>
-    /// POST user categories, timeAvailability & municipality as a profile vector.
+    /// POST user categories, timeAvailability and municipality as a profile vector.
     /// </summary>
     /// <response code="200">List of municipalities</response>
     /// <response code="500">Server error fetching municipalities</response>
@@ -278,7 +285,7 @@ public class EppoiApiController : ControllerBase
     }
 
     /// <summary>
-    /// GET user categories, timeAvailability & municipality as a profile vector.
+    /// GET user categories, timeAvailability and municipality as a profile vector.
     /// returns either the profile vector or 404 if not found
     /// </summary>
     /// <response code="200">List of municipalities</response>
@@ -318,7 +325,7 @@ public class EppoiApiController : ControllerBase
     }
 
     /// <summary>
-    /// DELETE user categories, timeAvailability & municipality as a profile vector.
+    /// DELETE user categories, timeAvailability and municipality as a profile vector.
     /// </summary>
     /// <response code="200">List of municipalities</response>
     /// <response code="500">Server error fetching municipalities</response>

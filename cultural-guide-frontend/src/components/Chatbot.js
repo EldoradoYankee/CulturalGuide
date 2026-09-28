@@ -71,9 +71,8 @@ export function Chatbot({user, onBack}) {
 
                     console.log("User preferences found:", profileVector);
                 } else if (response.status === 404) {
-                    // No preferences found
+                    // No preferences found yet for this user
                     setHasProfileVector(false);
-                    toast.error("No preferences found for user");
                 } else {
                     throw new Error(`HTTP ${response.status}`);
                 }
@@ -235,7 +234,7 @@ export function Chatbot({user, onBack}) {
                             <p className="text-gray-600">{t('chatbot.subtitle')}</p>
                         </div>
                         {!loading && (
-                            <div items-center justify-between>
+                            <div className="flex flex-col gap-2 items-end">
                                 <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 rounded-lg">
                                     <MapPin className="w-4 h-4 text-indigo-600"/>
                                     <span className="text-indigo-900 text-sm">{selectedCity}</span>

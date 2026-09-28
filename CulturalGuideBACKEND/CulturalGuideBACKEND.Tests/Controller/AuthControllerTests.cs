@@ -1,17 +1,18 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using Moq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using CulturalGuideBACKEND.Controllers;
 using CulturalGuideBACKEND.Data;
 using CulturalGuideBACKEND.Models;
-using CulturalGuideBACKEND;
+using CulturalGuideBACKEND.Services.Email;
 
 namespace CulturalGuideBACKEND.Tests.Controllers
 {
@@ -21,7 +22,7 @@ namespace CulturalGuideBACKEND.Tests.Controllers
         private readonly AuthController _authController;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<AuthController> _logger;
+        private readonly Mock<IEmailService> _emailServiceMock;
         
         private const string TEST_EMAIL = "unittest@example.com";
         private const string TEST_PASSWORD = "Password123";
@@ -37,11 +38,12 @@ namespace CulturalGuideBACKEND.Tests.Controllers
             _dbContext = new AppDbContext(options);
 
             // Setup configuration
-            var inMemorySettings = new Dictionary<string, string>
+            var inMemorySettings = new Dictionary<string, string?>
             {
-                {"Jwt:Key", "your-256-bit-secret-key-for-testing-purposes-only-must-be-long"},
+                {"Jwt:Key", "your-256-bit-secret-key-for-testing-purposes-only-must-be-long-123456"},
                 {"Jwt:Issuer", "TestIssuer"},
-                {"Jwt:Audience", "TestAudience"}
+                {"Jwt:Audience", "TestAudience"},
+                {"Jwt:ExpireMinutes", "60"}
             };
 
             _configuration = new ConfigurationBuilder()
@@ -51,17 +53,26 @@ namespace CulturalGuideBACKEND.Tests.Controllers
             // Setup password hasher
             _passwordHasher = new PasswordHasher<User>();
 
-            // Setup logger
-            var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-            _logger = loggerFactory.CreateLogger<AuthController>();
+            // Setup email service mock
+            _emailServiceMock = new Mock<IEmailService>();
+            _emailServiceMock
+                .Setup(e => e.SendVerificationEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
 
             // Create controller
             _authController = new AuthController(
                 _dbContext,
-                _passwordHasher,
                 _configuration,
-                _logger
+                _passwordHasher,
+                _emailServiceMock.Object
             );
+
+            // Setup HttpContext for cookies
+            var httpContext = new DefaultHttpContext();
+            _authController.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
         }
 
         [Fact]
@@ -82,12 +93,13 @@ namespace CulturalGuideBACKEND.Tests.Controllers
             result.Should().BeOfType<OkObjectResult>();
             
             var okResult = result as OkObjectResult;
-            okResult.Value.Should().NotBeNull();
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().NotBeNull();
 
             // Verify user was created in database
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == TEST_EMAIL);
             user.Should().NotBeNull();
-            user.Name.Should().Be(TEST_NAME);
+            user!.Name.Should().Be(TEST_NAME);
         }
 
         [Fact]
@@ -98,7 +110,7 @@ namespace CulturalGuideBACKEND.Tests.Controllers
             {
                 Email = TEST_EMAIL,
                 Name = "Existing User",
-                EmailVerified = true
+                IsVerified = true
             };
             existingUser.PasswordHash = _passwordHasher.HashPassword(existingUser, TEST_PASSWORD);
             
@@ -120,19 +132,19 @@ namespace CulturalGuideBACKEND.Tests.Controllers
         }
 
         [Fact]
-        public async Task Login_ValidCredentials_ReturnsOkWithToken()
+        public void Login_ValidCredentials_ReturnsOkWithToken()
         {
             // Arrange - Create user
             var user = new User
             {
                 Email = TEST_EMAIL,
                 Name = TEST_NAME,
-                EmailVerified = true
+                IsVerified = true
             };
             user.PasswordHash = _passwordHasher.HashPassword(user, TEST_PASSWORD);
             
             _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChanges();
 
             var loginRequest = new LoginRequest
             {
@@ -141,29 +153,30 @@ namespace CulturalGuideBACKEND.Tests.Controllers
             };
 
             // Act
-            var result = await _authController.Login(loginRequest);
+            var result = _authController.Login(loginRequest);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             
             var okResult = result as OkObjectResult;
-            okResult.Value.Should().NotBeNull();
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().NotBeNull();
         }
 
         [Fact]
-        public async Task Login_InvalidPassword_ReturnsUnauthorized()
+        public void Login_InvalidPassword_ReturnsUnauthorized()
         {
             // Arrange - Create user
             var user = new User
             {
                 Email = TEST_EMAIL,
                 Name = TEST_NAME,
-                EmailVerified = true
+                IsVerified = true
             };
             user.PasswordHash = _passwordHasher.HashPassword(user, TEST_PASSWORD);
             
             _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChanges();
 
             var loginRequest = new LoginRequest
             {
@@ -172,7 +185,7 @@ namespace CulturalGuideBACKEND.Tests.Controllers
             };
 
             // Act
-            var result = await _authController.Login(loginRequest);
+            var result = _authController.Login(loginRequest);
 
             // Assert
             result.Should().BeOfType<UnauthorizedObjectResult>();
@@ -186,7 +199,7 @@ namespace CulturalGuideBACKEND.Tests.Controllers
             {
                 Email = TEST_EMAIL,
                 Name = TEST_NAME,
-                EmailVerified = true
+                IsVerified = true
             };
             user.PasswordHash = _passwordHasher.HashPassword(user, TEST_PASSWORD);
             
@@ -196,7 +209,7 @@ namespace CulturalGuideBACKEND.Tests.Controllers
             var userId = user.Id;
 
             // Act
-            var result = await _authController.DeleteUser(userId);
+            var result = _authController.DeleteUser(userId);
 
             // Assert
             if (result is StatusCodeResult statusResult)
@@ -222,20 +235,20 @@ namespace CulturalGuideBACKEND.Tests.Controllers
         }
 
         [Fact]
-        public async Task DeleteUser_NonExistingUser_ReturnsNotFound()
+        public void DeleteUser_NonExistingUser_ReturnsNotFound()
         {
             // Arrange
             var nonExistentUserId = 99999;
 
             // Act
-            var result = await _authController.DeleteUser(nonExistentUserId);
+            var result = _authController.DeleteUser(nonExistentUserId);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>();
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
-        public async Task Register_InvalidEmail_ReturnsBadRequest()
+        public async Task Register_InvalidModelState_ReturnsBadRequest()
         {
             // Arrange
             var registerRequest = new RegisterRequest
@@ -244,6 +257,7 @@ namespace CulturalGuideBACKEND.Tests.Controllers
                 Email = "invalid-email",
                 Password = TEST_PASSWORD
             };
+            _authController.ModelState.AddModelError("Email", "Invalid email format");
 
             // Act
             var result = await _authController.Register(registerRequest);

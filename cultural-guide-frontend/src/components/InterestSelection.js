@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import defaultImage from '../images/ImageWithFallback.jpg';
 import { formatDate } from '../utils/formatDate';
 import { useTranslation } from "react-i18next";
@@ -149,7 +149,7 @@ export function InterestSelection({ user, onBack }) {
                     // Trim first 10 characters from selectedCity ("Commune di ")
                     let selectedCityTrim = selectedCity.substring(10, selectedCity.length);
                     const res = await fetch(
-                        `https://apispm.eppoi.io/api/categories?municipality=${encodeURIComponent(
+                        `http://localhost:5203/api/eppoiapi/categories?municipality=${encodeURIComponent(
                             selectedCityTrim
                         )}&language=${i18n.language}`
                     );

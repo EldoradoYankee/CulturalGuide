@@ -21,9 +21,20 @@ namespace CulturalGuideBACKEND.Services
             _logger = logger;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation(">>> App startup service running...");
+            _logger.LogInformation(">>> App startup service starting in background...");
+
+            _ = Task.Run(async () =>
+            {
+                await RunWarmupAsync();
+            }, cancellationToken);
+
+            return Task.CompletedTask;
+        }
+
+        private async Task RunWarmupAsync()
+        {
 
             try
             {
@@ -91,25 +102,32 @@ namespace CulturalGuideBACKEND.Services
                     "sleep",
                     "typical-products"
                 };
-                
-                
-                
+
                 // languages used in app
                 string[] languages = new string[] { "it", "en", "de" };
+                
                 // municipalities used in app
-                string[] municipalities = (await eppoiService.GetMunicipalitiesAsync())
+                var allMunicipalities = await eppoiService.GetMunicipalitiesAsync();
+                string[] municipalities = allMunicipalities
                     .Select(m => {
                         var name = m?.LegalName ?? string.Empty;
-                        return name.Substring(10); // remove "Comune di "
+                        if (name.StartsWith("Comune di ", StringComparison.OrdinalIgnoreCase))
+                            return name.Substring("Comune di ".Length).Trim();
+                        if (name.StartsWith("Commune di ", StringComparison.OrdinalIgnoreCase))
+                            return name.Substring("Commune di ".Length).Trim();
+                        return name.Trim();
                     })
+                    .Where(name => !string.IsNullOrWhiteSpace(name))
                     .ToArray();
-                
-                await eppoiService.GetCardsAsync(municipalities, languages, endpoints);
+
+                if (municipalities.Length > 0)
+                {
+                    await eppoiService.GetCardsAsync(municipalities, languages, endpoints);
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ">>> Error calling GetCardsAsync on startup");
-                throw;
             }
         }
 
